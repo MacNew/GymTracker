@@ -2,16 +2,19 @@ package com.mac.gymtracker
 
 import android.os.Bundle
 import android.view.Menu
-import android.support.design.widget.Snackbar
-import android.support.design.widget.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.databinding.ActivityMainBinding
+import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
+import com.mac.gymtracker.ui.exercise.data.ExerciseLocalDataSource
+import com.mac.gymtracker.ui.exercise.data.ExerciseModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,10 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -42,12 +42,24 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+     loadValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
+    }
+
+
+
+    private fun loadValue() {
+        var list: ArrayList<ExerciseModel> = ArrayList()
+        var exercieOne =  ExerciseModel(1, "Chest", R.drawable.ic_exercise)
+        var exerciseTwo = ExerciseModel(2 , "Shoulder", R.drawable.ic_exercise)
+        list?.add(exercieOne)
+        list?.add(exerciseTwo)
+        ExerciseLocalDataSource(this).insertExercise(list!!)
     }
 
     override fun onSupportNavigateUp(): Boolean {
