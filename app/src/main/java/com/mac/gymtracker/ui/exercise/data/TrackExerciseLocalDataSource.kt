@@ -11,4 +11,8 @@ class TrackExerciseLocalDataSource(context: Context) {
     fun insertExercise(list:List<TrackExerciseModel>) {
         exerciseDao.insertAll(list)
     }
+
+    fun getExerciseList() : List<TrackExerciseModel> {
+        return exerciseDao.getAll()
+    }
 }

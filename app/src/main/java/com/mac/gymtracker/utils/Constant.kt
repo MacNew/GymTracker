@@ -1,6 +1,7 @@
 package com.mac.gymtracker.utils
 
 import android.content.Context
+import android.widget.Toast
 import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
@@ -20,4 +21,8 @@ fun Context.loadValue() {
         list.add(exerciseFive)
         list.add(exerciseSix)
         TrackExerciseLocalDataSource(this).insertExercise(list!!)
+}
+
+fun Context.showToast(message:String) {
+        Toast.makeText(this, "Data $message", Toast.LENGTH_LONG).show()
 }
