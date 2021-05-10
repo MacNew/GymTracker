@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
-import com.mac.gymtracker.ui.exercise.data.ExerciseModel
+import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 
-@Database(entities = [ExerciseModel::class], version = 1)
+@Database(entities = [TrackExerciseModel::class], version = 1)
 abstract class GymTrackerDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao

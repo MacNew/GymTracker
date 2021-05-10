@@ -3,23 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_track_exercise">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.mac.gymtracker.ui.home.HomeFragment"
+        android:id="@+id/nav_track_exercise"
+        android:name="com.mac.gymtracker.ui.exercise.TrackExerciseFragment"
+
         android:label="@string/menu_exercise"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_track_exercise" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.mac.gymtracker.ui.exercise.GalleryFragment"
+        android:id="@+id/nav_last_summery"
+        android:name="com.mac.gymtracker.ui.home.LastSummeryFragment"
+
         android:label="@string/menu_last_exercise_summery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_last_summery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.mac.gymtracker.ui.slideshow.SlideshowFragment"
+        android:id="@+id/nav_report"
+        android:name="com.mac.gymtracker.ui.slideshow.LastReportFragment"
         android:label="@string/menu_report"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_last_report" />
 </navigation>

@@ -5,14 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.mac.gymtracker.R
-import com.mac.gymtracker.databinding.FragmentHomeBinding
-import com.mac.gymtracker.ui.exercise.data.ExerciseLocalDataSource
-import com.mac.gymtracker.ui.exercise.data.ExerciseModel
+import com.mac.gymtracker.databinding.FragmentLastSummeryBinding
 
-class HomeFragment : Fragment() {
+class LastSummeryFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentLastSummeryBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -23,7 +20,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentLastSummeryBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
     }

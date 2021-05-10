@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "exercise")
-class ExerciseModel(
+class TrackExerciseModel(
     @PrimaryKey @ColumnInfo(name = "e_id") val eId:Int,
     @ColumnInfo(name = "exercise_name") val name:String?,
     @ColumnInfo(name = "image") val image:Int?

@@ -10,11 +10,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.databinding.ActivityMainBinding
-import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
-import com.mac.gymtracker.ui.exercise.data.ExerciseLocalDataSource
-import com.mac.gymtracker.ui.exercise.data.ExerciseModel
+import com.mac.gymtracker.utils.loadValue
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,12 +34,12 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_track_exercise, R.id.nav_last_summery, R.id.nav_report
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-     loadValue()
+        this.loadValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,16 +48,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-
-
-    private fun loadValue() {
-        var list: ArrayList<ExerciseModel> = ArrayList()
-        var exercieOne =  ExerciseModel(1, "Chest", R.drawable.ic_exercise)
-        var exerciseTwo = ExerciseModel(2 , "Shoulder", R.drawable.ic_exercise)
-        list?.add(exercieOne)
-        list?.add(exerciseTwo)
-        ExerciseLocalDataSource(this).insertExercise(list!!)
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

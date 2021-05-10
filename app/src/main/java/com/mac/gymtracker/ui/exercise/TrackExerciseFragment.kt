@@ -1,15 +1,21 @@
-package com.mac.gymtracker.ui.slideshow
+package com.mac.gymtracker.ui.exercise
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.mac.gymtracker.databinding.FragmentSlideshowBinding
+import androidx.lifecycle.ViewModelProvider
+import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 
-class SlideshowFragment : Fragment() {
+class TrackExerciseFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private val viewModel by lazy {
+
+    }
+
+    private var _binding: FragmentTrackExerciseBinding? = null
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,15 +23,10 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentTrackExerciseBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-
         return root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
 }
