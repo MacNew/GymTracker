@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
@@ -32,7 +33,7 @@ class TrackExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvTrackExercise.layoutManager = LinearLayoutManager(activity!!.applicationContext)
+        binding.rvTrackExercise.layoutManager = GridLayoutManager(activity?.applicationContext, 2) //LinearLayoutManager(activity!!.applicationContext)
         trackExerciseViewModel.exerciseList.observe(this, Observer {
             binding.rvTrackExercise.adapter = ExerciseListAdapter(it)
         })

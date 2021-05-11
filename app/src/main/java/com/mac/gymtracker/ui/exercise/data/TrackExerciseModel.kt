@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 class TrackExerciseModel(
     @PrimaryKey @ColumnInfo(name = "e_id") val eId:Int,
     @ColumnInfo(name = "exercise_name") val name:String?,
-    @ColumnInfo(name = "image") val image:Int?
+    @ColumnInfo(name = "image") val image:String?
 )

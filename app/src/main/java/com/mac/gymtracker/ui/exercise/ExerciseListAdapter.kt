@@ -20,7 +20,7 @@ class ExerciseListAdapter(var list: List<TrackExerciseModel>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.iv_exercise_name.setImageResource(list[position].image!!)
+        holder.itemView.iv_exercise_name.setImageResource(list[position].image!!.toInt())
         holder.itemView.tv_exercise_name.text = list[position].name
     }
 
