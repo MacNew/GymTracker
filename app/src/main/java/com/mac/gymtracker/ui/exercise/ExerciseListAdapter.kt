@@ -8,7 +8,7 @@ import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import kotlinx.android.synthetic.main.exercise_list_adapter.view.*
 
-class ExerciseListAdapter(var list: List<TrackExerciseModel>) :
+class ExerciseListAdapter(var list: List<TrackExerciseModel>, var function:(exercise:String)->Unit ) :
     RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -22,6 +22,9 @@ class ExerciseListAdapter(var list: List<TrackExerciseModel>) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.itemView.iv_exercise_name.setImageResource(list[position].image!!.toInt())
         holder.itemView.tv_exercise_name.text = list[position].name
+        holder.itemView.cv_parent.setOnClickListener {
+            function(list[position].name!!)
+        }
     }
 
     override fun getItemCount(): Int {

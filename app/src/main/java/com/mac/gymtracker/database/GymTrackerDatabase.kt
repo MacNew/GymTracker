@@ -6,11 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
+import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
+import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 
-@Database(entities = [TrackExerciseModel::class], version = 1)
+@Database(entities = [TrackExerciseModel::class, ExerciseListModle::class] , version = 1)
 abstract class GymTrackerDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao
+    abstract fun exerciseListDao(): ExerciseList
 
     companion object {
         @Volatile

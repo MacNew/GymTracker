@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cv_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     card_view:cardBackgroundColor="@android:color/white"
     card_view:cardElevation="2dp"
