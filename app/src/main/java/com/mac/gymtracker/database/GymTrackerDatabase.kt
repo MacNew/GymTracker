@@ -9,7 +9,7 @@ import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 
-@Database(entities = [TrackExerciseModel::class, ExerciseListModle::class] , version = 1)
+@Database(entities = [TrackExerciseModel::class, ExerciseListModle::class] , version = 2)
 abstract class GymTrackerDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao
@@ -24,7 +24,6 @@ abstract class GymTrackerDatabase : RoomDatabase() {
                     context.applicationContext,
                     GymTrackerDatabase::class.java,
                     "gymtracker").
-                    allowMainThreadQueries().
                 build()
                 INSTANCE = instance
                 instance

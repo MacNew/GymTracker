@@ -9,10 +9,10 @@ import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 
 class TrackExerciseViewModel(repository: TrackExerciseLocalDataSource) : ViewModel() {
 
-    private val _exerciseList = MutableLiveData<List<TrackExerciseModel>>().apply {
+    private val _exerciseList = MutableLiveData<LiveData<List<TrackExerciseModel>>>().apply {
         value = repository.getExerciseList()
     }
-    val exerciseList: LiveData<List<TrackExerciseModel>> = _exerciseList
+    val exerciseList: LiveData<LiveData<List<TrackExerciseModel>>> = _exerciseList
 }
 
 class SharedVMFactory(private val repository: TrackExerciseLocalDataSource) :

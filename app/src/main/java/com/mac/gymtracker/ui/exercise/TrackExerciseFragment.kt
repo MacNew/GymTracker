@@ -36,9 +36,11 @@ class TrackExerciseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rvTrackExercise.layoutManager = GridLayoutManager(activity?.applicationContext, 2) //LinearLayoutManager(activity!!.applicationContext)
         trackExerciseViewModel.exerciseList.observe(this, Observer { it ->
-            binding.rvTrackExercise.adapter = ExerciseListAdapter(it) {
-               addCardViewListner(it)
-            }
+            it.observe(this, {
+                binding.rvTrackExercise.adapter = ExerciseListAdapter(it) {
+                    addCardViewListner(it)
+                }
+            })
         })
     }
 
