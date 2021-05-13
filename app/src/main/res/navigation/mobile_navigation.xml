@@ -10,7 +10,11 @@
         android:name="com.mac.gymtracker.ui.exercise.TrackExerciseFragment"
 
         android:label="@string/menu_exercise"
-        tools:layout="@layout/fragment_track_exercise" />
+        tools:layout="@layout/fragment_track_exercise" >
+        <action
+            android:id="@+id/action_nav_track_exercise_to_fragmentExerciseList"
+            app:destination="@id/fragmentExerciseList" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_last_summery"
@@ -24,4 +28,17 @@
         android:name="com.mac.gymtracker.ui.slideshow.LastReportFragment"
         android:label="@string/menu_report"
         tools:layout="@layout/fragment_last_report" />
+    <fragment
+        android:id="@+id/fragmentExerciseList"
+        android:name="com.mac.gymtracker.ui.exerciselist.FragmentExerciseList"
+        android:label="FragmentExerciseList"
+        tools:layout="@layout/fregment_exercise_list"
+        >
+        <action
+            android:id="@+id/action_fragmentExerciseList_to_nav_track_exercise"
+            app:destination="@id/nav_track_exercise" />
+        <argument
+            android:name="exerciseid"
+            app:argType="integer" />
+    </fragment>
 </navigation>

@@ -6,7 +6,7 @@ import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.utils.subscribeONNewThread
 
-class localExerciselistRepo(context:Context) {
+class LocalExerciselistRepo(context:Context) {
 
     private var repo: ExerciseList = GymTrackerDatabase.getDatabase(context).exerciseListDao()
 

@@ -8,7 +8,7 @@ import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
-import com.mac.gymtracker.ui.exerciselist.data.localExerciselistRepo
+import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -61,7 +61,7 @@ private fun loadExercisList(context: Context) {
     list.addExercise("Chest Fly", R.drawable.ic_chest_fly.toString())
     list.addExercise("Dumbbell Pull-Over", R.drawable.ic_dumbbell_pull_over.toString())
     list.addExercise("Machine Fly", R.drawable.ic_machine_fly.toString())
-    localExerciselistRepo(context).insertExercise(list!!) {
+    LocalExerciselistRepo(context).insertExercise(list!!) {
     }
 }
 
