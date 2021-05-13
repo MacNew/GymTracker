@@ -1,15 +1,17 @@
-package com.mac.gymtracker.ui.exercise
+package com.mac.gymtracker.ui.exerciselist
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mac.gymtracker.R
-import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
+import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import kotlinx.android.synthetic.main.exercise_list_adapter.view.*
 
-class ExerciseListAdapter(var list: List<TrackExerciseModel>, var function:(exercise:String)->Unit ) :
-    RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
+class ExerciseListAdapter(
+    var list: List<ExerciseListModle>,
+    var function: (exercise: String) -> Unit
+) : RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -17,17 +19,23 @@ class ExerciseListAdapter(var list: List<TrackExerciseModel>, var function:(exer
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.exercise_list_adapter, parent, false)
         return MyViewHolder(view)
+
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.iv_exercise_name.setImageResource(list[position].image!!.toInt())
-        holder.itemView.tv_exercise_name.text = list[position].name
+        if (position==0) {
+            holder.itemView.iv_exercise_list_name.rotation = 180.0F
+        }
+        holder.itemView.iv_exercise_list_name.setImageResource(list[position].image!!.toInt())
+        holder.itemView.tv_exercise_list_name.text = list[position].name
         holder.itemView.cv_parent.setOnClickListener {
             function(list[position].name!!)
         }
     }
 
     override fun getItemCount(): Int {
-        return list.size;
+        return list.size
     }
+
+
 }

@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.mac.gymtracker.databinding.FregmentExerciseListBinding
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
-import com.mac.gymtracker.utils.CHEST_ID
+import com.mac.gymtracker.utils.getNavigationController
 import com.mac.gymtracker.utils.showToast
 
 class FragmentExerciseList: Fragment() {
@@ -32,7 +33,22 @@ class FragmentExerciseList: Fragment() {
 
    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
       super.onViewCreated(view, savedInstanceState)
-      var exerciseId = FragmentExerciseListArgs.fromBundle(arguments!!).exerciseid
-      activity!!.applicationContext.showToast("Exercise id $exerciseId")
+      binding!!.rvTrackExerciseList.layoutManager = GridLayoutManager(
+         activity?.applicationContext, 2
+      )
+      exerciseListViewModel.exerciseList.observe(this, {
+         it.observe(this, {
+            binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(it) {
+               openRecordFragment(it)
+            }
+         })
+      })
+
+   }
+
+   private fun openRecordFragment(id: String) {
+     activity!!.getNavigationController().navigate(
+        FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(id)
+     )
    }
 }

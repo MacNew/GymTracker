@@ -40,5 +40,22 @@
         <argument
             android:name="exerciseid"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_fragmentExerciseList_to_fragmentExerciseRecord"
+            app:destination="@id/fragmentExerciseRecord" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentExerciseRecord"
+        android:name="com.mac.gymtracker.ui.exerciserecord.FragmentExerciseRecord"
+        android:label="FragmentExerciseRecord"
+        tools:layout="@layout/fragment_exercise_record"
+        >
+        <action
+            android:id="@+id/action_fragmentExerciseRecord_to_fragmentExerciseList"
+            app:destination="@id/fragmentExerciseList" />
+        <argument
+            android:name="exercise_id"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

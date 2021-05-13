@@ -1,9 +1,12 @@
 package com.mac.gymtracker.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
@@ -43,13 +46,13 @@ fun Context.workOut() {
     list.add(exerciseSix)
     TrackExerciseLocalDataSource(this).insertExercise(list!!) {
         if (!it)
-        loadExercisList(this)
+            loadExercisList(this)
     }
     Log.e("TAG", "Hello mac")
 }
 
 private fun loadExercisList(context: Context) {
-    var image:String = R.drawable.ic_chest.toString()
+    var image: String = R.drawable.ic_chest.toString()
     var list: ArrayList<ExerciseListModle> = ArrayList()
     list.addExercise("Barbell Bench Press", R.drawable.ic_barbell_bench_press.toString())
     list.addExercise("Incline Bench Press", R.drawable.ic_incline_bench_press.toString())
@@ -66,22 +69,23 @@ private fun loadExercisList(context: Context) {
 }
 
 private fun <E> java.util.ArrayList<E>.addExercise(name: String, image: String) {
-     this as ArrayList<ExerciseListModle>
-     this.add(ExerciseListModle(
-         name = name,
-         exercise_id = CHEST_ID,
-         image = image
-     ))
+    this as ArrayList<ExerciseListModle>
+    this.add(
+        ExerciseListModle(
+            name = name,
+            exercise_id = CHEST_ID,
+            image = image
+        )
+    )
 }
 
 
 fun Context.showToast(message: String) {
-    Toast.makeText(this, "Data $message", Toast.LENGTH_LONG).show()
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
-
 @SuppressLint("CheckResult")
-  fun Completable.subscribeONNewThread(message:(error:Throwable?, isError:Boolean)->Unit) {
+fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boolean) -> Unit) {
     this.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnError {
@@ -91,4 +95,9 @@ fun Context.showToast(message: String) {
         }) {
             message(it, true)
         }
+}
+
+fun Activity.getNavigationController(): NavController {
+    return findNavController(R.id.nav_host_fragment_content_main)
+
 }

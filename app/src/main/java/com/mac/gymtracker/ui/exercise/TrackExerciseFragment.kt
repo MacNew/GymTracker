@@ -7,22 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
-import com.mac.gymtracker.ui.exerciselist.FragmentExerciseList
 import com.mac.gymtracker.utils.*
 
-class TrackExerciseFragment<T> : Fragment() {
+class TrackExerciseFragment : Fragment() {
 
     private lateinit var trackExerciseViewModel: TrackExerciseViewModel
     private var _binding: FragmentTrackExerciseBinding? = null
     private val binding get() = _binding!!
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +42,7 @@ class TrackExerciseFragment<T> : Fragment() {
         ) //LinearLayoutManager(activity!!.applicationContext)
         trackExerciseViewModel.exerciseList.observe(this, Observer { it ->
             it.observe(this, {
-                binding.rvTrackExercise.adapter = ExerciseListAdapter(it) {
+                binding.rvTrackExercise.adapter = ExerciseAdapter(it) {
                     addCardViewListner(it)
                 }
             })
@@ -57,8 +53,7 @@ class TrackExerciseFragment<T> : Fragment() {
         val navController = activity!!.findNavController(R.id.nav_host_fragment_content_main)
         when (it) {
             CHEST -> {
-                context!!.showToast("Chest clicked")
-                navController.navigate(TrackExerciseFragmentDirections.
+                activity!!.getNavigationController().navigate(TrackExerciseFragmentDirections.
                 actionNavTrackExerciseToFragmentExerciseList(
                     CHEST_ID))
             }
