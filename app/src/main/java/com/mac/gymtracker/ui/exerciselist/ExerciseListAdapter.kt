@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.exercise_list_adapter.view.*
 
 class ExerciseListAdapter(
     var list: List<ExerciseListModle>,
-    var function: (exercise: String) -> Unit
+    var function: (exercise: String, image: String) -> Unit
 ) : RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -29,7 +29,7 @@ class ExerciseListAdapter(
         holder.itemView.iv_exercise_list_name.setImageResource(list[position].image!!.toInt())
         holder.itemView.tv_exercise_list_name.text = list[position].name
         holder.itemView.cv_parent.setOnClickListener {
-            function(list[position].name!!)
+            function(list[position].name!!, list[position].image!!)
         }
     }
 

@@ -10,4 +10,5 @@
     <string name="menu_last_exercise_summery">Last Summery</string>
     <string name="menu_exercise">Exercise</string>
     <string name="menu_report">Report</string>
+    <string name="record">Record Exercise</string>
 </resources>

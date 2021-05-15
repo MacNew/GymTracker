@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="green_color">#4CAF50</color>
     <color name="gray_drak">#9E9E9E</color>
     <color name="gray_lignt">#BDBDBD</color>
     <color name="red_200">#E64A19</color>

@@ -57,5 +57,9 @@
             android:name="exercise_id"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="image"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

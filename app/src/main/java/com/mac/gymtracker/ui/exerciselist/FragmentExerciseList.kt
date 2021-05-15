@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.mac.gymtracker.databinding.FregmentExerciseListBinding
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.utils.getNavigationController
-import com.mac.gymtracker.utils.showToast
 
 class FragmentExerciseList: Fragment() {
    private lateinit var exerciseListViewModel: ExerciseListViewModel
@@ -38,17 +37,12 @@ class FragmentExerciseList: Fragment() {
       )
       exerciseListViewModel.exerciseList.observe(this, {
          it.observe(this, {
-            binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(it) {
-               openRecordFragment(it)
+            binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(it) { name, image ->
+               activity!!.getNavigationController().navigate(
+                  FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(name, image)
+               )
             }
          })
       })
-
-   }
-
-   private fun openRecordFragment(id: String) {
-     activity!!.getNavigationController().navigate(
-        FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(id)
-     )
    }
 }
