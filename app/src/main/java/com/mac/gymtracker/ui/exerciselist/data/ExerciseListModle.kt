@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlin.properties.Delegates
 
-@Entity(tableName = "exerciselist")
+@Entity(tableName = "exercise_list")
 data class ExerciseListModle(
     @NonNull
     @PrimaryKey

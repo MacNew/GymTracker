@@ -8,12 +8,17 @@ import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
+import com.mac.gymtracker.ui.exerciserecord.dao.ExerciseRecordDao
+import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 
-@Database(entities = [TrackExerciseModel::class, ExerciseListModle::class] , version = 2)
+@Database(entities = [TrackExerciseModel::class, ExerciseListModle::class
+                     , ExerciseRecordModel::class
+                     ] , version = 1)
 abstract class GymTrackerDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao
     abstract fun exerciseListDao(): ExerciseList
+    abstract fun exerciseRecordDao(): ExerciseRecordDao
 
     companion object {
         @Volatile

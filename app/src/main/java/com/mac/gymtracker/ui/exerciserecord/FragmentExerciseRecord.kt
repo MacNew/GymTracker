@@ -4,15 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
+import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
+import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_exercise_record.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentExerciseRecord : Fragment() {
@@ -36,41 +42,77 @@ class FragmentExerciseRecord : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
         binding!!.tbExerciseRecord.title = id
+        binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
+        binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {
+
+        }
 
         view.fab_action.setOnClickListener {
             showButtonSheet()
         }
     }
 
+    var setCount: Int = 1
     private fun showButtonSheet() {
         var bottomSheetDialog = BottomSheetDialog(context!!)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
         var imageButton = bottomSheetDialog.findViewById<ImageButton>(R.id.ib_add_set)
-        var numberPickerWeight = bottomSheetDialog.findViewById<NumberPicker>(R.id.number_picker_weight)
+        var weightEditText = bottomSheetDialog.findViewById<EditText>(R.id.ed_weight)
         var numberPickerReps = bottomSheetDialog.findViewById<NumberPicker>(R.id.number_picker_rep)
         var tvRecord = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_bs)
+        var tvDate = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_date)
         tvRecord!!.text = FragmentExerciseRecordArgs.fromBundle(bundle = arguments!!).exerciseId
+        tvDate!!.text = Date().time.toString()
+        var repData: String = "1"
+        var weight: String = weightEditText?.text.toString()
+
         imageButton!!.setOnClickListener {
             bottomSheetDialog.hide()
+            weight = weightEditText?.text.toString()
+            insertValueOnlocalDatabase(repData, weight, setCount)
+            setCount += 1
         }
-        setWeightAndRep(numberPickerWeight!!, numberPickerReps!!)
 
+        numberPickerReps!!.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
+            if (scrollState == NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
+                repData = picker.value.toString()
+            }
+        })
+        numberPickerReps!!.setOnValueChangedListener { picker, oldVal, newVal ->
+            repData = newVal.toString()
+        }
+
+        setWeightAndRep(numberPickerReps!!)
         bottomSheetDialog.show()
     }
 
-    private fun setWeightAndRep(numberPickerWeight: NumberPicker, repsNumberPicker: NumberPicker) {
-        val weightData= arrayOfNulls<String>(100)
-        for(i in 1..weightData.size) {
-            weightData[i-1] = i.toString()
-        }
+   var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
+    private fun insertValueOnlocalDatabase(reps: String, weight: String, setCount: Int) {
+        var modle = ExerciseRecordModel(
+            date = Date().time.toString(),
+            exerciseName = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId,
+            weight = weight,
+            reps = reps,
+            set = setCount.toString()
+        )
+        recordList.add(modle)
+        binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)
+
+        /*  ExerciseRecordRepo(context!!).insertRecord(modle) {
+              if (!it)
+                  Log.e("Record","Data inserted Successfully ")
+               else
+                  Log.e("Record", "Sorry error in Recording ")
+          }*/
+
+
+    }
+
+    private fun setWeightAndRep(repsNumberPicker: NumberPicker) {
         val repData = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-        numberPickerWeight.minValue = 1
-        numberPickerWeight.maxValue = weightData.size
-        numberPickerWeight.displayedValues= weightData
-        numberPickerWeight.value = 1
         repsNumberPicker.minValue = 1
         repsNumberPicker.maxValue = repData.size
-        repsNumberPicker.displayedValues= repData
+        repsNumberPicker.displayedValues = repData
         repsNumberPicker.value = 1
     }
 

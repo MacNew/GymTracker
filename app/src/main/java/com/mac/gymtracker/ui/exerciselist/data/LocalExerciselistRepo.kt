@@ -13,11 +13,11 @@ class LocalExerciselistRepo(context:Context) {
     fun insertExercise(list:List<ExerciseListModle>, message:(errorMsg:Boolean)->Unit) {
         repo.insertAll(list).subscribeONNewThread {
             _, isError->
-            if (isError) {
+            if (isError)
                 message(isError)
-            } else {
+             else
                 message(isError)
-            }
+
         }
     }
 

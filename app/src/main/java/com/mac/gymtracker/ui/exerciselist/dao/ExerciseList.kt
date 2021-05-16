@@ -10,7 +10,7 @@ import io.reactivex.Completable
 
 @Dao
 interface ExerciseList {
-    @Query("select *from exerciselist where exercise_id in (:id)")
+    @Query("select *from exercise_list where exercise_id in (:id)")
     fun getAll(id:Int): LiveData<List<ExerciseListModle>>
 
 
