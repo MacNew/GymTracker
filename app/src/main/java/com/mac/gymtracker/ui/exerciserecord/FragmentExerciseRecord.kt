@@ -1,6 +1,7 @@
 package com.mac.gymtracker.ui.exerciserecord
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,14 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.utils.showSnack
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_exercise_record.view.*
 import java.util.*
@@ -30,27 +33,79 @@ class FragmentExerciseRecord : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewmodle = ViewModelProvider(
+            this,
+            ExerciseRecordFactory(
+                ExerciseRecordRepo(activity!!.applicationContext),
+                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String
+            )
+
+        ).get(ExerciseRecordViewModle::class.java)
+
         _binding = FragmentExerciseRecordBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
         return root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable("list", recordList)
+        outState.putInt("count", setCount)
+        super.onSaveInstanceState(outState)
+
+    }
+
+    var flage: Boolean = true
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            recordList = savedInstanceState["list"] as ArrayList<ExerciseRecordModel>
+            setCount = savedInstanceState["count"] as Int
+
+            binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
+
+            binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {
+
+            }
+            flage = false
+        }
+
+
         var id: String? = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId
         var image: String? = FragmentExerciseRecordArgs.fromBundle(arguments!!).image
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
         binding!!.tbExerciseRecord.title = id
-        binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
-        binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {
-
+        if (flage) {
+            binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
+            binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {
+            }
         }
 
         view.fab_action.setOnClickListener {
             showButtonSheet()
         }
+
+        binding!!.btnSave.setOnClickListener {
+            if (recordList.size != 0) {
+                viewmodle.addToLocalDatabase(recordList) {
+                    if (it) {
+                        Log.e("msg", recordList.size.toString())
+                        setCount = 1
+                        binding!!.rvRecordFragment.adapter!!.notifyDataSetChanged()
+                        view.showSnack("Data Added Successfully ")
+                        binding!!.cardViewMsg.visibility = View.VISIBLE
+                    } else {
+                        Log.e("msg", "cannot find record list")
+                    }
+                }
+
+            } else {
+                view.showSnack("Please Add set ")
+            }
+        }
     }
+
 
     var setCount: Int = 1
     private fun showButtonSheet() {
@@ -69,8 +124,12 @@ class FragmentExerciseRecord : Fragment() {
         imageButton!!.setOnClickListener {
             bottomSheetDialog.hide()
             weight = weightEditText?.text.toString()
-            insertValueOnlocalDatabase(repData, weight, setCount)
-            setCount += 1
+            if (weight.isNotBlank() || weight !="") {
+                addDataOnRecyclerView(repData, weight, setCount)
+                setCount += 1
+            } else {
+                view!!.showSnack("Add Weight")
+            }
         }
 
         numberPickerReps!!.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
@@ -86,8 +145,8 @@ class FragmentExerciseRecord : Fragment() {
         bottomSheetDialog.show()
     }
 
-   var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
-    private fun insertValueOnlocalDatabase(reps: String, weight: String, setCount: Int) {
+    var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
+    private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int) {
         var modle = ExerciseRecordModel(
             date = Date().time.toString(),
             exerciseName = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId,
@@ -97,15 +156,11 @@ class FragmentExerciseRecord : Fragment() {
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)
-
-        /*  ExerciseRecordRepo(context!!).insertRecord(modle) {
-              if (!it)
-                  Log.e("Record","Data inserted Successfully ")
-               else
-                  Log.e("Record", "Sorry error in Recording ")
-          }*/
-
-
+        if (recordList.size>0) {
+            binding!!.cardViewMsg.visibility = View.GONE
+        } else {
+            binding!!.cardViewMsg.visibility = View.VISIBLE
+        }
     }
 
     private fun setWeightAndRep(repsNumberPicker: NumberPicker) {

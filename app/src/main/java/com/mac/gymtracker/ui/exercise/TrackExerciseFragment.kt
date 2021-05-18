@@ -1,6 +1,8 @@
 package com.mac.gymtracker.ui.exercise
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,14 @@ import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.utils.*
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class TrackExerciseFragment : Fragment() {
 
@@ -41,7 +51,7 @@ class TrackExerciseFragment : Fragment() {
         binding.rvTrackExercise.layoutManager = GridLayoutManager(
             activity?.applicationContext,
             2
-        ) //LinearLayoutManager(activity!!.applicationContext)
+        )
         trackExerciseViewModel.exerciseList.observe(this, Observer { it ->
             it.observe(this, {
                 binding.rvTrackExercise.adapter = ExerciseAdapter(it) {
@@ -49,6 +59,19 @@ class TrackExerciseFragment : Fragment() {
                 }
             })
         })
+        threadCheck()
+    }
+
+    lateinit var disposible: Disposable
+    @SuppressLint("CheckResult")
+    private fun threadCheck() {
+        Observable.interval(5, TimeUnit.SECONDS)
+            .observeOn(Schedulers.single())
+            .subscribe() {
+                Log.e("TAG", it.toString())
+            }
+
+
     }
 
     private fun addCardViewListner(it: String) {
@@ -60,8 +83,7 @@ class TrackExerciseFragment : Fragment() {
                     CHEST_ID))
             }
             SHOULDER -> {
-                context!!.showToast("Shoulder")
-
+                view!!.showSnack("Shoulder")
             }
             BACK -> {
 

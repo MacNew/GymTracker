@@ -10,13 +10,14 @@ import io.reactivex.Single
 
 class ExerciseRecordRepo(context: Context) {
     private var repo: ExerciseRecordDao = GymTrackerDatabase.getDatabase(context).exerciseRecordDao()
-    fun insertRecord(record:ExerciseRecordModel, message:(errorMsg:Boolean)-> Unit) {
+    fun insertRecord(record:List<ExerciseRecordModel>, message:(errorMsg:Boolean)-> Unit) {
         repo.insert(record).subscribeONNewThread {
           error, isError->
           if (isError) {
              message(isError)
+             Log.e("msg" , error?.message!!)
           } else {
-              Log.e("Error", isError.toString())
+              Log.e("msg", "Success on Inserting value")
               message(isError)
           }
         }

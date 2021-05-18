@@ -4,6 +4,8 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
+
 @Entity(tableName = "exercise_record")
 class ExerciseRecordModel(
     @NonNull
@@ -18,4 +20,4 @@ class ExerciseRecordModel(
     val reps: String?,
     @ColumnInfo(name = "Set")
     val set: String?,
-)
+) : Serializable

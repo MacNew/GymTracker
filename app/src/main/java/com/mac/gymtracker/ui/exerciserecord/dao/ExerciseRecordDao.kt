@@ -13,5 +13,5 @@ interface ExerciseRecordDao {
     fun getAll(): LiveData<List<ExerciseRecordModel>>
 
     @Insert()
-    fun insert(exerciseList: ExerciseRecordModel): Completable
+    fun insert(exerciseList: List<ExerciseRecordModel>): Completable
 }

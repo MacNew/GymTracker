@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
@@ -79,9 +81,12 @@ private fun <E> java.util.ArrayList<E>.addExercise(name: String, image: String) 
     )
 }
 
-
-fun Context.showToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun View.showSnack(message: String) {
+    var snackbar = Snackbar.make(
+        this, message,
+        Snackbar.LENGTH_SHORT
+    )
+    snackbar.show()
 }
 
 @SuppressLint("CheckResult")
