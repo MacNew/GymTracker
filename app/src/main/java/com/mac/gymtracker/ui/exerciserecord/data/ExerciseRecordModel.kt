@@ -20,4 +20,6 @@ class ExerciseRecordModel(
     val reps: String?,
     @ColumnInfo(name = "Set")
     val set: String?,
+    @ColumnInfo(name = "saveTime")
+    var saveTime: String
 ) : Serializable

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:layout_margin="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cv_parent"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardElevation="2dp"
+    card_view:cardUseCompatPadding="true"
+    xmlns:card_view="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/exercise_name_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise Name"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021 May 19"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/tv_exercise_list_name_row"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/exercise_name_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Machine Press "
+            android:textSize="18sp"
+            android:textColor="@color/red_200"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_exercise_list_row"
+            android:layout_below="@+id/tv_exercise_list_name_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

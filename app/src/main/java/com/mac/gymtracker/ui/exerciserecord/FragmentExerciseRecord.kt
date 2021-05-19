@@ -37,10 +37,9 @@ class FragmentExerciseRecord : Fragment() {
             this,
             ExerciseRecordFactory(
                 ExerciseRecordRepo(activity!!.applicationContext),
-                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String
-            )
-
-        ).get(ExerciseRecordViewModle::class.java)
+                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String)
+        ).get(
+            ExerciseRecordViewModle::class.java)
 
         _binding = FragmentExerciseRecordBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
@@ -152,7 +151,8 @@ class FragmentExerciseRecord : Fragment() {
             exerciseName = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId,
             weight = weight,
             reps = reps,
-            set = setCount.toString()
+            set = setCount.toString(),
+            saveTime = ""
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)

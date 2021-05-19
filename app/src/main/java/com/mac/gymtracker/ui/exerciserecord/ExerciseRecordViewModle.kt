@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
 import java.util.ArrayList
 
 class ExerciseRecordViewModle(var repository: ExerciseRecordRepo, exerciseName: String) : ViewModel() {
@@ -15,9 +16,24 @@ class ExerciseRecordViewModle(var repository: ExerciseRecordRepo, exerciseName: 
         value = repository.getAll()
     }
 
+    val exerciseRecord: LiveData<LiveData<List<ExerciseRecordModel>>> = _exerciseRecord
+
+    private val _lastSummery = MutableLiveData<LastSummeryModel>().apply {
+
+    }
+
+    val lastSummery: LiveData<LastSummeryModel> = _lastSummery
+
+
+    fun updateList(lastSummery: LastSummeryModel) {
+        _lastSummery.postValue(lastSummery)
+    }
+
+
+
 
     fun addToLocalDatabase(recordList: ArrayList<ExerciseRecordModel>, function:(result:Boolean)-> Unit) {
-         repository.insertRecord(recordList!!) {
+        repository.insertRecord(recordList!!) {
              if (!it) {
                  Log.e("msg", "clear done")
                  recordList.clear()

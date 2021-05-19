@@ -7,10 +7,15 @@ import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciserecord.dao.ExerciseRecordDao
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.Single
+import java.util.*
 
 class ExerciseRecordRepo(context: Context) {
     private var repo: ExerciseRecordDao = GymTrackerDatabase.getDatabase(context).exerciseRecordDao()
     fun insertRecord(record:List<ExerciseRecordModel>, message:(errorMsg:Boolean)-> Unit) {
+        var date = Date().time.toString()
+        record.map {
+            it.saveTime = date
+        }
         repo.insert(record).subscribeONNewThread {
           error, isError->
           if (isError) {

@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/nav_last_summery"
-        android:name="com.mac.gymtracker.ui.home.LastSummeryFragment"
+        android:name="com.mac.gymtracker.ui.lastsummery.LastSummeryFragment"
 
         android:label="@string/menu_last_exercise_summery"
         tools:layout="@layout/fragment_last_summery" />
