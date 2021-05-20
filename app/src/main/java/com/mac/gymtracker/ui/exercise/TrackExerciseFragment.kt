@@ -59,7 +59,7 @@ class TrackExerciseFragment : Fragment() {
                 }
             })
         })
-        threadCheck()
+       // threadCheck()
     }
 
     lateinit var disposible: Disposable
@@ -80,7 +80,7 @@ class TrackExerciseFragment : Fragment() {
             CHEST -> {
                 activity!!.getNavigationController().navigate(TrackExerciseFragmentDirections.
                 actionNavTrackExerciseToFragmentExerciseList(
-                    CHEST_ID))
+                    CHEST_ID, CHEST))
             }
             SHOULDER -> {
                 view!!.showSnack("Shoulder")

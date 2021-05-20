@@ -21,5 +21,11 @@ class ExerciseRecordModel(
     @ColumnInfo(name = "Set")
     val set: String?,
     @ColumnInfo(name = "saveTime")
-    var saveTime: String
-) : Serializable
+    var saveTime: String,
+    @ColumnInfo(name = "mainExercise")
+    var mainExercise: String
+) : Serializable {
+    override fun toString(): String {
+        return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise')"
+    }
+}

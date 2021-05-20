@@ -5,27 +5,42 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
 import java.util.ArrayList
 
-class ExerciseRecordViewModle(var repository: ExerciseRecordRepo, exerciseName: String) : ViewModel() {
+class ExerciseRecordViewModle(var repository: ExerciseRecordRepo,var exerciseId: String
+, var trackExericsRepo: TrackExerciseLocalDataSource?
+) : ViewModel() {
+
 
     private val _exerciseRecord = MutableLiveData<LiveData<List<ExerciseRecordModel>>>().apply {
         value = repository.getAll()
     }
-
     val exerciseRecord: LiveData<LiveData<List<ExerciseRecordModel>>> = _exerciseRecord
 
-    private val _lastSummery = MutableLiveData<LastSummeryModel>().apply {
+    private val _lastSummery = MutableLiveData<List<LastSummeryModel>>();
 
+    val lastSummery: LiveData<List<LastSummeryModel>> = _lastSummery
+
+    val _actualExerciseName=MutableLiveData<String>();
+
+    val actualExerciseName: LiveData<String> = _actualExerciseName
+
+    fun updateMainExerciseName(exerciseId: String) {
+        trackExericsRepo?.getMainExerciseName(exerciseId) {
+            error,exerciseName,isError->
+            if (!isError) {
+                _actualExerciseName.postValue(exerciseName)
+            }else {
+                Log.e("msg", "Error "+ error?.message)
+            }
+        }
     }
 
-    val lastSummery: LiveData<LastSummeryModel> = _lastSummery
-
-
-    fun updateList(lastSummery: LastSummeryModel) {
+    fun updateList(lastSummery: ArrayList<LastSummeryModel>) {
         _lastSummery.postValue(lastSummery)
     }
 
@@ -49,9 +64,9 @@ class ExerciseRecordViewModle(var repository: ExerciseRecordRepo, exerciseName: 
 
 
 class ExerciseRecordFactory(private val repository: ExerciseRecordRepo,
-                                   private val exerciseName:String) :
+                                   private val exerciseName:String, var trackExericsRepo: TrackExerciseLocalDataSource?) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ExerciseRecordViewModle(repository, exerciseName) as T
+        return ExerciseRecordViewModle(repository, exerciseName, trackExericsRepo) as T
     }
 }

@@ -37,7 +37,7 @@ class FragmentExerciseRecord : Fragment() {
             this,
             ExerciseRecordFactory(
                 ExerciseRecordRepo(activity!!.applicationContext),
-                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String)
+                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String, null)
         ).get(
             ExerciseRecordViewModle::class.java)
 
@@ -152,7 +152,8 @@ class FragmentExerciseRecord : Fragment() {
             weight = weight,
             reps = reps,
             set = setCount.toString(),
-            saveTime = ""
+            saveTime = "",
+            mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)

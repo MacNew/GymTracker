@@ -43,6 +43,10 @@
         <action
             android:id="@+id/action_fragmentExerciseList_to_fragmentExerciseRecord"
             app:destination="@id/fragmentExerciseRecord" />
+        <argument
+            android:name="exerciseName"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/fragmentExerciseRecord"
@@ -59,6 +63,10 @@
             app:nullable="true" />
         <argument
             android:name="image"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="mainExerciseName"
             app:argType="string"
             app:nullable="true" />
     </fragment>

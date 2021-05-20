@@ -1,10 +1,15 @@
 package com.mac.gymtracker.ui.exercise.data
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.room.PrimaryKey
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.utils.subscribeONNewThread
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class TrackExerciseLocalDataSource(context: Context) {
 
@@ -20,6 +25,18 @@ class TrackExerciseLocalDataSource(context: Context) {
             }
 
         }
+    }
+    @SuppressLint("CheckResult")
+    fun getMainExerciseName(primaryKey: String, message:(error:Throwable?,exerciseName:String?,isError:Boolean)->Unit) {
+         exerciseDao.getMainExerciseName(primaryKey).subscribeOn(Schedulers.io())
+             .observeOn(AndroidSchedulers.mainThread())
+             .doOnError {
+                 message(it, null, true)
+             }.subscribe({
+                 message(null, it, false)
+             }){
+                message(it,null, true)
+             }
     }
 
     fun getExerciseList() : LiveData<List<TrackExerciseModel>> {

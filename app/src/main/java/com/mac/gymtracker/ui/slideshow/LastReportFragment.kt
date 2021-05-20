@@ -19,8 +19,6 @@ class LastReportFragment : Fragment() {
     ): View? {
         _binding = FragmentLastReportBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-
         return root
     }
 

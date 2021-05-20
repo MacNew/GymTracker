@@ -42,7 +42,9 @@ class FragmentExerciseList: Fragment() {
          it.observe(this, {
             binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(it) { name, image ->
                activity!!.getNavigationController().navigate(
-                  FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(name, image)
+                  FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(name, image
+                          ,FragmentExerciseListArgs.fromBundle(arguments!!).exerciseName
+                  )
                )
             }
          })
