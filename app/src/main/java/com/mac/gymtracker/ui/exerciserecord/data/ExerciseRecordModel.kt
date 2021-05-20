@@ -23,7 +23,9 @@ class ExerciseRecordModel(
     @ColumnInfo(name = "saveTime")
     var saveTime: String,
     @ColumnInfo(name = "mainExercise")
-    var mainExercise: String
+    var mainExercise: String,
+    @ColumnInfo(name = "image")
+    var image: String
 ) : Serializable {
     override fun toString(): String {
         return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise')"

@@ -153,7 +153,9 @@ class FragmentExerciseRecord : Fragment() {
             reps = reps,
             set = setCount.toString(),
             saveTime = "",
-            mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!
+            mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!,
+            image = FragmentExerciseRecordArgs.fromBundle(arguments!!).image!!
+
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)

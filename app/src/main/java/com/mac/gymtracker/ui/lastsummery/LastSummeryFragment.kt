@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mac.gymtracker.databinding.FragmentLastSummeryBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.ExerciseRecordFactory
@@ -46,33 +47,42 @@ class LastSummeryFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewmodle.exerciseRecord.observe(this, { liveData ->
-            liveData.observe(this, { list ->
-              var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
-              var key:HashSet<String> = HashSet<String>();
-                list.forEach { exerciseRecord ->
-                    key.add(exerciseRecord.saveTime)
-                   if (!hsMap.containsKey(exerciseRecord.saveTime)) {
-                       var exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList();
-                       exerciseRecordList.add(exerciseRecord)
-                       hsMap.put(exerciseRecord.saveTime, exerciseRecordList);
-                   } else {
-                       hsMap.get(exerciseRecord.saveTime)!!.add(exerciseRecord)
-                   }
-               }
-               var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
-                key.forEach {
-                    lastSummeryModel.add(LastSummeryModel(it, hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
-                        hsMap[it]
-                    ))
-               }
-                viewmodle.updateList(lastSummeryModel)
-            })
-        })
+        updateDataOnLastSummery()
+        binding.rvLastSummeryRecyclerView.layoutManager = LinearLayoutManager(context)
+
         viewmodle.lastSummery.observe(this, {
            Log.e("tag", it.toString());
            Log.e("tag", it.size.toString())
+           binding.rvLastSummeryRecyclerView.adapter = LastSummeryRecyclerViewAdapter(it)
         })
+    }
+
+    private fun updateDataOnLastSummery() {
+        viewmodle.exerciseRecord.observe(this, { liveData ->
+            liveData.observe(this, { list ->
+                var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
+                var key:HashSet<String> = HashSet<String>();
+                list.forEach { exerciseRecord ->
+                    key.add(exerciseRecord.saveTime)
+                    if (!hsMap.containsKey(exerciseRecord.saveTime)) {
+                        var exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList();
+                        exerciseRecordList.add(exerciseRecord)
+                        hsMap.put(exerciseRecord.saveTime, exerciseRecordList);
+                    } else {
+                        hsMap.get(exerciseRecord.saveTime)!!.add(exerciseRecord)
+                    }
+                }
+                var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
+                key.forEach {
+                    lastSummeryModel.add(LastSummeryModel(it,
+                        hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
+                        hsMap[it]?.get(0)!!.image , hsMap[it]
+                    ))
+                }
+                viewmodle.updateList(lastSummeryModel)
+            })
+        })
+
     }
 
     override fun onDestroyView() {

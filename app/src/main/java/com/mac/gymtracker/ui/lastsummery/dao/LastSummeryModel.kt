@@ -7,6 +7,7 @@ class LastSummeryModel(
     var date: String,
     var exerciseName: String,
     var exerciseListName: String,
+    var image: String,
     var list: ArrayList<ExerciseRecordModel>?
 ) {
     override fun toString(): String {
