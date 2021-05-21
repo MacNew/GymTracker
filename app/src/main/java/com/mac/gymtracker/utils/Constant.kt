@@ -17,6 +17,9 @@ import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 const val CHEST: String = "Chest"
 const val SHOULDER: String = "Shoulder"
@@ -105,4 +108,10 @@ fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boole
 fun Activity.getNavigationController(): NavController {
     return findNavController(R.id.nav_host_fragment_content_main)
 
+}
+
+fun Long.convertGymTrackerTime(): String {
+     val date =  Date()
+     var formatter = SimpleDateFormat("yyyy-MM-dd")
+     return formatter.format(this)
 }

@@ -3,6 +3,8 @@
     <color name="green_color">#4CAF50</color>
     <color name="gray_drak">#9E9E9E</color>
     <color name="gray_lignt">#BDBDBD</color>
+    <color name="gray_light_of_light">#DFDEDE</color>
+    <color name="card_back_ground_color">#F7E8E5E5</color>
     <color name="red_200">#E64A19</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

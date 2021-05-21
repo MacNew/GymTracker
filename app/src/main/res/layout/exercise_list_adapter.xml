@@ -19,9 +19,9 @@
             android:layout_marginTop="8dp"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/iv_exercise_list_name"
-            android:layout_width="96dp"
+            android:layout_width="86dp"
             android:layout_centerHorizontal="true"
-            android:layout_height="96dp"
+            android:layout_height="86dp"
 
             android:src="@drawable/ic_barbell_bench_press"
             app:civ_border_color="@color/red_200"

@@ -69,5 +69,8 @@
             android:name="mainExerciseName"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_fragmentExerciseRecord_to_fragmentExerciseList2"
+            app:destination="@id/fragmentExerciseList" />
     </fragment>
 </navigation>

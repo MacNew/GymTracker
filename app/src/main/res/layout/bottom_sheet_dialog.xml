@@ -62,11 +62,11 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:hint="Enter"
-                    android:textSize="40sp"
+                    android:textSize="16sp"
                     android:background="@drawable/edit_text_boarder"
                     android:id="@+id/ed_weight"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="48dp"
                     android:inputType="numberDecimal"
                     />
 

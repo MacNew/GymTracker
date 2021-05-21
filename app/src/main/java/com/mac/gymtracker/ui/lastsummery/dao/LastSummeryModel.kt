@@ -4,6 +4,7 @@ import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import java.util.ArrayList
 
 class LastSummeryModel(
+    var isShow: Boolean,
     var date: String,
     var exerciseName: String,
     var exerciseListName: String,

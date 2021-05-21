@@ -9,7 +9,7 @@ import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import kotlinx.android.synthetic.main.exercise_record_adapter_row.view.*
 
 class ExerciseRecordAdapter(
-    var list: List<ExerciseRecordModel>,
+    var list: ArrayList<ExerciseRecordModel>,
     var function: (primaryKey: String) -> Unit
 ) : RecyclerView.Adapter<ExerciseRecordAdapter.ViewHolderExerciseRecordAdapter>() {
 

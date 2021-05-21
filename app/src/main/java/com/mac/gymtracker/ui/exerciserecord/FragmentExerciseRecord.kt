@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
+import com.mac.gymtracker.ui.exerciselist.FragmentExerciseListArgs
+import com.mac.gymtracker.ui.exerciselist.FragmentExerciseListDirections
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.utils.getNavigationController
 import com.mac.gymtracker.utils.showSnack
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_exercise_record.view.*
@@ -94,6 +97,9 @@ class FragmentExerciseRecord : Fragment() {
                         binding!!.rvRecordFragment.adapter!!.notifyDataSetChanged()
                         view.showSnack("Data Added Successfully ")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
+                        activity!!.getNavigationController().navigate(FragmentExerciseRecordDirections.
+                        actionFragmentExerciseRecordToFragmentExerciseList(1, ""))
+
                     } else {
                         Log.e("msg", "cannot find record list")
                     }
@@ -167,7 +173,7 @@ class FragmentExerciseRecord : Fragment() {
     }
 
     private fun setWeightAndRep(repsNumberPicker: NumberPicker) {
-        val repData = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+        val repData = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "13", "14", "15", "16", "17", "18", "19", "20","21", "22", "23", "24", "25")
         repsNumberPicker.minValue = 1
         repsNumberPicker.maxValue = repData.size
         repsNumberPicker.displayedValues = repData

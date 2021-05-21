@@ -73,7 +73,7 @@ class LastSummeryFragment : Fragment() {
                 }
                 var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
                 key.forEach {
-                    lastSummeryModel.add(LastSummeryModel(it,
+                    lastSummeryModel.add(LastSummeryModel(false, it,
                         hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
                         hsMap[it]?.get(0)!!.image , hsMap[it]
                     ))
