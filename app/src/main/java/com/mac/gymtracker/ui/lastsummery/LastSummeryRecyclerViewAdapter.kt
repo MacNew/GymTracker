@@ -31,6 +31,7 @@ class LastSummeryRecyclerViewAdapter(var list: List<LastSummeryModel>) :
         holder.itemView.rv_exercise_list_row.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.itemView.rv_exercise_list_row.adapter = ExerciseRecordAdapter(myObject.list as List<ExerciseRecordModel>) {
 
+
         }
 
     }

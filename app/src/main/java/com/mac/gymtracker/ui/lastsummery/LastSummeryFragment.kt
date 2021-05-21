@@ -49,7 +49,6 @@ class LastSummeryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         updateDataOnLastSummery()
         binding.rvLastSummeryRecyclerView.layoutManager = LinearLayoutManager(context)
-
         viewmodle.lastSummery.observe(this, {
            Log.e("tag", it.toString());
            Log.e("tag", it.size.toString())
@@ -67,9 +66,9 @@ class LastSummeryFragment : Fragment() {
                     if (!hsMap.containsKey(exerciseRecord.saveTime)) {
                         var exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList();
                         exerciseRecordList.add(exerciseRecord)
-                        hsMap.put(exerciseRecord.saveTime, exerciseRecordList);
+                        hsMap[exerciseRecord.saveTime] = exerciseRecordList;
                     } else {
-                        hsMap.get(exerciseRecord.saveTime)!!.add(exerciseRecord)
+                        hsMap[exerciseRecord.saveTime]!!.add(exerciseRecord)
                     }
                 }
                 var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()

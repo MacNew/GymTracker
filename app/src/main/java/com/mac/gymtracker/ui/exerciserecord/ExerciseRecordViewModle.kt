@@ -9,7 +9,8 @@ import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
-import java.util.ArrayList
+import java.util.*
+import kotlin.Comparator
 
 class ExerciseRecordViewModle(var repository: ExerciseRecordRepo,var exerciseId: String
 , var trackExericsRepo: TrackExerciseLocalDataSource?
@@ -41,9 +42,12 @@ class ExerciseRecordViewModle(var repository: ExerciseRecordRepo,var exerciseId:
     }
 
     fun updateList(lastSummery: ArrayList<LastSummeryModel>) {
+        Collections.sort(lastSummery,
+            Comparator<LastSummeryModel?> { o1 , o2 ->
+              o2!!.date.toLong().compareTo(o1!!.date.toLong())
+            })
         _lastSummery.postValue(lastSummery)
     }
-
 
 
 
