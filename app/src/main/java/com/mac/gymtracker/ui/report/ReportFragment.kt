@@ -1,15 +1,15 @@
-package com.mac.gymtracker.ui.slideshow
+package com.mac.gymtracker.ui.report
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.mac.gymtracker.databinding.FragmentLastReportBinding
+import com.mac.gymtracker.databinding.FragmentReportBinding
 
-class LastReportFragment : Fragment() {
+class ReportFragment : Fragment() {
 
-    private var _binding: FragmentLastReportBinding? = null
+    private var _binding: FragmentReportBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class LastReportFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLastReportBinding.inflate(inflater, container, false)
+        _binding = FragmentReportBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
     }
