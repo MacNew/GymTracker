@@ -44,7 +44,7 @@
                    android:layout_height="wrap_content"
                    android:id="@+id/btn_save"
                    android:textColor="@color/white"
-                   android:background="@color/gray_lignt"
+                   android:background="@android:color/transparent"
                    android:text="Save"
                    android:layout_gravity= "right"
                    android:layout_marginRight="4dp"
