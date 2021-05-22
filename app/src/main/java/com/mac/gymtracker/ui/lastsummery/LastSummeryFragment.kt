@@ -57,8 +57,7 @@ class LastSummeryFragment : Fragment() {
     }
 
     private fun updateDataOnLastSummery() {
-        viewmodle.exerciseRecord.observe(this, { liveData ->
-            liveData.observe(this, { list ->
+        viewmodle.exerciseRecord.observe(this, { list ->
                 var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
                 var key:HashSet<String> = HashSet<String>();
                 list.forEach { exerciseRecord ->
@@ -80,7 +79,6 @@ class LastSummeryFragment : Fragment() {
                 }
                 viewmodle.updateList(lastSummeryModel)
             })
-        })
 
     }
 

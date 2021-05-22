@@ -4,7 +4,10 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.mac.gymtracker.utils.DateConverter
 import java.io.Serializable
+import java.util.*
 
 @Entity(tableName = "exercise_record")
 class ExerciseRecordModel(
@@ -25,7 +28,10 @@ class ExerciseRecordModel(
     @ColumnInfo(name = "mainExercise")
     var mainExercise: String,
     @ColumnInfo(name = "image")
-    var image: String
+    var image: String,
+    @ColumnInfo(name = "roomDate")
+    @field:TypeConverters(DateConverter::class)
+    var roomDate: Date
 ) : Serializable {
     override fun toString(): String {
         return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise')"

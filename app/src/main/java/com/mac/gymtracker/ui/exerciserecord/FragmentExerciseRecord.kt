@@ -160,7 +160,8 @@ class FragmentExerciseRecord : Fragment() {
             set = setCount.toString(),
             saveTime = "",
             mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!,
-            image = FragmentExerciseRecordArgs.fromBundle(arguments!!).image!!
+            image = FragmentExerciseRecordArgs.fromBundle(arguments!!).image!!,
+            roomDate = Date()
 
         )
         recordList.add(modle)

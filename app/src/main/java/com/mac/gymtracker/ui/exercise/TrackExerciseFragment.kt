@@ -62,17 +62,7 @@ class TrackExerciseFragment : Fragment() {
        // threadCheck()
     }
 
-    lateinit var disposible: Disposable
-    @SuppressLint("CheckResult")
-    private fun threadCheck() {
-        Observable.interval(5, TimeUnit.SECONDS)
-            .observeOn(Schedulers.single())
-            .subscribe() {
-                Log.e("TAG", it.toString())
-            }
 
-
-    }
 
     private fun addCardViewListner(it: String) {
         val navController = activity!!.findNavController(R.id.nav_host_fragment_content_main)
