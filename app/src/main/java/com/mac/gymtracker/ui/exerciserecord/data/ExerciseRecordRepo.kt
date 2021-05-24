@@ -38,21 +38,15 @@ class ExerciseRecordRepo(context: Context) {
         oneweekAfterDate: Long,
         function: (record: List<ExerciseRecordModel>) -> Unit
     ) {
-
-      //  repo.getAllCheck().
-             repo.getAll(currentDate, oneweekAfterDate).
-
-
-        subscribeOn(Schedulers.io())
+        repo.getAll(currentDate, oneweekAfterDate).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError {
                 Log.e("exerciseRec", "Message doOnError" + it.message!!)
             }.subscribe({
-                     Log.e("tage", "Size of list"+it.size.toString())
+                Log.e("tage", "Size of list" + it.size.toString())
                 function(it)
             }) {
                 Log.e("exerciseRec", "Message it Error" + it.message!!)
             }
     }
-
 }

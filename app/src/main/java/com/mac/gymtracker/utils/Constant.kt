@@ -5,7 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +21,8 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -91,6 +96,32 @@ fun View.showSnack(message: String) {
     )
     snackbar.show()
 }
+
+fun daysOfWeekFromLocale(): Array<DayOfWeek> {
+    val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+    var daysOfWeek = DayOfWeek.values()
+    // Order `daysOfWeek` array so that firstDayOfWeek is at index 0.
+    // Only necessary if firstDayOfWeek != DayOfWeek.MONDAY which has ordinal 0.
+    if (firstDayOfWeek != DayOfWeek.MONDAY) {
+        val rhs = daysOfWeek.sliceArray(firstDayOfWeek.ordinal..daysOfWeek.indices.last)
+        val lhs = daysOfWeek.sliceArray(0 until firstDayOfWeek.ordinal)
+        daysOfWeek = rhs + lhs
+    }
+    return daysOfWeek
+}
+
+fun View.makeVisible() {
+    visibility = View.VISIBLE
+}
+
+
+fun View.makeInVisible() {
+    visibility = View.INVISIBLE
+}
+
+internal fun TextView.setTextColorRes(@ColorRes color: Int) = setTextColor(context.getColorCompat(color))
+
+internal fun Context.getColorCompat(@ColorRes color: Int) = ContextCompat.getColor(this, color)
 
 @SuppressLint("CheckResult")
 fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boolean) -> Unit) {
