@@ -63,12 +63,8 @@ class FragmentExerciseRecord : Fragment() {
         if (savedInstanceState != null) {
             recordList = savedInstanceState["list"] as ArrayList<ExerciseRecordModel>
             setCount = savedInstanceState["count"] as Int
-
             binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
-
-            binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {
-
-            }
+            binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {}
             flage = false
         }
 
@@ -161,7 +157,8 @@ class FragmentExerciseRecord : Fragment() {
             saveTime = "",
             mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!,
             image = FragmentExerciseRecordArgs.fromBundle(arguments!!).image!!,
-            roomDate = Date()
+            roomDate = Date(),
+            stringFormatDate = ""
 
         )
         recordList.add(modle)

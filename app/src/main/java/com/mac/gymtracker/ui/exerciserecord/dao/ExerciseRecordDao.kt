@@ -6,7 +6,8 @@ import androidx.room.Query
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.*
+
+import kotlin.collections.ArrayList
 
 @Dao
 interface ExerciseRecordDao {
@@ -19,4 +20,7 @@ interface ExerciseRecordDao {
 
     @Insert()
     fun insert(exerciseList: List<ExerciseRecordModel>): Completable
+
+    @Query("select *from exercise_record where string_format_date=:date")
+    fun getListByDate(date: String) : Single<List<ExerciseRecordModel>>
 }

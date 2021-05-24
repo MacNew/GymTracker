@@ -8,7 +8,9 @@ import com.mac.gymtracker.ui.exerciserecord.dao.ExerciseRecordDao
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ExerciseRecordRepo(context: Context) {
     private var repo: ExerciseRecordDao =
@@ -17,9 +19,12 @@ class ExerciseRecordRepo(context: Context) {
     fun insertRecord(record: List<ExerciseRecordModel>, message: (errorMsg: Boolean) -> Unit) {
         var date = Date().time.toString()
         var roomDate = Date()
+        var sdf = SimpleDateFormat("d MMM yyyy")
+        var stringformatedDate  = sdf.format(roomDate)
         record.map {
             it.saveTime = date
             it.roomDate = roomDate
+            it.stringFormatDate = stringformatedDate
         }
         repo.insert(record).subscribeONNewThread { error, isError ->
             if (isError) {
@@ -48,5 +53,24 @@ class ExerciseRecordRepo(context: Context) {
             }) {
                 Log.e("exerciseRec", "Message it Error" + it.message!!)
             }
+    }
+
+    @SuppressLint("CheckResult")
+    fun getListByDate(value: String?, function: (record: ArrayList<ExerciseRecordModel>) -> Unit) {
+        repo.getListByDate(value!!).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.e("exerciseRec", "Message do" + it.message!!)
+
+            }.subscribe({
+                var arrayList:ArrayList<ExerciseRecordModel> = ArrayList()
+                it.forEach { listmac ->
+                    arrayList.add(listmac)
+                }
+                function(arrayList)
+            }){
+                Log.e("exerciseRec", "Message it" + it.message!!)
+            }
+
     }
 }

@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -20,7 +21,10 @@ import com.mac.gymtracker.databinding.FragmentReportBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.ExerciseRecordFactory
 import com.mac.gymtracker.ui.exerciserecord.ExerciseRecordViewModle
+import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.ui.lastsummery.LastSummeryRecyclerViewAdapter
+import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
 import com.mac.gymtracker.utils.daysOfWeekFromLocale
 import com.mac.gymtracker.utils.makeInVisible
 import com.mac.gymtracker.utils.makeVisible
@@ -66,12 +70,48 @@ class ReportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
+        binding.rvReport.apply {
+            this.layoutManager = LinearLayoutManager(context)
+        }
+
+        viewmodel.lastSummery.observe(this, {
+            binding.rvReport.adapter = LastSummeryRecyclerViewAdapter(it)
+            binding.rvReport.adapter!!.notifyDataSetChanged()
+        })
+
+        viewmodel.stringDate.observe(this, {
+            ExerciseRecordRepo(context!!).getListByDate(it) { list->
+                var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
+                var key:HashSet<String> = HashSet<String>();
+                list.forEach { exerciseRecord ->
+                    key.add(exerciseRecord.saveTime)
+                    if (!hsMap.containsKey(exerciseRecord.saveTime)) {
+                        var exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList();
+                        exerciseRecordList.add(exerciseRecord)
+                        hsMap[exerciseRecord.saveTime] = exerciseRecordList;
+                    } else {
+                        hsMap[exerciseRecord.saveTime]!!.add(exerciseRecord)
+                    }
+                }
+
+                var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
+                key.forEach {
+                    lastSummeryModel.add(LastSummeryModel(false, it,
+                        hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
+                        hsMap[it]?.get(0)!!.image , hsMap[it]
+                    ))
+                }
+                viewmodel.updateList(lastSummeryModel)
+            }
+        })
+
+
         binding.exThreeCalendar.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
             scrollToMonth(currentMonth)
 
             if (savedInstanceState == null) {
-                binding.exThreeCalendar.post {
+                binding.exThreeCalendar.post {// 1621793700000
                     selectDate(today)
                 }
             }
@@ -157,12 +197,15 @@ class ReportFragment : Fragment() {
 
     private val selectionFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
     private fun updateAdapterForDate(date: LocalDate) {
-     var myDate =    selectionFormatter.format(date)
+     var myDate = selectionFormatter.format(date)
      var df = SimpleDateFormat("d MMM yyyy")
         try {
             var startDate = df.parse(myDate)
             Log.e("TAG", df.format(startDate))
             Log.e("TAG", startDate.time.toString())
+            viewmodel.sendDate(df.format(startDate))
+
+
         }catch (exception:Exception) {
             Log.e("TAG", exception.message!!)
         }

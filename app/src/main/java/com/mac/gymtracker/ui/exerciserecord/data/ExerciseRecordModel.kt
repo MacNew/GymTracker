@@ -23,15 +23,17 @@ class ExerciseRecordModel(
     val reps: String?,
     @ColumnInfo(name = "Set")
     val set: String?,
-    @ColumnInfo(name = "saveTime")
+    @ColumnInfo(name = "save_time")
     var saveTime: String,
-    @ColumnInfo(name = "mainExercise")
+    @ColumnInfo(name = "main_exercise")
     var mainExercise: String,
     @ColumnInfo(name = "image")
     var image: String,
     @ColumnInfo(name = "roomDate")
     @field:TypeConverters(DateConverter::class)
-    var roomDate: Date
+    var roomDate: Date,
+    @ColumnInfo(name = "string_format_date")
+    var stringFormatDate: String
 ) : Serializable {
     override fun toString(): String {
         return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise')"

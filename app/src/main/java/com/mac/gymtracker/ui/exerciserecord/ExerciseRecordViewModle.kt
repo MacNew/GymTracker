@@ -11,6 +11,7 @@ import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
 import java.util.*
 import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 class ExerciseRecordViewModle(
     var repository: ExerciseRecordRepo,
@@ -20,19 +21,24 @@ class ExerciseRecordViewModle(
 
 
     private val _exerciseRecord = MutableLiveData<List<ExerciseRecordModel>>().apply {
-        var currentDate = Date().time - (86400*1000)
-        var oneweekAfterDate = currentDate + (604800*1000)
+        var currentDate = Date().time - (86400 * 1000)
+        var oneweekAfterDate = currentDate + (604800 * 1000)
 
         repository.getAll(currentDate, oneweekAfterDate) {
             value = it
         }
-
     }
     val exerciseRecord: LiveData<List<ExerciseRecordModel>> = _exerciseRecord
+
 
     private val _lastSummery = MutableLiveData<List<LastSummeryModel>>();
 
     val lastSummery: LiveData<List<LastSummeryModel>> = _lastSummery
+
+    private val _stringDate = MutableLiveData<String>()
+
+    val stringDate: LiveData<String> = _stringDate
+
 
     val _actualExerciseName = MutableLiveData<String>();
 
@@ -56,7 +62,6 @@ class ExerciseRecordViewModle(
         _lastSummery.postValue(lastSummery)
     }
 
-
     fun addToLocalDatabase(
         recordList: ArrayList<ExerciseRecordModel>,
         function: (result: Boolean) -> Unit
@@ -71,6 +76,10 @@ class ExerciseRecordViewModle(
                 Log.e("msg", "Not clear")
             }
         }
+    }
+
+    fun sendDate(stringDate: String) {
+        _stringDate.postValue(stringDate)
     }
 
 }
