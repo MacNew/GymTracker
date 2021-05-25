@@ -2,8 +2,8 @@
     <string name="app_name">GymTracker</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Gym Tracker</string>
+    <string name="nav_header_subtitle">Track your workout</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -11,4 +11,5 @@
     <string name="menu_exercise">Exercise</string>
     <string name="menu_report">Report</string>
     <string name="record">Record Exercise</string>
+    <string name="add">Add</string>
 </resources>

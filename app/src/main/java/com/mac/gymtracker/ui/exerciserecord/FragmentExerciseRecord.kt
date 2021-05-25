@@ -25,8 +25,6 @@ import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_exercise_record.view.*
 import java.util.*
 import kotlin.collections.ArrayList
-
-
 class FragmentExerciseRecord : Fragment() {
     private lateinit var viewmodle: ExerciseRecordViewModle
     private var _binding: FragmentExerciseRecordBinding? = null

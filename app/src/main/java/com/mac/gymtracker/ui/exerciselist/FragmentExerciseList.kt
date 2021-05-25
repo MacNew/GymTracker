@@ -1,6 +1,7 @@
 package com.mac.gymtracker.ui.exerciselist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,14 +34,19 @@ class FragmentExerciseList: Fragment() {
 
    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
       super.onViewCreated(view, savedInstanceState)
-      (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+      (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+      binding!!.toolbarExerciseList.setTitle(
+         FragmentExerciseListArgs.fromBundle(arguments!!).exerciseName)
+      binding!!.toolbarExerciseList.setNavigationOnClickListener(View.OnClickListener {
+          Log.e("Tag", "Back button press ")
+      })
 
       binding!!.rvTrackExerciseList.layoutManager = GridLayoutManager(
          activity?.applicationContext, 2
       )
       exerciseListViewModel.exerciseList.observe(this, {
-         it.observe(this, {
-            binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(it) { name, image ->
+         it.observe(this, { list->
+            binding!!.rvTrackExerciseList.adapter = ExerciseListAdapter(list, FragmentExerciseListArgs.fromBundle(arguments!!).exerciseid) { name, image ->
                activity!!.getNavigationController().navigate(
                   FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(name, image
                           ,FragmentExerciseListArgs.fromBundle(arguments!!).exerciseName

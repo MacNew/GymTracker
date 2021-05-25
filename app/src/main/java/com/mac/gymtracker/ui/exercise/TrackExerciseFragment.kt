@@ -59,33 +59,57 @@ class TrackExerciseFragment : Fragment() {
                 }
             })
         })
-       // threadCheck()
+        // threadCheck()
     }
-
 
 
     private fun addCardViewListner(it: String) {
         val navController = activity!!.findNavController(R.id.nav_host_fragment_content_main)
         when (it) {
             CHEST -> {
-                activity!!.getNavigationController().navigate(TrackExerciseFragmentDirections.
-                actionNavTrackExerciseToFragmentExerciseList(
-                    CHEST_ID, CHEST))
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        CHEST_ID, CHEST
+                    )
+                )
             }
             SHOULDER -> {
-                view!!.showSnack("Shoulder")
+
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        SHOULDER_ID, SHOULDER
+                    )
+                )
             }
             BACK -> {
-
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        BACK_ID, BACK
+                    )
+                )
             }
             LEG -> {
-
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        LEG_ID, LEG
+                    )
+                )
             }
 
             BICEPS -> {
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        BICEPS_ID, BICEPS
+                    )
+                )
 
             }
             TRICEPS -> {
+                activity!!.getNavigationController().navigate(
+                    TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
+                        TRICEPS_ID, TRICEPS
+                    )
+                )
 
             }
         }

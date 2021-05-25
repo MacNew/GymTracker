@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
+import com.mac.gymtracker.utils.CHEST_ID
 import kotlinx.android.synthetic.main.exercise_list_adapter.view.*
 
 class ExerciseListAdapter(
     var list: List<ExerciseListModle>,
+    var exerciseId: Int,
     var function: (exercise: String, image: String) -> Unit
 ) : RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
 
@@ -23,10 +25,12 @@ class ExerciseListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if (position==0) {
+        if (position==0&& exerciseId == CHEST_ID) {
             holder.itemView.iv_exercise_list_name.rotation = 180.0F
         }
-        holder.itemView.iv_exercise_list_name.setImageResource(list[position].image!!.toInt())
+        holder.itemView.iv_exercise_list_name.setImageResource(
+            list[position].image!!.toInt()
+        )
         holder.itemView.tv_exercise_list_name.text = list[position].name
         holder.itemView.cv_parent.setOnClickListener {
             function(list[position].name!!, list[position].image!!)

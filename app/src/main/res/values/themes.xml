@@ -13,4 +13,9 @@
     </style>
     <style name="Theme.GymTracker.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.GymTracker.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 </resources>
