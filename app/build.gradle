@@ -6,9 +6,6 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
-
-
-
 android {
     compileSdkVersion 30
 
@@ -87,4 +84,9 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     implementation 'com.google.android.material:material:1.1.0'
+
+    api 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
+
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
 }
