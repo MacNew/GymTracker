@@ -15,6 +15,7 @@
         android:theme="@style/ToolbarTheme"
         app:navigationIcon="?attr/homeAsUpIndicator">
        <Button
+           android:id="@+id/add_new_btn"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="@string/add"

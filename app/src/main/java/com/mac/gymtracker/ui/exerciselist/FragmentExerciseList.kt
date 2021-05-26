@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.databinding.FregmentExerciseListBinding
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.utils.getNavigationController
@@ -38,7 +39,7 @@ class FragmentExerciseList: Fragment() {
       binding!!.toolbarExerciseList.setTitle(
          FragmentExerciseListArgs.fromBundle(arguments!!).exerciseName)
       binding!!.toolbarExerciseList.setNavigationOnClickListener(View.OnClickListener {
-          Log.e("Tag", "Back button press ")
+         (activity as MainActivity).onBackPressed()
       })
 
       binding!!.rvTrackExerciseList.layoutManager = GridLayoutManager(
@@ -55,5 +56,13 @@ class FragmentExerciseList: Fragment() {
             }
          })
       })
+      binding!!.addNewBtn.setOnClickListener {
+         activity!!.getNavigationController().navigate(
+            FragmentExerciseListDirections.actionFragmentExerciseListToFragmentAddNew(
+               FragmentExerciseListArgs.fromBundle(arguments!!).exerciseid
+            )
+         )
+
+      }
    }
 }

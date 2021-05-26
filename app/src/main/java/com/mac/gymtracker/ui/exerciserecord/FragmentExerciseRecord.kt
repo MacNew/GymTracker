@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
 import com.mac.gymtracker.ui.exerciselist.FragmentExerciseListArgs
@@ -91,8 +92,9 @@ class FragmentExerciseRecord : Fragment() {
                         binding!!.rvRecordFragment.adapter!!.notifyDataSetChanged()
                         view.showSnack("Data Added Successfully ")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
-                        activity!!.getNavigationController().navigate(FragmentExerciseRecordDirections.
-                        actionFragmentExerciseRecordToFragmentExerciseList(1, ""))
+                        (activity as MainActivity).onBackPressed()
+                        /*activity!!.getNavigationController().navigate(FragmentExerciseRecordDirections.
+                        actionFragmentExerciseRecordToFragmentExerciseList(1, ""))*/
 
                     } else {
                         Log.e("msg", "cannot find record list")
