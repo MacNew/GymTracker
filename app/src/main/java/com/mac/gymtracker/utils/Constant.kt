@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -41,6 +43,13 @@ const val BACK_ID: Int = 3
 const val BICEPS_ID: Int = 4
 const val TRICEPS_ID: Int = 5
 const val LEG_ID: Int = 6
+
+
+public fun String?.toLocalBitMap(): Bitmap? {
+    val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
+    var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)
+    return bitmap
+}
 
 fun Context.workOut() {
     var list: ArrayList<TrackExerciseModel> = ArrayList()
@@ -101,7 +110,6 @@ private fun loadExercisList(context: Context) {
     list.addExercise("Single-Arm Smith Machine Row", R.drawable.ic_single_arm_smith_machine_row.toString(), BACK_ID)
     list.addExercise("lat pull-Down", R.drawable.ic_lat_pull_down.toString(), BACK_ID)
     list.addExercise("Single-Arm Dumbbell Row", R.drawable.ic_single_arm_dumbbell_row.toString(), BACK_ID)
-    list.addExercise("Dumbbell pull-over", R.drawable.ic_dumbbell_pull_over.toString(), CHEST_ID)
     list.addExercise("Chest-Supported Row", R.drawable.ic_chest_supported_row.toString(), BACK_ID)
     list.addExercise("Row-To-Grow Back Workout", R.drawable.ic_row_to_grow_back_workout.toString(), BACK_ID)
     list.addExercise("Machine pump Back Workout", R.drawable.ic_machine_pump_back_workout.toString(), BACK_ID)
@@ -190,9 +198,12 @@ fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boole
         .observeOn(AndroidSchedulers.mainThread())
         .doOnError {
             message(it, true)
+            Log.e("Mac", "Yes it is error on Insert "+ it.message)
         }.subscribe({
+            Log.e("Mac", "Data Insert Successfully")
             message(Throwable("Nothing"), false)
         }) {
+            Log.e("Mac", "Error on Insert"+ it.message)
             message(it, true)
         }
 }

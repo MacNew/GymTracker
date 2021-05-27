@@ -15,7 +15,6 @@ import kotlin.collections.ArrayList
 
 class ExerciseRecordViewModle(
     var repository: ExerciseRecordRepo,
-    var exerciseId: String,
     var trackExericsRepo: TrackExerciseLocalDataSource?
 ) : ViewModel() {
 
@@ -66,7 +65,7 @@ class ExerciseRecordViewModle(
         recordList: ArrayList<ExerciseRecordModel>,
         function: (result: Boolean) -> Unit
     ) {
-        repository.insertRecord(recordList!!) {
+        repository.insertRecord(record = recordList) {
             if (!it) {
                 Log.e("msg", "clear done")
                 recordList.clear()
@@ -85,12 +84,13 @@ class ExerciseRecordViewModle(
 }
 
 
+@Suppress("UNCHECKED_CAST")
 class ExerciseRecordFactory(
     private val repository: ExerciseRecordRepo,
     private val exerciseName: String, var trackExericsRepo: TrackExerciseLocalDataSource?
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ExerciseRecordViewModle(repository, exerciseName, trackExericsRepo) as T
+        return ExerciseRecordViewModle(repository, trackExericsRepo) as T
     }
 }

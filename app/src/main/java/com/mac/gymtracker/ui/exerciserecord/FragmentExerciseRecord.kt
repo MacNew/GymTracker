@@ -16,16 +16,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
-import com.mac.gymtracker.ui.exerciselist.FragmentExerciseListArgs
-import com.mac.gymtracker.ui.exerciselist.FragmentExerciseListDirections
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
-import com.mac.gymtracker.utils.getNavigationController
 import com.mac.gymtracker.utils.showSnack
+import com.mac.gymtracker.utils.toLocalBitMap
 import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.android.synthetic.main.fragment_exercise_record.view.*
 import java.util.*
 import kotlin.collections.ArrayList
+
 class FragmentExerciseRecord : Fragment() {
     private lateinit var viewmodle: ExerciseRecordViewModle
     private var _binding: FragmentExerciseRecordBinding? = null
@@ -34,15 +33,14 @@ class FragmentExerciseRecord : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewmodle = ViewModelProvider(
             this,
             ExerciseRecordFactory(
-                ExerciseRecordRepo(activity!!.applicationContext),
-                FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId as String, null)
+                ExerciseRecordRepo(requireActivity().applicationContext),
+                FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId as String, null)
         ).get(
             ExerciseRecordViewModle::class.java)
-
         _binding = FragmentExerciseRecordBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
         return root
@@ -68,10 +66,14 @@ class FragmentExerciseRecord : Fragment() {
         }
 
 
-        var id: String? = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId
-        var image: String? = FragmentExerciseRecordArgs.fromBundle(arguments!!).image
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-        binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
+        val id: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId
+        val image: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image
+        (activity as AppCompatActivity).supportActionBar!!.hide()
+        try {
+            binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
+        }catch (exception: Exception) {
+            binding!!.ivExerciseRecord.setImageBitmap(image!!.toLocalBitMap())
+        }
         binding!!.tbExerciseRecord.title = id
         if (flage) {
             binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
@@ -110,16 +112,16 @@ class FragmentExerciseRecord : Fragment() {
 
     var setCount: Int = 1
     private fun showButtonSheet() {
-        var bottomSheetDialog = BottomSheetDialog(context!!)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
-        var imageButton = bottomSheetDialog.findViewById<ImageButton>(R.id.ib_add_set)
-        var weightEditText = bottomSheetDialog.findViewById<EditText>(R.id.ed_weight)
-        var numberPickerReps = bottomSheetDialog.findViewById<NumberPicker>(R.id.number_picker_rep)
-        var tvRecord = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_bs)
-        var tvDate = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_date)
-        tvRecord!!.text = FragmentExerciseRecordArgs.fromBundle(bundle = arguments!!).exerciseId
+        val imageButton = bottomSheetDialog.findViewById<ImageButton>(R.id.ib_add_set)
+        val weightEditText = bottomSheetDialog.findViewById<EditText>(R.id.ed_weight)
+        val numberPickerReps = bottomSheetDialog.findViewById<NumberPicker>(R.id.number_picker_rep)
+        val tvRecord = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_bs)
+        val tvDate = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_date)
+        tvRecord!!.text = FragmentExerciseRecordArgs.fromBundle(bundle = requireArguments()).exerciseId
         tvDate!!.text = Date().time.toString()
-        var repData: String = "1"
+        var repData = "1"
         var weight: String = weightEditText?.text.toString()
 
         imageButton!!.setOnClickListener {
@@ -129,7 +131,7 @@ class FragmentExerciseRecord : Fragment() {
                 addDataOnRecyclerView(repData, weight, setCount)
                 setCount += 1
             } else {
-                view!!.showSnack("Add Weight")
+                requireView().showSnack("Add Weight")
             }
         }
 
@@ -150,13 +152,13 @@ class FragmentExerciseRecord : Fragment() {
     private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int) {
         var modle = ExerciseRecordModel(
             date = Date().time.toString(),
-            exerciseName = FragmentExerciseRecordArgs.fromBundle(arguments!!).exerciseId,
+            exerciseName = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId,
             weight = weight,
             reps = reps,
             set = setCount.toString(),
             saveTime = "",
-            mainExercise = FragmentExerciseRecordArgs.fromBundle(arguments!!).mainExerciseName!!,
-            image = FragmentExerciseRecordArgs.fromBundle(arguments!!).image!!,
+            mainExercise = FragmentExerciseRecordArgs.fromBundle(requireArguments()).mainExerciseName!!,
+            image = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image!!,
             roomDate = Date(),
             stringFormatDate = ""
 

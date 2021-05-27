@@ -15,5 +15,7 @@ data class ExerciseListModle(
     @ColumnInfo(name = "exercise_id")
     val exercise_id: Int?= 0,
     @ColumnInfo(name = "image")
-    val image: String? = ""
+    val image: String? = "",
+    @ColumnInfo(name= "stringImage")
+    val imageString:String? = null
 )

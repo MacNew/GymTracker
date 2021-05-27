@@ -91,7 +91,7 @@
             android:layout_marginTop="64dp"
             android:layout_marginEnd="12dp"
             style="@style/ButtonStyle"
-
+            android:id="@+id/add_new_btn"
             android:background="@color/red_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

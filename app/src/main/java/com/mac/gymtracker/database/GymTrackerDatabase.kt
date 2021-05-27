@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
@@ -24,15 +22,6 @@ abstract class GymTrackerDatabase : RoomDatabase() {
     abstract fun exerciseRecordDao(): ExerciseRecordDao
 
     companion object {
-        val MIGRATION_1_2: Migration = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "ALTER TABLE exercise_record "
-                            + " ADD COLUMN mainExercise TEXT"
-                )
-            }
-        }
-
         @Volatile
         private var INSTANCE: GymTrackerDatabase? = null
         fun getDatabase(context: Context): GymTrackerDatabase {

@@ -2,7 +2,6 @@ package com.mac.gymtracker.ui.lastsummery
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,18 +29,18 @@ class LastSummeryFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewmodle = ViewModelProvider(
             this,
             ExerciseRecordFactory(
-                ExerciseRecordRepo(activity!!.applicationContext),
-                "", TrackExerciseLocalDataSource(activity!!.applicationContext)
+                ExerciseRecordRepo(requireActivity().applicationContext),
+                "", TrackExerciseLocalDataSource(requireActivity().applicationContext)
             )
         ).get(
-            ExerciseRecordViewModle::class.java)
+            ExerciseRecordViewModle::class.java
+        )
         _binding = FragmentLastSummeryBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        return root
+        return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -49,28 +48,26 @@ class LastSummeryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         updateDataOnLastSummery()
         binding.rvLastSummeryRecyclerView.layoutManager = LinearLayoutManager(context)
-        viewmodle.lastSummery.observe(this, {
-           Log.e("tag", it.toString());
-           Log.e("tag", it.size.toString())
+        viewmodle.lastSummery.observe(viewLifecycleOwner, {
            binding.rvLastSummeryRecyclerView.adapter = LastSummeryRecyclerViewAdapter(it)
         })
     }
 
     private fun updateDataOnLastSummery() {
-        viewmodle.exerciseRecord.observe(this, { list ->
-                var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
-                var key:HashSet<String> = HashSet<String>();
+        viewmodle.exerciseRecord.observe(viewLifecycleOwner, { list ->
+                val hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
+                val key:HashSet<String> = HashSet()
                 list.forEach { exerciseRecord ->
                     key.add(exerciseRecord.saveTime)
                     if (!hsMap.containsKey(exerciseRecord.saveTime)) {
-                        var exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList();
+                        val exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList()
                         exerciseRecordList.add(exerciseRecord)
-                        hsMap[exerciseRecord.saveTime] = exerciseRecordList;
+                        hsMap[exerciseRecord.saveTime] = exerciseRecordList
                     } else {
                         hsMap[exerciseRecord.saveTime]!!.add(exerciseRecord)
                     }
                 }
-                var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
+                val lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
                 key.forEach {
                     lastSummeryModel.add(LastSummeryModel(false, it,
                         hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
@@ -79,7 +76,6 @@ class LastSummeryFragment : Fragment() {
                 }
                 viewmodle.updateList(lastSummeryModel)
             })
-
     }
 
     override fun onDestroyView() {

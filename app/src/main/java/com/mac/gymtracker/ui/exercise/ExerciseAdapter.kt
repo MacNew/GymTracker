@@ -15,7 +15,7 @@ class ExerciseAdapter(var list: List<TrackExerciseModel>, var function:(exercise
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        var view = LayoutInflater.from(parent.context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.exercise_adapter, parent, false)
         return MyViewHolder(view)
     }
@@ -29,6 +29,6 @@ class ExerciseAdapter(var list: List<TrackExerciseModel>, var function:(exercise
     }
 
     override fun getItemCount(): Int {
-        return list.size;
+        return list.size
     }
 }

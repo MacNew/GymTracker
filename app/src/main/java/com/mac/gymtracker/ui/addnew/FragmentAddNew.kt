@@ -9,11 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.databinding.FragmentAddNewBinding
+import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
+import com.mac.gymtracker.utils.showSnack
 import com.theartofdev.edmodo.cropper.CropImage
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -26,7 +27,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddNewBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,26 +43,46 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setTitle(FragmentAddNewArgs.fromBundle(arguments!!).exerciseName)
+        binding.toolbar.title = FragmentAddNewArgs.fromBundle(requireArguments()).exerciseName
         binding.ivExercise.setOnClickListener {
             openCropImageIntent()
         }
+        binding.addNewBtn.setOnClickListener {
+            addDataOnDatabase()
+        }
 
-        binding!!.toolbar.setNavigationOnClickListener(View.OnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             (activity as MainActivity).onBackPressed()
-        })
-
+        }
     }
+
+    private fun addDataOnDatabase() {
+        val exerciseName = binding.edNewExerciseName.text.toString()
+        if (exerciseName!="" && resultUri!=null) {
+            LocalExerciselistRepo(requireContext()).insertExercise(activity?.contentResolver, resultUri!!, exerciseName, FragmentAddNewArgs.fromBundle(requireArguments()).exerciseId ) {
+                isError, error->
+                if (!isError) {
+                    view?.showSnack("Data Inserted Successfully")
+                    (activity as MainActivity).onBackPressed()
+                } else {
+                    view?.showSnack(error.message!!)
+                }
+            }
+        } else {
+          view?.showSnack("Please select both image adn Exercise Name")
+        }
+    }
+     private  var resultUri:Uri? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            var result = CropImage.getActivityResult(data)
+            val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
-                var resultUri = result.uri
+                 resultUri = result.uri
                 Glide.with(requireContext()).load(resultUri).into(binding.ivExercise)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                var error = result.error
+                val error = result.error
                 Log.e("TAG", error.message!!)
             }
         }
@@ -94,7 +115,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        Log.e("TAG", "Sorry permission not granted");
+        Log.e("TAG", "Sorry permission not granted")
         (activity as MainActivity).requestPermission()
 
     }

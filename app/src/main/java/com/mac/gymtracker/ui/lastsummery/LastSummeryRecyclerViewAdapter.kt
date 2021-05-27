@@ -12,7 +12,9 @@ import com.mac.gymtracker.ui.exerciserecord.ExerciseRecordAdapter
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.lastsummery.dao.LastSummeryModel
 import com.mac.gymtracker.utils.convertGymTrackerTime
+import com.mac.gymtracker.utils.toLocalBitMap
 import kotlinx.android.synthetic.main.row_last_summary_parent.view.*
+import java.lang.Exception
 
 class LastSummeryRecyclerViewAdapter(var list: List<LastSummeryModel>) :
     RecyclerView.Adapter<LastSummeryRecyclerViewAdapter.MyViewHolder>() {
@@ -31,7 +33,11 @@ class LastSummeryRecyclerViewAdapter(var list: List<LastSummeryModel>) :
         holder.itemView.tv_exercise_list_name_row.text = myObject.exerciseName
         holder.itemView.tv_date_last_summery_row.text =
             myObject.date.toLong().convertGymTrackerTime()
-        holder.itemView.iv_exercise_image_last_summery.setImageResource(myObject.image.toInt())
+        try {
+            holder.itemView.iv_exercise_image_last_summery.setImageResource(myObject.image.toInt())
+        }catch (exception:Exception) {
+            holder.itemView.iv_exercise_image_last_summery.setImageBitmap(myObject.image.toLocalBitMap())
+        }
         holder.itemView.rv_exercise_list_row.layoutManager =
             LinearLayoutManager(holder.itemView.context)
         var arrayList: ArrayList<ExerciseRecordModel> = ArrayList()

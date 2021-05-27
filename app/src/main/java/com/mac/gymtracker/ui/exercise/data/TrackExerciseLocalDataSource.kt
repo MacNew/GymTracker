@@ -3,11 +3,9 @@ package com.mac.gymtracker.ui.exercise.data
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.room.PrimaryKey
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.utils.subscribeONNewThread
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
