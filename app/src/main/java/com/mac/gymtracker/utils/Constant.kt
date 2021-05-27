@@ -153,7 +153,8 @@ private fun <E> java.util.ArrayList<E>.addExercise(name: String, image: String, 
         ExerciseListModle(
             name = name,
             exercise_id = exerciseId,
-            image = image
+            image = image,
+            date = Date().time
         )
     )
 }
@@ -214,7 +215,6 @@ fun Activity.getNavigationController(): NavController {
 }
 
 fun Long.convertGymTrackerTime(): String {
-     val date =  Date()
      var formatter = SimpleDateFormat("yyyy-MM-dd")
      return formatter.format(this)
 }

@@ -16,6 +16,7 @@ import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
+import java.util.*
 
 class LocalExerciselistRepo(context: Context) {
 
@@ -46,7 +47,8 @@ class LocalExerciselistRepo(context: Context) {
             name = exerciseName,
             exercise_id = exerciseId,
             image = "2131165303",
-            imageString = encodedString
+            imageString = encodedString,
+            date = Date().time
         )
         repo.getExercise(exerciseName).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

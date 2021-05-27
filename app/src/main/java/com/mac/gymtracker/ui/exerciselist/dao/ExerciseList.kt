@@ -11,7 +11,7 @@ import io.reactivex.Single
 
 @Dao
 interface ExerciseList {
-    @Query("select *from exercise_list where exercise_id in (:id)")
+    @Query("select *from exercise_list where exercise_id in (:id) order by mydate desc")
     fun getAll(id:Int): LiveData<List<ExerciseListModle>>
 
     @Query("select *from exercise_list where exercise_name=:name")

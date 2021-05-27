@@ -13,4 +13,6 @@
     <string name="record">Record Exercise</string>
     <string name="add">Add</string>
     <string name="add_new">Add New</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>
