@@ -50,6 +50,7 @@ class LastSummeryFragment : Fragment() {
         binding.rvLastSummeryRecyclerView.layoutManager = LinearLayoutManager(context)
         viewmodle.lastSummery.observe(viewLifecycleOwner, {
            binding.rvLastSummeryRecyclerView.adapter = LastSummeryRecyclerViewAdapter(it)
+           binding.progressBar.visibility = View.GONE
         })
     }
 

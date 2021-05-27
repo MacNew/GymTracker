@@ -80,7 +80,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
             val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
                  resultUri = result.uri
-                Glide.with(requireContext()).load(resultUri).into(binding.ivExercise)
+                 Glide.with(requireContext()).load(resultUri).into(binding.ivExercise)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 val error = result.error
                 Log.e("TAG", error.message!!)

@@ -10,6 +10,7 @@ import android.util.Base64
 import androidx.lifecycle.LiveData
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
+import com.mac.gymtracker.utils.getResizedBitmap
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,9 +36,10 @@ class LocalExerciselistRepo(context: Context) {
         exerciseId: Int,
         message: (errorMsg: Boolean, error:Throwable) -> Unit
     ) {
-        var bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+        var bitmaps = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+        var bitmap = getResizedBitmap(bitmaps, 500)
         var outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         var byteArray = outputStream.toByteArray()
         var encodedString = Base64.encodeToString(byteArray, Base64.DEFAULT)
         var exerciseNewModle = ExerciseListModle(

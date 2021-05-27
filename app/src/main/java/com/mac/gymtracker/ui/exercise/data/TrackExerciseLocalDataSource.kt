@@ -21,7 +21,6 @@ class TrackExerciseLocalDataSource(context: Context) {
             } else {
                 isErrorMsg(false)
             }
-
         }
     }
     @SuppressLint("CheckResult")

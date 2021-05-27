@@ -18,6 +18,7 @@ import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.utils.convertGymTrackerTime
 import com.mac.gymtracker.utils.showSnack
 import com.mac.gymtracker.utils.toLocalBitMap
 import com.shawnlin.numberpicker.NumberPicker
@@ -120,10 +121,9 @@ class FragmentExerciseRecord : Fragment() {
         val tvRecord = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_bs)
         val tvDate = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_date)
         tvRecord!!.text = FragmentExerciseRecordArgs.fromBundle(bundle = requireArguments()).exerciseId
-        tvDate!!.text = Date().time.toString()
+        tvDate!!.text =  Date().time.convertGymTrackerTime()
         var repData = "1"
         var weight: String = weightEditText?.text.toString()
-
         imageButton!!.setOnClickListener {
             bottomSheetDialog.hide()
             weight = weightEditText?.text.toString()

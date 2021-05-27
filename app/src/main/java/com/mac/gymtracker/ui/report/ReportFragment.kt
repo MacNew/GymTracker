@@ -55,8 +55,8 @@ class ReportFragment : Fragment() {
         viewmodel = ViewModelProvider(
             this,
             ExerciseRecordFactory(
-                ExerciseRecordRepo(activity!!.applicationContext),
-                "", TrackExerciseLocalDataSource(activity!!.applicationContext)
+                ExerciseRecordRepo(requireActivity().applicationContext),
+                "", TrackExerciseLocalDataSource(requireActivity().applicationContext)
             )
         ).get(
             ExerciseRecordViewModle::class.java)
@@ -74,13 +74,14 @@ class ReportFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(context)
         }
 
-        viewmodel.lastSummery.observe(this, {
+        viewmodel.lastSummery.observe(viewLifecycleOwner, {
             binding.rvReport.adapter = LastSummeryRecyclerViewAdapter(it)
             binding.rvReport.adapter!!.notifyDataSetChanged()
+            binding.progressBarReport.visibility = View.GONE
         })
 
-        viewmodel.stringDate.observe(this, {
-            ExerciseRecordRepo(context!!).getListByDate(it) { list->
+        viewmodel.stringDate.observe(viewLifecycleOwner, {
+            ExerciseRecordRepo(requireContext()).getListByDate(it) { list->
                 var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
                 var key:HashSet<String> = HashSet<String>();
                 list.forEach { exerciseRecord ->
@@ -204,7 +205,6 @@ class ReportFragment : Fragment() {
             Log.e("TAG", df.format(startDate))
             Log.e("TAG", startDate.time.toString())
             viewmodel.sendDate(df.format(startDate))
-
 
         }catch (exception:Exception) {
             Log.e("TAG", exception.message!!)

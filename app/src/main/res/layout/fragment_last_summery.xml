@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.exercise.TrackExerciseFragment" >
 
+   <ProgressBar
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerInParent="true"
+       android:id="@+id/progress_bar"
+
+       />
+
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/rv_last_summery_recycler_view"
        android:layout_width="match_parent"
