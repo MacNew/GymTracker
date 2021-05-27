@@ -59,7 +59,8 @@ class FragmentExerciseList: Fragment() {
       binding!!.addNewBtn.setOnClickListener {
          activity!!.getNavigationController().navigate(
             FragmentExerciseListDirections.actionFragmentExerciseListToFragmentAddNew(
-               FragmentExerciseListArgs.fromBundle(arguments!!).exerciseid
+               FragmentExerciseListArgs.fromBundle(arguments!!).exerciseid,
+               FragmentExerciseListArgs.fromBundle(arguments!!).exerciseName!!
             )
          )
 

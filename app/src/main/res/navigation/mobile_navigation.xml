@@ -82,6 +82,10 @@
         android:label="FragmentAddNew" >
         <argument
             android:name="exercise_id"
-            app:argType="integer" />
+            app:argType="integer"
+            />
+        <argument
+            android:name="exerciseName"
+            app:argType="string" />
     </fragment>
 </navigation>

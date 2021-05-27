@@ -3,6 +3,8 @@ package com.mac.gymtracker.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -24,6 +26,7 @@ import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 const val CHEST: String = "Chest"
 const val SHOULDER: String = "Shoulder"
@@ -203,4 +206,20 @@ fun Long.convertGymTrackerTime(): String {
      val date =  Date()
      var formatter = SimpleDateFormat("yyyy-MM-dd")
      return formatter.format(this)
+}
+
+fun getResizedBitmap(bm: Bitmap, newWidth: Int, newHeight: Int): Bitmap? {
+    val width = bm.width
+    val height = bm.height
+    val scaleWidth = newWidth.toFloat() / width
+    val scaleHeight = newHeight.toFloat() / height
+    // CREATE A MATRIX FOR THE MANIPULATION
+    val matrix = Matrix()
+    // RESIZE THE BIT MAP
+    matrix.postScale(scaleWidth, scaleHeight)
+
+    // "RECREATE" THE NEW BITMAP
+    return Bitmap.createBitmap(
+        bm, 0, 0, width, height, matrix, false
+    )
 }

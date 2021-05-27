@@ -19,9 +19,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
 
-class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks
-, RationaleCallbacks
-{
+class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, RationaleCallbacks {
     private var _binding: FragmentAddNewBinding? = null
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -44,22 +42,28 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setTitle(FragmentAddNewArgs.fromBundle(arguments!!).exerciseName)
         binding.ivExercise.setOnClickListener {
             openCropImageIntent()
         }
+
+        binding!!.toolbar.setNavigationOnClickListener(View.OnClickListener {
+            (activity as MainActivity).onBackPressed()
+        })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-           var result = CropImage.getActivityResult(data)
-           if (resultCode == RESULT_OK)  {
-              var resultUri = result.uri
-              Glide.with(requireContext()).load(resultUri).into(binding.ivExercise)
-           } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-               var error = result.error
-               Log.e("TAG", error.message!!)
-           }
+            var result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                var resultUri = result.uri
+                Glide.with(requireContext()).load(resultUri).into(binding.ivExercise)
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                var error = result.error
+                Log.e("TAG", error.message!!)
+            }
         }
     }
 
@@ -71,15 +75,18 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks
     @AfterPermissionGranted(123)
     override fun onStart() {
         super.onStart()
-        if (EasyPermissions.hasPermissions(requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (EasyPermissions.hasPermissions(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        ) {
             Log.e("TAG", "ok Permission granted")
 
         } else {
             (activity as MainActivity).requestPermission()
         }
     }
-
 
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
