@@ -17,8 +17,6 @@ class ExerciseRecordViewModle(
     var repository: ExerciseRecordRepo,
     var trackExericsRepo: TrackExerciseLocalDataSource?
 ) : ViewModel() {
-
-
     private val _exerciseRecord = MutableLiveData<List<ExerciseRecordModel>>().apply {
         var currentDate = Date().time - (86400 * 1000)
         var oneweekAfterDate = currentDate + (604800 * 1000)

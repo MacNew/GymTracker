@@ -42,7 +42,7 @@ class ReportFragment : Fragment() {
     private var _binding: FragmentReportBinding? = null
     private val binding get() = _binding!!
     val toolbar: androidx.appcompat.widget.Toolbar
-      get() = (activity as MainActivity).toolbar
+        get() = (activity as MainActivity).toolbar
     private val titleSameYearFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
     private lateinit var viewmodel: ExerciseRecordViewModle
@@ -59,7 +59,8 @@ class ReportFragment : Fragment() {
                 "", TrackExerciseLocalDataSource(requireActivity().applicationContext)
             )
         ).get(
-            ExerciseRecordViewModle::class.java)
+            ExerciseRecordViewModle::class.java
+        )
 
         _binding = FragmentReportBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -77,13 +78,13 @@ class ReportFragment : Fragment() {
         viewmodel.lastSummery.observe(viewLifecycleOwner, {
             binding.rvReport.adapter = LastSummeryRecyclerViewAdapter(it)
             binding.rvReport.adapter!!.notifyDataSetChanged()
-            binding.progressBarReport.visibility = View.GONE
+           // binding.progressBarReport.visibility = View.GONE
         })
 
         viewmodel.stringDate.observe(viewLifecycleOwner, {
-            ExerciseRecordRepo(requireContext()).getListByDate(it) { list->
-                var hsMap:HashMap<String,ArrayList<ExerciseRecordModel>> = HashMap()
-                var key:HashSet<String> = HashSet<String>();
+            ExerciseRecordRepo(requireContext()).getListByDate(it) { list ->
+                var hsMap: HashMap<String, ArrayList<ExerciseRecordModel>> = HashMap()
+                var key: HashSet<String> = HashSet<String>();
                 list.forEach { exerciseRecord ->
                     key.add(exerciseRecord.saveTime)
                     if (!hsMap.containsKey(exerciseRecord.saveTime)) {
@@ -97,10 +98,13 @@ class ReportFragment : Fragment() {
 
                 var lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
                 key.forEach {
-                    lastSummeryModel.add(LastSummeryModel(false, it,
-                        hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
-                        hsMap[it]?.get(0)!!.image , hsMap[it]
-                    ))
+                    lastSummeryModel.add(
+                        LastSummeryModel(
+                            false, it,
+                            hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
+                            hsMap[it]?.get(0)!!.image, hsMap[it]
+                        )
+                    )
                 }
                 viewmodel.updateList(lastSummeryModel)
             }
@@ -150,7 +154,7 @@ class ReportFragment : Fragment() {
                             textView.background = null
                             dotView.visibility = View.GONE
                             Log.e("Tag", "called else part")
-                    //         dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
+                            //         dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
                         }
                     }
 
@@ -168,16 +172,17 @@ class ReportFragment : Fragment() {
             }
             selectDate(it.yearMonth.atDay(1))
         }
-        binding.exThreeCalendar.monthHeaderBinder = object:MonthHeaderFooterBinder<MonthViewContainer> {
-            override fun create(view: View) = MonthViewContainer(view)
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
-                if (container.legendLayout.tag == null) {
-                    container.legendLayout
-                    container.legendLayout.tag = month.yearMonth
-                }
+        binding.exThreeCalendar.monthHeaderBinder =
+            object : MonthHeaderFooterBinder<MonthViewContainer> {
+                override fun create(view: View) = MonthViewContainer(view)
+                override fun bind(container: MonthViewContainer, month: CalendarMonth) {
+                    if (container.legendLayout.tag == null) {
+                        container.legendLayout
+                        container.legendLayout.tag = month.yearMonth
+                    }
 
+                }
             }
-        }
 
     }
 
@@ -198,15 +203,15 @@ class ReportFragment : Fragment() {
 
     private val selectionFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
     private fun updateAdapterForDate(date: LocalDate) {
-     var myDate = selectionFormatter.format(date)
-     var df = SimpleDateFormat("d MMM yyyy")
+        var myDate = selectionFormatter.format(date)
+        var df = SimpleDateFormat("d MMM yyyy")
         try {
             var startDate = df.parse(myDate)
             Log.e("TAG", df.format(startDate))
             Log.e("TAG", startDate.time.toString())
             viewmodel.sendDate(df.format(startDate))
 
-        }catch (exception:Exception) {
+        } catch (exception: Exception) {
             Log.e("TAG", exception.message!!)
         }
     }
