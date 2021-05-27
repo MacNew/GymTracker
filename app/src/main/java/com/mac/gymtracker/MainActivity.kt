@@ -1,5 +1,6 @@
 package com.mac.gymtracker
 
+import android.Manifest
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.mac.gymtracker.databinding.ActivityMainBinding
 import com.mac.gymtracker.utils.workOut
+import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,5 +53,12 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun requestPermission() {
+        EasyPermissions.
+        requestPermissions(this, "This application required all permisson to enable to function properly",
+            125, Manifest.permission.READ_EXTERNAL_STORAGE
+        )
     }
 }
