@@ -87,5 +87,10 @@
         <argument
             android:name="exerciseName"
             app:argType="string" />
+        <argument
+            android:name="exerciselist"
+            app:argType="com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

@@ -50,8 +50,16 @@ class FragmentExerciseList : Fragment() {
                 binding!!.rvTrackExerciseList.adapter =
                     ExerciseListAdapter(
                         list,
-                        FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid
-                    ) { name, image ->
+                        FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid,
+                        { list ->
+                            requireActivity().getNavigationController().navigate(
+                                FragmentExerciseListDirections.actionFragmentExerciseListToFragmentAddNew(
+                                    FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid,
+                                    FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseName!!,
+                                    list
+                                )
+                            )
+                        }) { name, image ->
                         requireActivity().getNavigationController().navigate(
                             FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(
                                 name,

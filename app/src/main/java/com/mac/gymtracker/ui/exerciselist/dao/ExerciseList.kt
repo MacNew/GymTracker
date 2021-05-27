@@ -1,10 +1,7 @@
 package com.mac.gymtracker.ui.exerciselist.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -23,4 +20,7 @@ interface ExerciseList {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun  insert(data:ExerciseListModle) : Completable
+
+    @Update
+    fun editContent(exerciseList: ExerciseListModle): Completable
 }

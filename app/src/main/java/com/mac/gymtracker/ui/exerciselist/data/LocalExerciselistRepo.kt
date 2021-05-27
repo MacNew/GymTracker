@@ -12,7 +12,6 @@ import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.utils.getResizedBitmap
 import com.mac.gymtracker.utils.subscribeONNewThread
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
@@ -50,6 +49,8 @@ class LocalExerciselistRepo(context: Context) {
             imageString = encodedString,
             date = Date().time
         )
+
+
         repo.getExercise(exerciseName).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -66,5 +67,31 @@ class LocalExerciselistRepo(context: Context) {
 
     fun getExerciseListById(exerciseId: Int): LiveData<List<ExerciseListModle>>? {
         return repo.getAll(exerciseId)
+    }
+
+    @SuppressLint("CheckResult")
+    fun editContent(exerciseList: ExerciseListModle, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
+        repo.getExercise(exerciseList.name).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it.name == exerciseList.name && it.imageString!=exerciseList.imageString) {
+                    repo.editContent(exerciseList).subscribeONNewThread { throwableError, isError->
+                        if (isError)
+                            message(isError, throwableError!!)
+                        else
+                            message(isError, throwableError!!)
+                    }
+                } else {
+                    message(true, Throwable("data already exist"))
+                }
+            }) {
+                repo.editContent(exerciseList).subscribeONNewThread { throwableError, isError->
+                    if (isError)
+                        message(isError, throwableError!!)
+                    else
+                        message(isError, throwableError!!)
+                }
+
+            }
     }
 }
