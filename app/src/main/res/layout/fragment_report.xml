@@ -22,6 +22,7 @@
             app:title="Order Online"
             >
             <com.kizitonwose.calendarview.CalendarView
+                android:layout_marginTop="?attr/actionBarSize"
                 android:id="@+id/exThreeCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

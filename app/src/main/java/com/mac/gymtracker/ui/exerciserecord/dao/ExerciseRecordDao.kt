@@ -23,4 +23,7 @@ interface ExerciseRecordDao {
 
     @Query("select *from exercise_record where string_format_date=:date")
     fun getListByDate(date: String) : Single<List<ExerciseRecordModel>>
+
+    @Query("update exercise_record set exercise_name=:name, image=:imageString where exercise_name=:previousName")
+    fun editQuery(previousName: String, name: String, imageString: String?) : Completable
 }

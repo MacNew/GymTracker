@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.mac.gymtracker.database.GymTrackerDatabase
+import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciserecord.dao.ExerciseRecordDao
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -71,6 +72,8 @@ class ExerciseRecordRepo(context: Context) {
             }){
                 Log.e("exerciseRec", "Message it" + it.message!!)
             }
-
     }
+
+    fun editExerciseRecordContent(previousName: String, exerciseListModle: ExerciseListModle) =
+        repo.editQuery(previousName, exerciseListModle.name, exerciseListModle.imageString)
 }

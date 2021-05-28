@@ -32,6 +32,7 @@ import java.util.*
 class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, RationaleCallbacks {
     private var _binding: FragmentAddNewBinding? = null
     private val binding get() = _binding!!
+    private var previousName: String  = ""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,11 +54,13 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.title = FragmentAddNewArgs.fromBundle(requireArguments()).exerciseName
+
         if (FragmentAddNewArgs.fromBundle(requireArguments()).exerciselist != null) {
             var exerciseList: ExerciseListModle =
                 FragmentAddNewArgs.fromBundle(requireArguments()).exerciselist as ExerciseListModle
             binding.ivExercise.setImageBitmap(exerciseList.imageString.toLocalBitMap())
             binding.edNewExerciseName.setText(exerciseList.name)
+            previousName = exerciseList.name
             binding.addNewBtn.text = "Edit"
         } else {
             binding.addNewBtn.text = "Add"
@@ -109,7 +112,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
                 var encodedString = Base64.encodeToString(byteArray, Base64.DEFAULT)
                 exerciseList.imageString = encodedString
             }
-            LocalExerciselistRepo(requireContext()).editContent(exerciseList) {
+            LocalExerciselistRepo(requireContext()).editContent(exerciseList, previousName) {
                 isError,throwable->
                 if (!isError) {
                     view?.showSnack("Data Edited Successfully")

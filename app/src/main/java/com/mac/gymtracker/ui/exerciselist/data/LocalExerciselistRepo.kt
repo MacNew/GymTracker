@@ -10,6 +10,7 @@ import android.util.Base64
 import androidx.lifecycle.LiveData
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
+import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.utils.getResizedBitmap
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-class LocalExerciselistRepo(context: Context) {
+class LocalExerciselistRepo(var context: Context) {
 
     private var repo: ExerciseList = GymTrackerDatabase.getDatabase(context).exerciseListDao()
 
@@ -70,28 +71,40 @@ class LocalExerciselistRepo(context: Context) {
     }
 
     @SuppressLint("CheckResult")
-    fun editContent(exerciseList: ExerciseListModle, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
+    fun editContent(exerciseList: ExerciseListModle, previousName: String, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
         repo.getExercise(exerciseList.name).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (it.name == exerciseList.name && it.imageString!=exerciseList.imageString) {
-                    repo.editContent(exerciseList).subscribeONNewThread { throwableError, isError->
-                        if (isError)
-                            message(isError, throwableError!!)
-                        else
-                            message(isError, throwableError!!)
+                    exerciseList.editContent(previousName,repo, context) {
+                        errorMsg, error ->
+                        message(errorMsg, error)
                     }
                 } else {
                     message(true, Throwable("data already exist"))
                 }
             }) {
-                repo.editContent(exerciseList).subscribeONNewThread { throwableError, isError->
-                    if (isError)
-                        message(isError, throwableError!!)
-                    else
-                        message(isError, throwableError!!)
-                }
+                exerciseList.editContent(previousName,repo, context) {
+                    errorMsg, error ->
+                message(errorMsg, error)
+            }
 
             }
     }
+}
+
+private fun ExerciseListModle.editContent(previousName: String, repo: ExerciseList, context:Context, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
+     ExerciseRecordRepo(context =context).editExerciseRecordContent(previousName, this).subscribeONNewThread {
+          error: Throwable?, isError: Boolean ->
+         if (!isError) {
+             repo.editContent(this).subscribeONNewThread { throwableError, isErrors->
+                 if (isErrors)
+                     message(isErrors, throwableError!!)
+                 else
+                     message(isErrors, throwableError!!)
+             }
+         } else {
+             message(isError, error!!)
+         }
+     }
 }
