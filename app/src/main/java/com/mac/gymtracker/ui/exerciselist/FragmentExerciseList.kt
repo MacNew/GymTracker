@@ -17,7 +17,6 @@ class FragmentExerciseList : Fragment() {
     private lateinit var exerciseListViewModel: ExerciseListViewModel
     private var _binding: FregmentExerciseListBinding? = null
     private val binding get() = _binding
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

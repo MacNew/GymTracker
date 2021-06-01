@@ -18,10 +18,10 @@
 
     <fragment
         android:id="@+id/nav_last_summery"
-        android:name="com.mac.gymtracker.ui.lastsummery.LastSummeryFragment"
+        android:name="com.mac.gymtracker.ui.lastsummery.NewLastSummaryFragment"
 
         android:label="@string/menu_last_exercise_summery"
-        tools:layout="@layout/fragment_last_summery" />
+        tools:layout="@layout/last_summary_viewpager_fragment" />
 
     <fragment
         android:id="@+id/nav_report"
