@@ -23,4 +23,7 @@ interface ExerciseList {
 
     @Update
     fun editContent(exerciseList: ExerciseListModle): Completable
+
+    @Delete
+    fun deleteExercise(objects: ExerciseListModle) : Completable
 }

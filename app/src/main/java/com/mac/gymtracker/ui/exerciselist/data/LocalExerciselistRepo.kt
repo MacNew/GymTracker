@@ -7,11 +7,14 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.utils.getResizedBitmap
+import com.mac.gymtracker.utils.showSnack
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,7 +38,7 @@ class LocalExerciselistRepo(var context: Context) {
     fun insertExercise(
         contentResolver: ContentResolver?, uri: Uri, exerciseName: String,
         exerciseId: Int,
-        message: (errorMsg: Boolean, error:Throwable) -> Unit
+        message: (errorMsg: Boolean, error: Throwable) -> Unit
     ) {
         var bitmaps = MediaStore.Images.Media.getBitmap(contentResolver, uri)
         var bitmap = getResizedBitmap(bitmaps, 500)
@@ -64,47 +67,77 @@ class LocalExerciselistRepo(var context: Context) {
                         message(isError, throwableError!!)
                 }
             }
-        }
+    }
 
     fun getExerciseListById(exerciseId: Int): LiveData<List<ExerciseListModle>>? {
         return repo.getAll(exerciseId)
     }
 
     @SuppressLint("CheckResult")
-    fun editContent(exerciseList: ExerciseListModle, previousName: String, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
+    fun editContent(
+        exerciseList: ExerciseListModle,
+        previousName: String,
+        message: (errorMsg: Boolean, error: Throwable) -> Unit
+    ) {
         repo.getExercise(exerciseList.name).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it.name == exerciseList.name && it.imageString!=exerciseList.imageString) {
-                    exerciseList.editContent(previousName,repo, context) {
-                        errorMsg, error ->
+                if (it.name == exerciseList.name && it.imageString != exerciseList.imageString) {
+                    exerciseList.editContent(previousName, repo, context) { errorMsg, error ->
                         message(errorMsg, error)
                     }
                 } else {
                     message(true, Throwable("data already exist"))
                 }
             }) {
-                exerciseList.editContent(previousName,repo, context) {
-                    errorMsg, error ->
-                message(errorMsg, error)
-            }
+                exerciseList.editContent(previousName, repo, context) { errorMsg, error ->
+                    message(errorMsg, error)
+                }
 
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    fun deleteData(objects: ExerciseListModle, view: View) {
+        ExerciseRecordRepo(context = context).deleteContent(objects.name)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                repo.deleteExercise(objects).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        view.showSnack("Data Deleted Successfully")
+
+                    }) {
+                        Log.e(TAG, it.message!!)
+                        view.showSnack(it.message!!)
+                    }
+
+            }) {
+                Log.e(TAG, "list data "+it.message!!)
+                view.showSnack(it.message!!)
             }
     }
 }
 
-private fun ExerciseListModle.editContent(previousName: String, repo: ExerciseList, context:Context, message: (errorMsg: Boolean, error:Throwable) -> Unit) {
-     ExerciseRecordRepo(context =context).editExerciseRecordContent(previousName, this).subscribeONNewThread {
-          error: Throwable?, isError: Boolean ->
-         if (!isError) {
-             repo.editContent(this).subscribeONNewThread { throwableError, isErrors->
-                 if (isErrors)
-                     message(isErrors, throwableError!!)
-                 else
-                     message(isErrors, throwableError!!)
-             }
-         } else {
-             message(isError, error!!)
-         }
-     }
+private fun ExerciseListModle.editContent(
+    previousName: String,
+    repo: ExerciseList,
+    context: Context,
+    message: (errorMsg: Boolean, error: Throwable) -> Unit
+) {
+    ExerciseRecordRepo(context = context).editExerciseRecordContent(previousName, this)
+        .subscribeONNewThread { error: Throwable?, isError: Boolean ->
+            if (!isError) {
+                repo.editContent(this).subscribeONNewThread { throwableError, isErrors ->
+                    if (isErrors)
+                        message(isErrors, throwableError!!)
+                    else
+                        message(isErrors, throwableError!!)
+                }
+            } else {
+                message(isError, error!!)
+            }
+        }
 }
+private const val TAG = "Local"

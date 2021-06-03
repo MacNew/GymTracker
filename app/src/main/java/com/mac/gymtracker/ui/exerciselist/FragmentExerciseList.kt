@@ -1,6 +1,7 @@
 package com.mac.gymtracker.ui.exerciselist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.databinding.FregmentExerciseListBinding
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.utils.getNavigationController
+import com.mac.gymtracker.utils.showAlertDialog
+import com.mac.gymtracker.utils.showSnack
 
 class FragmentExerciseList : Fragment() {
     private lateinit var exerciseListViewModel: ExerciseListViewModel
@@ -36,8 +39,7 @@ class FragmentExerciseList : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-        binding!!.toolbarExerciseList.title =
-            FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseName
+        binding!!.toolbarExerciseList.title = FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseName
         binding!!.toolbarExerciseList.setNavigationOnClickListener(View.OnClickListener {
             (activity as MainActivity).onBackPressed()
         })
@@ -50,14 +52,24 @@ class FragmentExerciseList : Fragment() {
                     ExerciseListAdapter(
                         list,
                         FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid,
-                        { list ->
-                            requireActivity().getNavigationController().navigate(
-                                FragmentExerciseListDirections.actionFragmentExerciseListToFragmentAddNew(
-                                    FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid,
-                                    FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseName!!,
-                                    list
+                        { objects , isEdit ->
+                            if (isEdit) {
+                                requireActivity().getNavigationController().navigate(
+                                    FragmentExerciseListDirections.actionFragmentExerciseListToFragmentAddNew(
+                                        FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseid,
+                                        FragmentExerciseListArgs.fromBundle(requireArguments()).exerciseName!!,
+                                        objects
+                                    )
                                 )
-                            )
+                            } else {
+                                context?.showAlertDialog("Are you Sure?", "If you press okay than all content related with this exercise will deleted"
+                                , "Okay", "cancel", {
+                                        LocalExerciselistRepo(requireContext()).deleteData(objects, view)
+                                    }) {
+                                    Log.e(TAG, "cancel clicked")
+                                }
+
+                            }
                         }) { name, image ->
                         requireActivity().getNavigationController().navigate(
                             FragmentExerciseListDirections.actionFragmentExerciseListToFragmentExerciseRecord(
@@ -79,5 +91,5 @@ class FragmentExerciseList : Fragment() {
         }
     }
 }
-
+private const val TAG = "ExerciseFragment"
 

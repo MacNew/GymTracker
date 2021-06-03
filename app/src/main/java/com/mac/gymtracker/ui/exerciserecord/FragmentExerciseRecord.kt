@@ -96,8 +96,6 @@ class FragmentExerciseRecord : Fragment() {
                         view.showSnack("Data Added Successfully ")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
                         (activity as MainActivity).onBackPressed()
-                        /*activity!!.getNavigationController().navigate(FragmentExerciseRecordDirections.
-                        actionFragmentExerciseRecordToFragmentExerciseList(1, ""))*/
 
                     } else {
                         Log.e("msg", "cannot find record list")

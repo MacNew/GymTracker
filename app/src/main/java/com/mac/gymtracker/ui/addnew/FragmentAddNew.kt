@@ -120,9 +120,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
                 } else {
                     view?.showSnack("Error ${throwable.message}")
                 }
-
             }
-
         }
 
     }

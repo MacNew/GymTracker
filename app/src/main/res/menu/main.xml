@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/id_seven_day"
+        android:title="@string/last_seven_day"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/id_one_month"
+        android:title="@string/last_one_month_data"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/id_three_month"
+        android:title="@string/last_three_month_data"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/id_six_month"
+        android:title="@string/last_six_month_data"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/id_one_year"
+        android:title="@string/last_one_year_data"
         android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>

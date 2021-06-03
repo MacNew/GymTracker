@@ -26,4 +26,7 @@ interface ExerciseRecordDao {
 
     @Query("update exercise_record set exercise_name=:name, image=:imageString where exercise_name=:previousName")
     fun editQuery(previousName: String, name: String, imageString: String?) : Completable
+
+    @Query("delete from exercise_record where exercise_name=:name")
+    fun deleteQuery(name: String): Completable
 }

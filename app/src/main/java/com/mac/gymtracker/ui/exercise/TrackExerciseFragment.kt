@@ -52,10 +52,10 @@ class TrackExerciseFragment : Fragment() {
             activity?.applicationContext,
             2
         )
-        trackExerciseViewModel.exerciseList.observe(this, Observer { it ->
-            it.observe(this, {
-                binding.rvTrackExercise.adapter = ExerciseAdapter(it) {
-                    addCardViewListner(it)
+        trackExerciseViewModel.exerciseList.observe(viewLifecycleOwner, Observer { it ->
+            it.observe(viewLifecycleOwner, {
+                binding.rvTrackExercise.adapter = ExerciseAdapter(it) { string->
+                    addCardViewListner(string)
                 }
             })
         })
@@ -64,10 +64,10 @@ class TrackExerciseFragment : Fragment() {
 
 
     private fun addCardViewListner(it: String) {
-        val navController = activity!!.findNavController(R.id.nav_host_fragment_content_main)
+        val navController = requireActivity().findNavController(R.id.nav_host_fragment_content_main)
         when (it) {
             CHEST -> {
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         CHEST_ID, CHEST
                     )
@@ -75,21 +75,21 @@ class TrackExerciseFragment : Fragment() {
             }
             SHOULDER -> {
 
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         SHOULDER_ID, SHOULDER
                     )
                 )
             }
             BACK -> {
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         BACK_ID, BACK
                     )
                 )
             }
             LEG -> {
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         LEG_ID, LEG
                     )
@@ -97,15 +97,14 @@ class TrackExerciseFragment : Fragment() {
             }
 
             BICEPS -> {
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         BICEPS_ID, BICEPS
                     )
                 )
-
             }
             TRICEPS -> {
-                activity!!.getNavigationController().navigate(
+                requireActivity().getNavigationController().navigate(
                     TrackExerciseFragmentDirections.actionNavTrackExerciseToFragmentExerciseList(
                         TRICEPS_ID, TRICEPS
                     )

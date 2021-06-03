@@ -7,6 +7,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <string name="last_seven_day">Last Seven day data</string>
+    <string name="last_one_month_data">Last One day data</string>
+    <string name="last_three_month_data">Last Three month data</string>
+    <string name="last_six_month_data">last six month data</string>
+    <string name="last_one_year_data">last one year data</string>
+
     <string name="menu_last_exercise_summery">Last Summery</string>
     <string name="menu_exercise">Exercise</string>
     <string name="menu_report">Report</string>

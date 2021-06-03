@@ -76,4 +76,6 @@ class ExerciseRecordRepo(context: Context) {
 
     fun editExerciseRecordContent(previousName: String, exerciseListModle: ExerciseListModle) =
         repo.editQuery(previousName, exerciseListModle.name, exerciseListModle.imageString)
+
+    fun deleteContent(name: String) = repo.deleteQuery(name)
 }

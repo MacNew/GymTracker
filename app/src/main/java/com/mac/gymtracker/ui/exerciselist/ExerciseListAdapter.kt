@@ -1,6 +1,5 @@
 package com.mac.gymtracker.ui.exerciselist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,12 +10,10 @@ import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.utils.toLocalBitMap
 import kotlinx.android.synthetic.main.exercise_list_adapter.view.*
-
-
 class ExerciseListAdapter(
     var list: List<ExerciseListModle>,
     var exerciseId: Int,
-    var menuItem: (exerciseListModle: ExerciseListModle ) -> Unit ,
+    var menuItem: (exerciseListModle: ExerciseListModle, isEdit:Boolean ) -> Unit ,
     var function: (exercise: String, image: String ) -> Unit
 ) : RecyclerView.Adapter<ExerciseListAdapter.MyViewHolder>() {
 
@@ -57,11 +54,11 @@ class ExerciseListAdapter(
                 popup.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.action_edit -> {
-                            Log.e("edit", "Called me")
-                            menuItem(list[position])
+                            menuItem(list[position], true)
                             true
                         }
                         R.id.action_delete -> {
+                            menuItem(list[position], false)
                             true
                         }                         //handle menu2 click
                         else -> false
@@ -77,11 +74,7 @@ class ExerciseListAdapter(
     override fun getItemCount(): Int {
         return list.size
     }
-
 }
 
 private fun PopupMenu.setOnMenuItemClickListener(function: (MenuItem) -> Unit) {
-
-
 }
-
