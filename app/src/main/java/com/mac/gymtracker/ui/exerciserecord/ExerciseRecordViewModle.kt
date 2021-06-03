@@ -1,10 +1,12 @@
 package com.mac.gymtracker.ui.exerciserecord
 
 import android.util.Log
+import android.view.MenuItem
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
@@ -25,6 +27,7 @@ class ExerciseRecordViewModle(
             value = it
         }
     }
+
     val exerciseRecord: LiveData<List<ExerciseRecordModel>> = _exerciseRecord
 
 
@@ -58,6 +61,75 @@ class ExerciseRecordViewModle(
             })
         _lastSummery.postValue(lastSummery)
     }
+
+    fun updateList(item:MenuItem?) {
+        val currentDate:Long = Date().time
+        var oneweekbefore: Long = (604800 * 1000)
+        when (item?.itemId) {
+            R.id.id_one_day -> {
+                oneweekbefore =  currentDate - (86400 * 1000)
+            }
+            R.id.id_seven_day -> {
+                oneweekbefore = currentDate - (86400*7 * 1000)
+            }
+            R.id.id_one_month -> {
+                var data:Long = 86400*30
+                var newdata:Long = data * 1000
+                oneweekbefore = currentDate - newdata
+            }
+            R.id.id_three_month -> {
+                var data:Long = 86400*30*3
+                var newdata:Long = data * 1000
+                oneweekbefore = currentDate - newdata
+            }
+            R.id.id_six_month -> {
+                var data:Long = 86400*30*6
+                var newdata:Long = data * 1000
+                oneweekbefore = currentDate - newdata
+            }
+            R.id.id_one_year -> {
+                var data:Long = 86400*30*12
+                var newdata:Long = data * 1000
+                oneweekbefore = currentDate - newdata
+            }
+        }
+
+        Log.e("TAG", (oneweekbefore).toString())
+        Log.e("TAG", (currentDate).toString() )
+
+        repository.getAll(oneweekbefore, Date().time) { list->
+            val hsMap: HashMap<String, ArrayList<ExerciseRecordModel>> = HashMap()
+            val key: HashSet<String> = HashSet()
+            list.forEach { exerciseRecord ->
+                key.add(exerciseRecord.saveTime)
+                if (!hsMap.containsKey(exerciseRecord.saveTime)) {
+                    val exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList()
+                    exerciseRecordList.add(exerciseRecord)
+                    hsMap[exerciseRecord.saveTime] = exerciseRecordList
+                } else {
+                    hsMap[exerciseRecord.saveTime]!!.add(exerciseRecord)
+                }
+            }
+            val lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
+            key.forEach {
+                lastSummeryModel.add(
+                    LastSummeryModel(
+                        false, it,
+                        hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
+                        hsMap[it]?.get(0)!!.image, hsMap[it]
+                    )
+                )
+            }
+            Collections.sort(lastSummeryModel,
+                Comparator<LastSummeryModel?> { o1, o2 ->
+                    o2!!.date.toLong().compareTo(o1!!.date.toLong())
+                })
+
+
+           _lastSummery.postValue(lastSummeryModel)
+        }
+    }
+
 
     fun addToLocalDatabase(
         recordList: ArrayList<ExerciseRecordModel>,

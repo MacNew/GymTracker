@@ -52,7 +52,7 @@ class LastSummeryFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateDataOnLastSummery()
+        viewmodle.updateList(null)
         binding.rvLastSummeryRecyclerView.layoutManager = LinearLayoutManager(context)
         viewmodle.lastSummery.observe(viewLifecycleOwner, {
             binding.rvLastSummeryRecyclerView.adapter = LastSummeryRecyclerViewAdapter(it)
@@ -65,42 +65,8 @@ class LastSummeryFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
-        if (itemId == R.id.id_seven_day) {
-            view?.showSnack("Seven day")
-        } else if (itemId == R.id.id_one_month) {
-            view?.showSnack("one month")
-        }
+        viewmodle.updateList(item)
         return super.onOptionsItemSelected(item)
-    }
-
-
-    private fun updateDataOnLastSummery() {
-        viewmodle.exerciseRecord.observe(viewLifecycleOwner, { list ->
-            val hsMap: HashMap<String, ArrayList<ExerciseRecordModel>> = HashMap()
-            val key: HashSet<String> = HashSet()
-            list.forEach { exerciseRecord ->
-                key.add(exerciseRecord.saveTime)
-                if (!hsMap.containsKey(exerciseRecord.saveTime)) {
-                    val exerciseRecordList: ArrayList<ExerciseRecordModel> = ArrayList()
-                    exerciseRecordList.add(exerciseRecord)
-                    hsMap[exerciseRecord.saveTime] = exerciseRecordList
-                } else {
-                    hsMap[exerciseRecord.saveTime]!!.add(exerciseRecord)
-                }
-            }
-            val lastSummeryModel: ArrayList<LastSummeryModel> = ArrayList()
-            key.forEach {
-                lastSummeryModel.add(
-                    LastSummeryModel(
-                        false, it,
-                        hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
-                        hsMap[it]?.get(0)!!.image, hsMap[it]
-                    )
-                )
-            }
-            viewmodle.updateList(lastSummeryModel)
-        })
     }
 
     override fun onDestroyView() {
