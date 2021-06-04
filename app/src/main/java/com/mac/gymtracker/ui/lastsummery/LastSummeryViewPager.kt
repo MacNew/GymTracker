@@ -1,10 +1,12 @@
 package com.mac.gymtracker.ui.lastsummery
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.LastSummaryViewpagerFragmentBinding
 
@@ -28,7 +30,31 @@ class NewLastSummaryFragment : Fragment() {
         val pagerAdapter = LastSummeryViewPager(childFragmentManager)
         binding.pager.adapter = pagerAdapter
         binding.tabLayout.setupWithViewPager(binding.pager)
+        binding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                // Log.e(TAG, "onPageScrolled")
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (PieChartFragment.flage) {
+                    piSummeryFragment.onPageCnangeListner()
+                    Thread.sleep(500)
+                    lastSummeryFragment.onPageCnangeListner()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+        })
     }
+
+    private var lastSummeryFragment = LastSummeryFragment()
+    private var piSummeryFragment = PieChartFragment()
 
 
     private inner class LastSummeryViewPager(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
@@ -43,13 +69,17 @@ class NewLastSummaryFragment : Fragment() {
 
         override fun getItem(position: Int): Fragment {
             val fragment: Fragment = if (position == 0) {
-                LastSummeryFragment()
+                lastSummeryFragment
             } else {
-                PieChartFragment()
+                piSummeryFragment
             }
             return fragment
         }
     }
 }
 
+interface Page {
+    fun onPageCnangeListner()
+}
 
+private const val TAG = "lastSummery"

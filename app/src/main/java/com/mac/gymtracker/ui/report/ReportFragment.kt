@@ -114,7 +114,6 @@ class ReportFragment : Fragment() {
         binding.exThreeCalendar.apply {
             setup(currentMonth.minusMonths(10), currentMonth.plusMonths(10), daysOfWeek.first())
             scrollToMonth(currentMonth)
-
             if (savedInstanceState == null) {
                 binding.exThreeCalendar.post {// 1621793700000
                     selectDate(today)

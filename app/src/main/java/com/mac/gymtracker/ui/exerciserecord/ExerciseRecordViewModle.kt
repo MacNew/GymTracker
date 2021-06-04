@@ -1,7 +1,9 @@
 package com.mac.gymtracker.ui.exerciserecord
 
+import android.content.res.Resources
 import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,17 +21,6 @@ class ExerciseRecordViewModle(
     var repository: ExerciseRecordRepo,
     var trackExericsRepo: TrackExerciseLocalDataSource?
 ) : ViewModel() {
-    private val _exerciseRecord = MutableLiveData<List<ExerciseRecordModel>>().apply {
-        var currentDate = Date().time
-        var oneweekbefore = currentDate - (604800 * 1000)
-
-        repository.getAll(oneweekbefore, currentDate) {
-            value = it
-        }
-    }
-
-    val exerciseRecord: LiveData<List<ExerciseRecordModel>> = _exerciseRecord
-
 
     private val _lastSummery = MutableLiveData<List<LastSummeryModel>>();
 
@@ -40,20 +31,6 @@ class ExerciseRecordViewModle(
     val stringDate: LiveData<String> = _stringDate
 
 
-    val _actualExerciseName = MutableLiveData<String>();
-
-    val actualExerciseName: LiveData<String> = _actualExerciseName
-
-    fun updateMainExerciseName(exerciseId: String) {
-        trackExericsRepo?.getMainExerciseName(exerciseId) { error, exerciseName, isError ->
-            if (!isError) {
-                _actualExerciseName.postValue(exerciseName)
-            } else {
-                Log.e("msg", "Error " + error?.message)
-            }
-        }
-    }
-
     fun updateList(lastSummery: ArrayList<LastSummeryModel>) {
         Collections.sort(lastSummery,
             Comparator<LastSummeryModel?> { o1, o2 ->
@@ -62,32 +39,39 @@ class ExerciseRecordViewModle(
         _lastSummery.postValue(lastSummery)
     }
 
-    fun updateList(item:MenuItem?) {
+    fun updateList(item:MenuItem?, supportActionBar: ActionBar, resources: Resources?,function:()->Unit ) {
         val currentDate:Long = Date().time
         var oneweekbefore: Long = (604800 * 1000)
         when (item?.itemId) {
             R.id.id_one_day -> {
+                supportActionBar.title = resources?.getString(R.string.last_one_day)
                 oneweekbefore =  currentDate - (86400 * 1000)
             }
             R.id.id_seven_day -> {
+                supportActionBar.title = resources?.getString(R.string.last_seven_day)
                 oneweekbefore = currentDate - (86400*7 * 1000)
+
             }
             R.id.id_one_month -> {
+                supportActionBar.title = resources?.getString(R.string.last_one_month_data)
                 var data:Long = 86400*30
                 var newdata:Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_three_month -> {
+                supportActionBar.title = resources?.getString(R.string.last_three_month_data)
                 var data:Long = 86400*30*3
                 var newdata:Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_six_month -> {
+                supportActionBar.title = resources?.getString(R.string.last_six_month_data)
                 var data:Long = 86400*30*6
                 var newdata:Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_one_year -> {
+                supportActionBar.title = resources?.getString(R.string.last_one_year_data)
                 var data:Long = 86400*30*12
                 var newdata:Long = data * 1000
                 oneweekbefore = currentDate - newdata
@@ -124,8 +108,7 @@ class ExerciseRecordViewModle(
                 Comparator<LastSummeryModel?> { o1, o2 ->
                     o2!!.date.toLong().compareTo(o1!!.date.toLong())
                 })
-
-
+            function()
            _lastSummery.postValue(lastSummeryModel)
         }
     }
@@ -150,6 +133,7 @@ class ExerciseRecordViewModle(
     fun sendDate(stringDate: String) {
         _stringDate.postValue(stringDate)
     }
+
 
 }
 
