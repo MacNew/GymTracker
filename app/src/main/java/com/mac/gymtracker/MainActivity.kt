@@ -1,8 +1,11 @@
 package com.mac.gymtracker
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -11,8 +14,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.databinding.ActivityMainBinding
-import com.mac.gymtracker.utils.workOut
+import com.mac.gymtracker.utils.*
 import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity() {
@@ -31,21 +36,36 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_track_exercise, R.id.nav_last_summery, R.id.nav_report
+                R.id.nav_track_exercise, R.id.nav_last_summery, R.id.nav_report, R.id.nav_sync
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         this.workOut()
+        val intent = intent
+        val emailLink = intent!!.data.toString()
+        Log.e(TAG, emailLink)
+        if (emailLink == "https://www.example.com/") {
+            var email = PrefUtils.INSTANCE(this).getString(EMAIL, "")
+            var password = PrefUtils.INSTANCE(this).getString(PASSWORD, "")
+            Firebase.auth.createUserWithEmailAndPassword(email!!, password!!)
+                .addOnCompleteListener() {
+                    if (it.isSuccessful) {
+                        drawerLayout.showSnack("User created Successfully")
+                        PrefUtils.INSTANCE(this).setBoolean(IS_LOGIN, true)
+                    } else {
+                        drawerLayout.showSnack("Error on Creating User" + it.exception?.message!!)
+                    }
+                }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // menuInflater.inflate(R.menu.main, menu)
+        // menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
@@ -56,9 +76,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requestPermission() {
-        EasyPermissions.
-        requestPermissions(this, "This application required all permisson to enable to function properly",
+        EasyPermissions.requestPermissions(
+            this, "This application required all permisson to enable to function properly",
             125, Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
 }
+
+const val TAG = "MainActivity"

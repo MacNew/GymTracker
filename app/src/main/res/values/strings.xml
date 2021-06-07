@@ -25,4 +25,8 @@
     <string name="delete">Delete</string>
     <string name="pie_chart">Pie Chart</string>
     <string name="last_one_day">Last One day</string>
+    <string name="sync">Sync</string>
+    <string name="email">Email</string>
+    <string name="passwrod">password</string>
+    <string name="pref_key">com.mac.gymtracker</string>
 </resources>

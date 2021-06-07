@@ -46,6 +46,11 @@ const val TRICEPS_ID: Int = 5
 const val LEG_ID: Int = 6
 
 
+const val IS_LOGIN = "IS_LOGIN"
+const val IS_FROM_SYNC = "IS_FROM_SYNC"
+const val EMAIL = "EMAIL"
+const val PASSWORD = "PASSWORD"
+
 public fun String?.toLocalBitMap(): Bitmap? {
     val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)

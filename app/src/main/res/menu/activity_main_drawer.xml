@@ -16,5 +16,9 @@
             android:id="@+id/nav_report"
             android:icon="@drawable/ic_report"
             android:title="@string/menu_report" />
+       <item
+           android:id="@+id/nav_sync"
+           android:icon="@drawable/edit_text_boarder"
+           android:title="@string/sync"/>
     </group>
 </menu>

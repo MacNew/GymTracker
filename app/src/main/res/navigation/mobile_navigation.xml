@@ -93,4 +93,16 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_sync"
+        android:name="com.mac.gymtracker.ui.login.FragmentLogin"
+        android:label="FragmentLogin" >
+        <action
+            android:id="@+id/action_nav_sync_to_fragmentSync"
+            app:destination="@id/fragmentSync" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSync"
+        android:name="com.mac.gymtracker.ui.sync.FragmentSync"
+        android:label="FragmentSync" />
 </navigation>
