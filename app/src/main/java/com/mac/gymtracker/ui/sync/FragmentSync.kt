@@ -1,6 +1,7 @@
 package com.mac.gymtracker.ui.sync
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,39 +50,10 @@ class FragmentSync : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.syncBtn?.setOnClickListener {
-            syncDataOnDataBase()
+            binding?.syncProgressbar?.visibility = View.VISIBLE
+            binding?.syncBtn?.visibility = View.GONE
+            syncExerciseList()
         }
-    }
-
-    @SuppressLint("CheckResult")
-    private fun syncDataOnDataBase() {
-        binding?.syncProgressbar?.visibility = View.VISIBLE
-        binding?.syncBtn?.visibility = View.GONE
-        val userName = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "")
-        TrackExerciseLocalDataSource(requireContext()).getExerciseRxJava()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                binding?.syncProgressbar?.visibility = View.GONE
-                binding?.syncBtn?.visibility = View.VISIBLE
-                view?.showSnack("Error ${it.message}")
-
-            }.subscribe({
-                var exerciseModel = Exercise(it)
-                db.collection(userName!!).document("exercise").set(exerciseModel)
-                    .addOnSuccessListener {
-                        syncExerciseList()
-                        //   view?.showSnack("Exercise Data Added on Server")
-                    }.addOnFailureListener { e ->
-                        binding?.syncProgressbar?.visibility = View.GONE
-                        binding?.syncBtn?.visibility = View.VISIBLE
-                        view?.showSnack("Error ${e.message!!}")
-                    }
-            }) {
-                binding?.syncProgressbar?.visibility = View.GONE
-                binding?.syncBtn?.visibility = View.VISIBLE
-                view?.showSnack("Error ${it.message}")
-            }
     }
 
     @SuppressLint("CheckResult")
@@ -90,12 +62,14 @@ class FragmentSync : Fragment() {
         LocalExerciselistRepo(requireContext()).getAllList().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError {
+                Log.e(TA, "Error ${it.message}")
                 binding?.syncProgressbar?.visibility = View.GONE
                 binding?.syncBtn?.visibility = View.VISIBLE
                 view?.showSnack("Error ${it.message}")
             }.subscribe({ list ->
+                Log.e(TA, "user name $userName")
                 var exerciseListModle = ExerciseList(list)
-                db.collection(userName!!).document("exerciselist").set(exerciseListModle)
+                db.collection(userName!!).document("exerciseList").set(exerciseListModle)
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
@@ -104,6 +78,7 @@ class FragmentSync : Fragment() {
                         view?.showSnack("Error ${it.message}")
                     }
             }) {
+                Log.e(TA, "Error ${it.message}")
                 binding?.syncProgressbar?.visibility = View.GONE
                 binding?.syncBtn?.visibility = View.VISIBLE
                 view?.showSnack("Error ${it.message}")
@@ -116,7 +91,8 @@ class FragmentSync : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError {
                 binding?.syncProgressbar?.visibility = View.GONE
-                binding?.syncProgressbar?.visibility = View.VISIBLE
+                binding?.syncBtn?.visibility = View.VISIBLE
+                Log.e(TA, "Error ${it.message}")
                 view?.showSnack("Error ${it.message}")
             }.subscribe({
                 val userName = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "")
@@ -124,16 +100,19 @@ class FragmentSync : Fragment() {
                 db.collection(userName!!).document("exerciseRecord").set(exerciseListModle)
                     .addOnSuccessListener {
                         binding?.syncProgressbar?.visibility = View.GONE
-                        binding?.syncProgressbar?.visibility = View.VISIBLE
+                        binding?.syncBtn?.visibility = View.VISIBLE
                         view?.showSnack("Data Sync on Server Successfully")
                     }.addOnFailureListener {
                         binding?.syncProgressbar?.visibility = View.GONE
                         binding?.syncBtn?.visibility = View.VISIBLE
-                        view?.showSnack("Error ${it.message}")
+                       view?.showSnack("Error ${it.message}")
+                        Log.e(TA, "Error ${it.message}")
+
                     }
             }){
+                Log.e(TA, "Error ${it.message}")
                 binding?.syncProgressbar?.visibility = View.GONE
-                binding?.syncProgressbar?.visibility = View.VISIBLE
+                binding?.syncBtn?.visibility = View.VISIBLE
                 view?.showSnack("Error ${it.message}")
             }
     }
@@ -147,6 +126,4 @@ data class ExerciseList(
     var exerciseList: List<ExerciseListModle>? = null
 )
 
-data class Exercise(
-    var exercise: List<TrackExerciseModel>? = null
-)
+const val TA = "Sync"

@@ -103,6 +103,10 @@ class FragmentLogin : Fragment() {
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
                                 PrefUtils.INSTANCE(requireContext()).setBoolean(IS_LOGIN, true)
+                                PrefUtils.INSTANCE(requireContext()).let {
+                                    it.setString(EMAIL, binding!!.username.text.toString())
+                                    it.setString(PASSWORD, binding!!.password.text.toString())
+                                }
                                 view.showSnack("Login Successfully")
                                 loading.visibility = View.GONE
                                 redirectSync()
