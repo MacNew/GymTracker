@@ -18,6 +18,9 @@ interface ExerciseRecordDao {
     fun getAllCheck(): Single<List<ExerciseRecordModel>>
 
 
+
+
+
     @Insert()
     fun insert(exerciseList: List<ExerciseRecordModel>): Completable
 
@@ -29,4 +32,5 @@ interface ExerciseRecordDao {
 
     @Query("delete from exercise_record where exercise_name=:name")
     fun deleteQuery(name: String): Completable
+
 }

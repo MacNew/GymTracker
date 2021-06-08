@@ -14,6 +14,9 @@ interface ExerciseList {
     @Query("select *from exercise_list where exercise_name=:name")
     fun getExercise(name:String): Single<ExerciseListModle>
 
+    @Query("select *from exercise_list")
+    fun getAlExercise(): Single<List<ExerciseListModle>>
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(list:List<ExerciseListModle>): Completable
@@ -26,4 +29,6 @@ interface ExerciseList {
 
     @Delete
     fun deleteExercise(objects: ExerciseListModle) : Completable
+
+
 }

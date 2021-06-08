@@ -73,6 +73,8 @@ class LocalExerciselistRepo(var context: Context) {
         return repo.getAll(exerciseId)
     }
 
+    fun getAllList() = repo.getAlExercise()
+
     @SuppressLint("CheckResult")
     fun editContent(
         exerciseList: ExerciseListModle,

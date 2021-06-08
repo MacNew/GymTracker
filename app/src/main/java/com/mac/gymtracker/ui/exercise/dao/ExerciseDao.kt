@@ -16,4 +16,6 @@ interface ExerciseDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(exercise: List<TrackExerciseModel>) : Completable
+    @Query("select *from exercise")
+    fun getAllRxJava(): Single<List<TrackExerciseModel>>
 }

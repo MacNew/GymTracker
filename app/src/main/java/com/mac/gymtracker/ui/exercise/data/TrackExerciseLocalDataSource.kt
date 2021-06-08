@@ -36,6 +36,8 @@ class TrackExerciseLocalDataSource(context: Context) {
              }
     }
 
+    fun getExerciseRxJava() = exerciseDao.getAllRxJava()
+
     fun getExerciseList() : LiveData<List<TrackExerciseModel>> {
         return exerciseDao.getAll()
     }

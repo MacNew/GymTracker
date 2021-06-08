@@ -38,7 +38,7 @@ class TrackExerciseFragment : Fragment() {
     ): View? {
         trackExerciseViewModel = ViewModelProvider(
             this,
-            TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(activity!!.applicationContext))
+            TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext))
         ).get(TrackExerciseViewModel::class.java);
         _binding = FragmentTrackExerciseBinding.inflate(inflater, container, false)
         val root: View = binding.root

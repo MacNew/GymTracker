@@ -56,6 +56,8 @@ class ExerciseRecordRepo(context: Context) {
             }
     }
 
+    fun getAll() = repo.getAllCheck();
+
     @SuppressLint("CheckResult")
     fun getListByDate(value: String?, function: (record: ArrayList<ExerciseRecordModel>) -> Unit) {
         repo.getListByDate(value!!).subscribeOn(Schedulers.io())
