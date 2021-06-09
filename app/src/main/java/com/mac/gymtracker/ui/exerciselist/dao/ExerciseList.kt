@@ -17,9 +17,15 @@ interface ExerciseList {
     @Query("select *from exercise_list")
     fun getAlExercise(): Single<List<ExerciseListModle>>
 
+    @Query("select *from exercise_list where isSync=:isSync")
+    fun getAllExercise(isSync:Boolean) : Single<List<ExerciseListModle>>
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(list:List<ExerciseListModle>): Completable
+
+    @Update
+    fun updateAll(list:List<ExerciseListModle>) : Completable
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun  insert(data:ExerciseListModle) : Completable

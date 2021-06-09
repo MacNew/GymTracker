@@ -1,5 +1,8 @@
 package com.mac.gymtracker.ui.sync
+
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,19 +14,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mac.gymtracker.R
+import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentSyncBinding
 import com.mac.gymtracker.ui.exercise.TrackExerciseViewModel
 import com.mac.gymtracker.ui.exercise.TrackingExerciseViewModelFactory
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
-import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.utils.*
+import com.paypal.android.sdk.payments.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
+import org.json.JSONException
+import java.math.BigDecimal
+
 
 class FragmentSync : Fragment() {
     private var _binding: FragmentSyncBinding? = null
@@ -50,6 +57,49 @@ class FragmentSync : Fragment() {
     }
 
     private val db = FirebaseFirestore.getInstance()
+    val config = PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
+        .clientId(PAY_PAL_CLIENT_ID)
+
+    override fun onDestroy() {
+        requireContext().stopService(Intent(context, PayPalService::class.java))
+        super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.e(TAG, "OnActivity Called $requestCode")
+        if (requestCode == 123) {
+            //If the result is OK i.e. user has not canceled the payment
+            if (resultCode == Activity.RESULT_OK) {
+                //Getting the payment confirmation
+                val confirm: PaymentConfirmation? =
+                    data?.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION)
+                //if confirmation is not null
+                if (confirm != null) {
+                    try {
+                        //Getting the payment details
+                        val paymentDetails = confirm.toJSONObject().toString(4)
+                        Log.i("paymentExample", paymentDetails)
+
+                        Log.e(TAG, "Payment Sucessfully")
+
+                    } catch (e: JSONException) {
+                        Log.e("paymentExample", "an extremely unlikely failure occurred: ", e)
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("paymentExample", "The user canceled.")
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                    "paymentExample",
+                    "An invalid Payment or PayPalConfiguration was submitted. Please see the docs."
+                )
+            }
+        }
+    }
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
@@ -58,7 +108,37 @@ class FragmentSync : Fragment() {
             binding?.syncBtn?.visibility = View.GONE
             syncExerciseList()
         }
+        var intent = Intent(context, PayPalService::class.java)
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
+        context?.startService(intent)
+
+        binding?.btnPaypal?.setOnClickListener {
+
+            val payment = PayPalPayment(
+                BigDecimal(java.lang.String.valueOf("10")), "USD", "Simplified Coding Fee",
+                PayPalPayment.PAYMENT_INTENT_SALE
+            )
+            var intent = Intent(context, PaymentActivity::class.java)
+
+            intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
+
+            intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
+            startActivityForResult(intent, 123)
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    data class User(val name: String, val payment: Boolean)
 
     @SuppressLint("CheckResult")
     private fun syncExerciseList() {
@@ -72,8 +152,18 @@ class FragmentSync : Fragment() {
                 view?.showSnack("Error ${it.message}")
             }.subscribe({ list ->
                 Log.e(TA, "user name $userName")
+                Log.e(TAG, "is Sync Size ${list.size}")
                 var exerciseListModle = ExerciseList(list)
-                db.collection(userName!!).document(EXERCISE_LIST).set(exerciseListModle)
+                var batch = db.batch()
+                var mycRef = db.collection(userName!!).document("payment")
+                batch.set(mycRef, User("Machhindra Neupane", false))
+
+                var mysecondRef = db.collection(userName!!).document(EXERCISE_LIST)
+                batch.set(mysecondRef, exerciseListModle).commit()
+
+                    /*
+                    db.collection(userName!!).
+                    document(EXERCISE_LIST).set(exerciseListModle)*/
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
@@ -109,11 +199,11 @@ class FragmentSync : Fragment() {
                     }.addOnFailureListener {
                         binding?.syncProgressbar?.visibility = View.GONE
                         binding?.syncBtn?.visibility = View.VISIBLE
-                       view?.showSnack("Error ${it.message}")
+                        view?.showSnack("Error ${it.message}")
                         Log.e(TA, "Error ${it.message}")
 
                     }
-            }){
+            }) {
                 Log.e(TA, "Error ${it.message}")
                 binding?.syncProgressbar?.visibility = View.GONE
                 binding?.syncBtn?.visibility = View.VISIBLE

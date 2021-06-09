@@ -53,6 +53,8 @@ const val PASSWORD = "PASSWORD"
 const val EXERCISE_RECORD = "exerciseRecord"
 const val EXERCISE_LIST = "exerciseList"
 
+const val PAY_PAL_CLIENT_ID = "AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu"
+
  fun String?.toLocalBitMap(): Bitmap? {
     val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)
@@ -236,7 +238,8 @@ private fun <E> java.util.ArrayList<E>.addExercise(name: String, image: String, 
             name = name,
             exercise_id = exerciseId,
             image = image,
-            date = Date().time
+            date = Date().time,
+            isSync = false
         )
     )
 }

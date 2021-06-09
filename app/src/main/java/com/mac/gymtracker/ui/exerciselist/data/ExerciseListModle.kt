@@ -19,7 +19,9 @@ data class ExerciseListModle(
     @ColumnInfo(name = "stringImage")
     var imageString: String? = null,
     @ColumnInfo(name = "mydate")
-    val date: Long
+    val date: Long,
+    @ColumnInfo(name ="isSync")
+    val isSync: Boolean
 ) : Serializable {
     override fun toString(): String {
         return "ExerciseListModle(name='$name', exercise_id=$exercise_id, image=$image, imageString=$imageString, date=$date)"

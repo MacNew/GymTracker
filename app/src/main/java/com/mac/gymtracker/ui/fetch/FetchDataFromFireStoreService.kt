@@ -97,11 +97,13 @@ class FetchDataFromFireStoreService : Service() {
                                 exercise_id = it["exercise_id"].toString().toInt(),
                                 image = it["image"].toString(),
                                 date = it["date"].toString().toLong(),
-                                imageString = it["imageString"] as String?
+                                imageString = it["imageString"] as String?,
+                                isSync = true
                             )
                         )
                     }
-                    LocalExerciselistRepo(applicationContext).insertExercise(list) {
+                    Log.e(TAG, list.toString())
+                    LocalExerciselistRepo(applicationContext).updateExercise(list) {
                     }
                 } else {
                     Log.e(TAG, "Data not exist")

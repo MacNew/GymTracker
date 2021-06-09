@@ -34,6 +34,15 @@ class LocalExerciselistRepo(var context: Context) {
         }
     }
 
+    fun updateExercise(list: List<ExerciseListModle>, message: (errorMsg: Boolean) -> Unit) {
+        repo.updateAll(list).subscribeONNewThread { _, isError ->
+            if (isError)
+                message(isError)
+            else
+                message(isError)
+        }
+    }
+
     @SuppressLint("CheckResult")
     fun insertExercise(
         contentResolver: ContentResolver?, uri: Uri, exerciseName: String,
@@ -51,7 +60,8 @@ class LocalExerciselistRepo(var context: Context) {
             exercise_id = exerciseId,
             image = "2131165303",
             imageString = encodedString,
-            date = Date().time
+            date = Date().time,
+            isSync = false
         )
 
 
@@ -74,6 +84,8 @@ class LocalExerciselistRepo(var context: Context) {
     }
 
     fun getAllList() = repo.getAlExercise()
+
+    fun getAllList(value:Boolean) = repo.getAllExercise(value)
 
     @SuppressLint("CheckResult")
     fun editContent(

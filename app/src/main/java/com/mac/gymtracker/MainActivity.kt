@@ -1,6 +1,7 @@
 package com.mac.gymtracker
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,12 +20,19 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.databinding.ActivityMainBinding
 import com.mac.gymtracker.utils.*
+import com.paypal.android.sdk.payments.PaymentActivity
+import com.paypal.android.sdk.payments.PaymentConfirmation
+import org.json.JSONException
 import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +105,14 @@ class MainActivity : AppCompatActivity() {
             125, Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
+
+
+
+
+
+
+
+
 }
 
 const val TAG = "MainActivity"

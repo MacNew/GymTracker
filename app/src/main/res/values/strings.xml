@@ -30,4 +30,8 @@
     <string name="passwrod">password</string>
     <string name="pref_key">com.mac.gymtracker</string>
     <string name="log_out">Log out</string>
+    <string name="firstName">FirstName</string>
+    <string name="last_name">Last Name</string>
+    <string name="accountType">AccountType</string>
+    <string name="last_sync_date">Last Sync Date</string>
 </resources>

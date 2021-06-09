@@ -14,7 +14,7 @@ import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 
 @Database(entities = [TrackExerciseModel::class, ExerciseListModle::class
                      , ExerciseRecordModel::class
-                     ] , version = 2, exportSchema = false)
+                     ] , version = 3, exportSchema = false)
 abstract class GymTrackerDatabase : RoomDatabase() {
 
     abstract fun exerciseDao(): ExerciseDao
