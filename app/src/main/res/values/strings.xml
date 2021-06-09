@@ -29,4 +29,5 @@
     <string name="email">Email</string>
     <string name="passwrod">password</string>
     <string name="pref_key">com.mac.gymtracker</string>
+    <string name="log_out">Log out</string>
 </resources>

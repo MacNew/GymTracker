@@ -56,6 +56,7 @@ class LastSummeryFragment : Fragment(), Page {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewmodle.updateList(
             null,
             (activity as AppCompatActivity).supportActionBar!!,
@@ -71,6 +72,11 @@ class LastSummeryFragment : Fragment(), Page {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        var mi = menu.findItem(R.id.id_log_out)
+        mi.isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

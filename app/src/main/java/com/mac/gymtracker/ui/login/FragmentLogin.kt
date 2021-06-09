@@ -1,8 +1,10 @@
 package com.mac.gymtracker.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -11,9 +13,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.google.firebase.auth.ktx.actionCodeSettings
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentLoginBinding
+import com.mac.gymtracker.ui.fetch.FetchDataFromFireStoreService
 import com.mac.gymtracker.utils.*
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -22,10 +27,18 @@ class FragmentLogin : Fragment() {
     private val binding get() = _binding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        setHasOptionsMenu(true)
         var isLogin = PrefUtils.INSTANCE(requireContext()).getBoolean(IS_LOGIN, false)
         if (isLogin) {
             redirectSync()
         }
+    }
+
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        var mi = menu.findItem(R.id.id_log_out)
+        mi.isVisible = false
     }
 
     fun redirectSync() {
@@ -44,7 +57,6 @@ class FragmentLogin : Fragment() {
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding!!.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,13 +114,15 @@ class FragmentLogin : Fragment() {
                     )
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
-                                PrefUtils.INSTANCE(requireContext()).setBoolean(IS_LOGIN, true)
-                                PrefUtils.INSTANCE(requireContext()).let {
-                                    it.setString(EMAIL, binding!!.username.text.toString())
-                                    it.setString(PASSWORD, binding!!.password.text.toString())
+                                PrefUtils.INSTANCE(requireContext()).let { pref->
+                                    pref.setString(EMAIL, binding!!.username.text.toString())
+                                    pref.setString(PASSWORD, binding!!.password.text.toString())
+                                    pref.setBoolean(IS_LOGIN, true)
                                 }
-                                view.showSnack("Login Successfully")
                                 loading.visibility = View.GONE
+                                var intent = Intent(activity, FetchDataFromFireStoreService::class.java)
+                                intent.putExtra("username", binding!!.username.text.toString())
+                                (activity as AppCompatActivity).startService(intent)
                                 redirectSync()
                             } else {
                                 view.showSnack(it.exception?.message!!)

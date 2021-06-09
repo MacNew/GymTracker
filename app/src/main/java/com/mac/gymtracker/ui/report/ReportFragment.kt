@@ -3,10 +3,12 @@ package com.mac.gymtracker.ui.report
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,6 +54,7 @@ class ReportFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         viewmodel = ViewModelProvider(
             this,
             ExerciseRecordFactory(
@@ -67,8 +70,14 @@ class ReportFragment : Fragment() {
         return root
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        var mi = menu.findItem(R.id.id_log_out)
+        mi.isVisible = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
         binding.rvReport.apply {

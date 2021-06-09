@@ -50,8 +50,10 @@ const val IS_LOGIN = "IS_LOGIN"
 const val IS_FROM_SYNC = "IS_FROM_SYNC"
 const val EMAIL = "EMAIL"
 const val PASSWORD = "PASSWORD"
+const val EXERCISE_RECORD = "exerciseRecord"
+const val EXERCISE_LIST = "exerciseList"
 
-public fun String?.toLocalBitMap(): Bitmap? {
+ fun String?.toLocalBitMap(): Bitmap? {
     val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)
     return bitmap

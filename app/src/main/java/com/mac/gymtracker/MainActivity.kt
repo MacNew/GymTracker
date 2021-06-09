@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -65,8 +66,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        // menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.setting_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId) {
+            R.id.id_log_out -> {
+                PrefUtils.INSTANCE(this).let { pref->
+                    pref.setString(EMAIL, "")
+                    pref.setString(PASSWORD, "")
+                    pref.setBoolean(IS_LOGIN, false)
+                }
+                binding.drawerLayout.showSnack("Log out Successfully ")
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
 

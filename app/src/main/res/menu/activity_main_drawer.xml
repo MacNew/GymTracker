@@ -2,23 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
         <item
+            android:iconTint="@color/red_200"
             android:id="@+id/nav_track_exercise"
             android:icon="@drawable/ic_exercise"
             android:title="@string/menu_exercise" />
         <item
+
+            android:iconTint="@color/red_200"
             android:id="@+id/nav_last_summery"
             android:icon="@drawable/ic_last_summery"
             android:title="@string/menu_last_exercise_summery" />
         <item
+            android:iconTint="@color/red_200"
             android:id="@+id/nav_report"
             android:icon="@drawable/ic_report"
             android:title="@string/menu_report" />
        <item
            android:id="@+id/nav_sync"
-           android:icon="@drawable/edit_text_boarder"
+           android:iconTint="@color/red_200"
+           android:icon="@drawable/ic_baseline_sync_24"
            android:title="@string/sync"/>
     </group>
 </menu>

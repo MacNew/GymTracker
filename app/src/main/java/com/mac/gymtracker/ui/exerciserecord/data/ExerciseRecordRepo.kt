@@ -38,6 +38,17 @@ class ExerciseRecordRepo(context: Context) {
         }
     }
 
+    fun insertFromFireStore(record: List<ExerciseRecordModel>) {
+        repo.insert(record).subscribeONNewThread {
+            error, isError->
+            if (isError) {
+                Log.e("Service",error?.message!!)
+            } else {
+                Log.e("Service", "Success on Inserting data")
+            }
+        }
+    }
+
     @SuppressLint("CheckResult")
     fun getAll(
         currentDate: Long,

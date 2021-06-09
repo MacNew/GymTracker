@@ -3,12 +3,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentSyncBinding
 import com.mac.gymtracker.ui.exercise.TrackExerciseViewModel
 import com.mac.gymtracker.ui.exercise.TrackingExerciseViewModelFactory
@@ -18,11 +20,10 @@ import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
-import com.mac.gymtracker.utils.EMAIL
-import com.mac.gymtracker.utils.PrefUtils
-import com.mac.gymtracker.utils.showSnack
+import com.mac.gymtracker.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_login.*
 
 class FragmentSync : Fragment() {
     private var _binding: FragmentSyncBinding? = null
@@ -30,6 +31,7 @@ class FragmentSync : Fragment() {
     private lateinit var trackExerciseViewModel: TrackExerciseViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.title = "Sync data"
     }
 
@@ -38,6 +40,7 @@ class FragmentSync : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         trackExerciseViewModel = ViewModelProvider(
             this,
             TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext))
@@ -49,6 +52,7 @@ class FragmentSync : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         binding?.syncBtn?.setOnClickListener {
             binding?.syncProgressbar?.visibility = View.VISIBLE
             binding?.syncBtn?.visibility = View.GONE
@@ -69,7 +73,7 @@ class FragmentSync : Fragment() {
             }.subscribe({ list ->
                 Log.e(TA, "user name $userName")
                 var exerciseListModle = ExerciseList(list)
-                db.collection(userName!!).document("exerciseList").set(exerciseListModle)
+                db.collection(userName!!).document(EXERCISE_LIST).set(exerciseListModle)
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
@@ -97,7 +101,7 @@ class FragmentSync : Fragment() {
             }.subscribe({
                 val userName = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "")
                 var exerciseListModle = ExerciseRecord(it)
-                db.collection(userName!!).document("exerciseRecord").set(exerciseListModle)
+                db.collection(userName!!).document(EXERCISE_RECORD).set(exerciseListModle)
                     .addOnSuccessListener {
                         binding?.syncProgressbar?.visibility = View.GONE
                         binding?.syncBtn?.visibility = View.VISIBLE
@@ -115,6 +119,11 @@ class FragmentSync : Fragment() {
                 binding?.syncBtn?.visibility = View.VISIBLE
                 view?.showSnack("Error ${it.message}")
             }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        var mi = menu.findItem(R.id.id_log_out)
+        mi.isVisible = false
     }
 }
 

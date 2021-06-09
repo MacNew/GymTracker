@@ -2,6 +2,7 @@ package com.mac.gymtracker.ui.exerciserecord.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import io.reactivex.Completable
@@ -17,11 +18,7 @@ interface ExerciseRecordDao {
     @Query("select *from exercise_record")
     fun getAllCheck(): Single<List<ExerciseRecordModel>>
 
-
-
-
-
-    @Insert()
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(exerciseList: List<ExerciseRecordModel>): Completable
 
     @Query("select *from exercise_record where string_format_date=:date")

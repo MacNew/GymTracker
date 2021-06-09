@@ -133,6 +133,11 @@ class PieChartFragment : Fragment(), Page {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        var mi = menu.findItem(R.id.id_log_out)
+        mi.isVisible = false
+    }
+
     override fun onPageCnangeListner() {
         (activity as AppCompatActivity).supportActionBar?.title =
             requireActivity().resources.getString(R.string.last_seven_day)

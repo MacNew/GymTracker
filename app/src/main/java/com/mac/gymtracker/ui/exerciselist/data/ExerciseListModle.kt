@@ -20,4 +20,8 @@ data class ExerciseListModle(
     var imageString: String? = null,
     @ColumnInfo(name = "mydate")
     val date: Long
-) : Serializable
+) : Serializable {
+    override fun toString(): String {
+        return "ExerciseListModle(name='$name', exercise_id=$exercise_id, image=$image, imageString=$imageString, date=$date)"
+    }
+}

@@ -3,6 +3,7 @@ package com.mac.gymtracker.ui.lastsummery
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -27,6 +28,8 @@ class NewLastSummaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+
         val pagerAdapter = LastSummeryViewPager(childFragmentManager)
         binding.pager.adapter = pagerAdapter
         binding.tabLayout.setupWithViewPager(binding.pager)
