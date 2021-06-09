@@ -67,6 +67,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.cardview.widget.CardView
+                android:visibility="gone"
+                android:layout_margin="16dp"
+                android:id="@+id/card_view_msg"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                card_view:cardBackgroundColor="@android:color/white"
+                card_view:cardElevation="2dp"
+                card_view:cardUseCompatPadding="true"
+                >
+                <TextView
+                    android:textSize="18dp"
+                    android:id="@+id/tv_message_error"
+                    android:textColor="@color/red_200"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No data found"
+
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"

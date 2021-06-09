@@ -90,8 +90,8 @@ class ReportFragment : Fragment() {
            // binding.progressBarReport.visibility = View.GONE
         })
 
-        viewmodel.stringDate.observe(viewLifecycleOwner, {
-            ExerciseRecordRepo(requireContext()).getListByDate(it) { list ->
+        viewmodel.stringDate.observe(viewLifecycleOwner, { date->
+            ExerciseRecordRepo(requireContext()).getListByDate(date) { list ->
                 var hsMap: HashMap<String, ArrayList<ExerciseRecordModel>> = HashMap()
                 var key: HashSet<String> = HashSet<String>();
                 list.forEach { exerciseRecord ->
@@ -115,7 +115,7 @@ class ReportFragment : Fragment() {
                         )
                     )
                 }
-                viewmodel.updateList(lastSummeryModel)
+                viewmodel.updateList(lastSummeryModel, binding, date)
             }
         })
 

@@ -39,9 +39,11 @@ class FragmentExerciseRecord : Fragment() {
             this,
             ExerciseRecordFactory(
                 ExerciseRecordRepo(requireActivity().applicationContext),
-                FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId as String, null)
+                FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId as String, null
+            )
         ).get(
-            ExerciseRecordViewModle::class.java)
+            ExerciseRecordViewModle::class.java
+        )
         _binding = FragmentExerciseRecordBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
         return root
@@ -72,7 +74,7 @@ class FragmentExerciseRecord : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.hide()
         try {
             binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
-        }catch (exception: Exception) {
+        } catch (exception: Exception) {
             binding!!.ivExerciseRecord.setImageBitmap(image!!.toLocalBitMap())
         }
         binding!!.tbExerciseRecord.title = id
@@ -95,7 +97,7 @@ class FragmentExerciseRecord : Fragment() {
                         binding!!.rvRecordFragment.adapter!!.notifyDataSetChanged()
                         view.showSnack("Data Added Successfully ")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
-                       // (activity as MainActivity).onBackPressed()
+                        // (activity as MainActivity).onBackPressed()
 
                     } else {
                         Log.e("msg", "cannot find record list")
@@ -118,14 +120,15 @@ class FragmentExerciseRecord : Fragment() {
         val numberPickerReps = bottomSheetDialog.findViewById<NumberPicker>(R.id.number_picker_rep)
         val tvRecord = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_bs)
         val tvDate = bottomSheetDialog.findViewById<TextView>(R.id.tv_label_date)
-        tvRecord!!.text = FragmentExerciseRecordArgs.fromBundle(bundle = requireArguments()).exerciseId
-        tvDate!!.text =  Date().time.convertGymTrackerTime()
+        tvRecord!!.text =
+            FragmentExerciseRecordArgs.fromBundle(bundle = requireArguments()).exerciseId
+        tvDate!!.text = Date().time.convertGymTrackerTime()
         var repData = "1"
         var weight: String = weightEditText?.text.toString()
         imageButton!!.setOnClickListener {
             bottomSheetDialog.hide()
             weight = weightEditText?.text.toString()
-            if (weight.isNotBlank() || weight !="") {
+            if (weight.isNotBlank() || weight != "") {
                 addDataOnRecyclerView(repData, weight, setCount)
                 setCount += 1
             } else {
@@ -163,7 +166,7 @@ class FragmentExerciseRecord : Fragment() {
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)
-        if (recordList.size>0) {
+        if (recordList.size > 0) {
             binding!!.cardViewMsg.visibility = View.GONE
         } else {
             binding!!.cardViewMsg.visibility = View.VISIBLE
@@ -171,11 +174,40 @@ class FragmentExerciseRecord : Fragment() {
     }
 
     private fun setWeightAndRep(repsNumberPicker: NumberPicker) {
-        val repData = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "13", "14", "15", "16", "17", "18", "19", "20","21", "22", "23", "24", "25")
+        val repData = arrayOf(
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25"
+        )
         repsNumberPicker.minValue = 1
         repsNumberPicker.maxValue = repData.size
         repsNumberPicker.displayedValues = repData
         repsNumberPicker.value = 1
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

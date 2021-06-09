@@ -3,12 +3,14 @@ package com.mac.gymtracker.ui.exerciserecord
 import android.content.res.Resources
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mac.gymtracker.R
+import com.mac.gymtracker.databinding.FragmentReportBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
@@ -31,11 +33,17 @@ class ExerciseRecordViewModle(
     val stringDate: LiveData<String> = _stringDate
 
 
-    fun updateList(lastSummery: ArrayList<LastSummeryModel>) {
+    fun updateList(lastSummery: ArrayList<LastSummeryModel>, binding: FragmentReportBinding, date:String) {
         Collections.sort(lastSummery,
             Comparator<LastSummeryModel?> { o1, o2 ->
                 o2!!.date.toLong().compareTo(o1!!.date.toLong())
             })
+        if (lastSummery.isEmpty()) {
+            binding.cardViewMsg.visibility = View.VISIBLE
+            binding.tvMessageError.text = "No data Found on $date"
+        } else {
+            binding.cardViewMsg.visibility = View.INVISIBLE
+        }
         _lastSummery.postValue(lastSummery)
     }
 
@@ -133,6 +141,7 @@ class ExerciseRecordViewModle(
     fun sendDate(stringDate: String) {
         _stringDate.postValue(stringDate)
     }
+
 
 
 }
