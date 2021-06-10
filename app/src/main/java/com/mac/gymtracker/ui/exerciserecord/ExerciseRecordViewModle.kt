@@ -108,7 +108,7 @@ class ExerciseRecordViewModle(
                     LastSummeryModel(
                         false, it,
                         hsMap[it]?.get(0)!!.mainExercise, hsMap[it]?.get(0)?.exerciseName!!,
-                        hsMap[it]?.get(0)!!.image, hsMap[it]
+                        hsMap[it]?.get(0)!!.image!!, hsMap[it]
                     )
                 )
             }

@@ -15,19 +15,22 @@ interface ExerciseRecordDao {
     @Query("select *from exercise_record where roomDate between :currentDate and :oneWeekAfterDate")
     fun getAll(currentDate: Long, oneWeekAfterDate: Long): Single<List<ExerciseRecordModel>>
 
-    @Query("select *from exercise_record")
+    @Query("select  date, exercise_name, weight, reps, `Set`, save_time, main_exercise, roomDate, string_format_date from exercise_record")
     fun getAllCheck(): Single<List<ExerciseRecordModel>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(exerciseList: List<ExerciseRecordModel>): Completable
 
     @Query("select *from exercise_record where string_format_date=:date")
-    fun getListByDate(date: String) : Single<List<ExerciseRecordModel>>
+    fun getListByDate(date: String): Single<List<ExerciseRecordModel>>
 
     @Query("update exercise_record set exercise_name=:name, image=:imageString where exercise_name=:previousName")
-    fun editQuery(previousName: String, name: String, imageString: String?) : Completable
+    fun editQuery(previousName: String, name: String, imageString: String?): Completable
 
     @Query("delete from exercise_record where exercise_name=:name")
     fun deleteQuery(name: String): Completable
+
+    @Query("Update exercise_record set image=:image where exercise_name=:exerciseName")
+    fun updateImage(image: String?, exerciseName: String?): Completable
 
 }

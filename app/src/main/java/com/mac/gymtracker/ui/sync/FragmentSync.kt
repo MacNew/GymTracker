@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mac.gymtracker.R
-import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentSyncBinding
 import com.mac.gymtracker.ui.exercise.TrackExerciseViewModel
 import com.mac.gymtracker.ui.exercise.TrackingExerciseViewModelFactory
@@ -31,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import org.json.JSONException
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FragmentSync : Fragment() {
     private var _binding: FragmentSyncBinding? = null
@@ -56,8 +56,6 @@ class FragmentSync : Fragment() {
     }
 
 
-
-
     private val db = FirebaseFirestore.getInstance()
     val config = PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
         .clientId(PAY_PAL_CLIENT_ID)
@@ -69,7 +67,7 @@ class FragmentSync : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.e(TAG, "OnActivity Called $requestCode")
+        Log.e(TA, "OnActivity Called $requestCode")
         if (requestCode == 123) {
             //If the result is OK i.e. user has not canceled the payment
             if (resultCode == Activity.RESULT_OK) {
@@ -83,7 +81,7 @@ class FragmentSync : Fragment() {
                         val paymentDetails = confirm.toJSONObject().toString(4)
                         Log.i("paymentExample", paymentDetails)
 
-                        Log.e(TAG, "Payment Sucessfully")
+                        Log.e(TA, "Payment Sucessfully")
 
                     } catch (e: JSONException) {
                         Log.e("paymentExample", "an extremely unlikely failure occurred: ", e)
@@ -99,7 +97,6 @@ class FragmentSync : Fragment() {
             }
         }
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,7 +130,7 @@ class FragmentSync : Fragment() {
 
     private fun initView() {
         PrefUtils.INSTANCE(requireContext()).let {
-            binding?.firstName?.text =  it.getString(FIRST_NAME, "null")
+            binding?.firstName?.text = it.getString(FIRST_NAME, "null")
             binding?.lastName?.text = it.getString(LAST_NAME, "null")
             binding?.email?.text = it.getString(EMAIL, "null")
             binding?.accountType?.text = "Basic"
@@ -142,12 +139,14 @@ class FragmentSync : Fragment() {
     }
 
 
-    data class User(val firstName: String,
-                    val lastName: String,
-                    val email: String,
-                    val lastPaymentDate: Date,
-                    val lastSyncDate: Date,
-                    val isPremium: Boolean)
+    data class User(
+        val firstName: String,
+        val lastName: String,
+        val email: String,
+        val lastPaymentDate: Date,
+        val lastSyncDate: Date,
+        val isPremium: Boolean
+    )
 
     @SuppressLint("CheckResult")
     private fun syncExerciseList() {
@@ -170,14 +169,14 @@ class FragmentSync : Fragment() {
                 var mysecondRef = db.collection(userName!!).document(EXERCISE_LIST)
                 batch.set(mysecondRef, exerciseListModle).commit()
 */
-                    db.collection(userName!!).
-                    document(EXERCISE_LIST).set(exerciseListModle)
+                db.collection(userName!!).document(EXERCISE_LIST).set(exerciseListModle)
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
                         binding?.syncProgressbar?.visibility = View.GONE
                         binding?.syncBtn?.visibility = View.VISIBLE
                         view?.showSnack("Error ${it.message}")
+                        Log.e(TA, "Error " + it.message)
                     }
             }) {
                 Log.e(TA, "Error ${it.message}")
@@ -199,6 +198,7 @@ class FragmentSync : Fragment() {
             }.subscribe({
                 val userName = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "")
                 var exerciseListModle = ExerciseRecord(it)
+
                 db.collection(userName!!).document(EXERCISE_RECORD).set(exerciseListModle)
                     .addOnSuccessListener {
                         binding?.syncProgressbar?.visibility = View.GONE

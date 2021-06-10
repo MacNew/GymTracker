@@ -5,7 +5,10 @@ import android.content.Context
 import android.util.Log
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
+import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
+import com.mac.gymtracker.ui.exerciserecord.FragmentExerciseRecord
 import com.mac.gymtracker.ui.exerciserecord.dao.ExerciseRecordDao
+import com.mac.gymtracker.ui.sync.ExerciseRecord
 import com.mac.gymtracker.utils.subscribeONNewThread
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +24,7 @@ class ExerciseRecordRepo(context: Context) {
         var date = Date().time.toString()
         var roomDate = Date()
         var sdf = SimpleDateFormat("d MMM yyyy")
-        var stringformatedDate  = sdf.format(roomDate)
+        var stringformatedDate = sdf.format(roomDate)
         record.map {
             it.saveTime = date
             it.roomDate = roomDate
@@ -38,12 +41,29 @@ class ExerciseRecordRepo(context: Context) {
         }
     }
 
-    fun insertFromFireStore(record: List<ExerciseRecordModel>) {
-        repo.insert(record).subscribeONNewThread {
-            error, isError->
+    fun insertFromFireStore(record: List<ExerciseRecordModel>, applicationContext: Context) {
+        repo.insert(record).subscribeONNewThread { error, isError ->
             if (isError) {
-                Log.e("Service",error?.message!!)
+                Log.e("Service", error?.message!!)
             } else {
+                record.map { record ->
+                    LocalExerciselistRepo(applicationContext).getImage(record.exerciseName)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ image ->
+                            repo.updateImage(image, record.exerciseName)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    Log.e(TAG, "Data update Successfully")
+                                }) {
+                                    Log.e(TAG, it?.message!!)
+                                }
+                            record.image = image
+                        }) {
+                            Log.e(TAG, "Error")
+                        }
+                }
                 Log.e("Service", "Success on Inserting data")
             }
         }
@@ -77,12 +97,12 @@ class ExerciseRecordRepo(context: Context) {
                 Log.e("exerciseRec", "Message do" + it.message!!)
 
             }.subscribe({
-                var arrayList:ArrayList<ExerciseRecordModel> = ArrayList()
+                var arrayList: ArrayList<ExerciseRecordModel> = ArrayList()
                 it.forEach { listmac ->
                     arrayList.add(listmac)
                 }
                 function(arrayList)
-            }){
+            }) {
                 Log.e("exerciseRec", "Message it" + it.message!!)
             }
     }
@@ -92,3 +112,5 @@ class ExerciseRecordRepo(context: Context) {
 
     fun deleteContent(name: String) = repo.deleteQuery(name)
 }
+
+const val TAG = "MyTag"

@@ -28,7 +28,7 @@ class ExerciseRecordModel(
     @ColumnInfo(name = "main_exercise")
     var mainExercise: String,
     @ColumnInfo(name = "image")
-    var image: String,
+    var image: String? = "",
     @ColumnInfo(name = "roomDate")
     @field:TypeConverters(DateConverter::class)
     var roomDate: Date,

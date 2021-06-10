@@ -35,7 +35,7 @@ class LocalExerciselistRepo(var context: Context) {
     }
 
     fun updateExercise(list: List<ExerciseListModle>, message: (errorMsg: Boolean) -> Unit) {
-        repo.updateAll(list).subscribeONNewThread { _, isError ->
+        repo.insert(list).subscribeONNewThread { _, isError ->
             if (isError)
                 message(isError)
             else
@@ -58,7 +58,7 @@ class LocalExerciselistRepo(var context: Context) {
         var exerciseNewModle = ExerciseListModle(
             name = exerciseName,
             exercise_id = exerciseId,
-            image = "2131165303",
+            image = "213        1165303",
             imageString = encodedString,
             date = Date().time,
             isSync = false
@@ -132,6 +132,9 @@ class LocalExerciselistRepo(var context: Context) {
                 view.showSnack(it.message!!)
             }
     }
+
+    fun getImage(exerciseName: String?) = repo.getImage(exerciseName)
+
 }
 
 private fun ExerciseListModle.editContent(

@@ -38,32 +38,37 @@ class FetchDataFromFireStoreService : Service() {
             if (task.isSuccessful) {
                 var documentSnapshot = task.result
                 if (documentSnapshot.exists()) {
-                    var list:ArrayList<ExerciseRecordModel> = ArrayList()
+                    var list: ArrayList<ExerciseRecordModel> = ArrayList()
                     list.clear()
                     var myData: List<Map<String, Objects>> =
                         documentSnapshot.get(EXERCISE_RECORD) as List<Map<String, Objects>>
                     myData.forEach {
-                        list.add(ExerciseRecordModel(
-                            date = it["date"].toString(),
-                            exerciseName = it["exerciseName"].toString(),
-                            image = it["image"].toString(),
-                            mainExercise = it["mainExercise"].toString(),
-                            reps = it["reps"].toString(),
-                            roomDate = (it["roomDate"] as Timestamp).toDate(),
-                            saveTime = it["saveTime"].toString(),
-                            set = it["set"].toString(),
-                            stringFormatDate = it["stringFormatDate"].toString(),
-                            weight = it["weight"].toString()
-                        ))
+                        list.add(
+                            ExerciseRecordModel(
+                                date = it["date"].toString(),
+                                exerciseName = it["exerciseName"].toString(),
+                                image = it["image"].toString(),
+                                mainExercise = it["mainExercise"].toString(),
+                                reps = it["reps"].toString(),
+                                roomDate = (it["roomDate"] as Timestamp).toDate(),
+                                saveTime = it["saveTime"].toString(),
+                                set = it["set"].toString(),
+                                stringFormatDate = it["stringFormatDate"].toString(),
+                                weight = it["weight"].toString()
+                            )
+                        )
                     }
-                    ExerciseRecordRepo(applicationContext).insertFromFireStore(list)
+                    ExerciseRecordRepo(applicationContext).insertFromFireStore(
+                        list,
+                        applicationContext
+                    )
 
                 } else {
                     Log.e(TAG, "Data not exist")
                 }
 
             } else {
-                Log.e(TAG, "Task is Not successfull "+ task?.exception?.message)
+                Log.e(TAG, "Task is Not successfull " + task?.exception?.message)
             }
         }
 
@@ -91,6 +96,9 @@ class FetchDataFromFireStoreService : Service() {
                     var myData: List<Map<String, Objects>> =
                         documentSnapshot.get(EXERCISE_LIST) as List<Map<String, Objects>>
                     myData.forEach {
+                        if (it["imageString"] != null) {
+                            Log.e(TAG, it["imageString"].toString())
+                        }
                         list.add(
                             ExerciseListModle(
                                 name = it["name"].toString(),
@@ -102,7 +110,19 @@ class FetchDataFromFireStoreService : Service() {
                             )
                         )
                     }
-                    Log.e(TAG, list.toString())
+                    Log.e(TAG, list.size.toString())
+
+                    /*list.map { exerciseModel ->
+                        LocalExerciselistRepo(applicationContext)
+                            .getImage(exerciseModel.name).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                exerciseModel.image = it
+                            }) {
+                                Log.e(TAG, "Error on mac "+it.message)
+                            }
+                    }*/
+
                     LocalExerciselistRepo(applicationContext).updateExercise(list) {
                     }
                 } else {

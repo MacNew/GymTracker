@@ -36,7 +36,6 @@ class FragmentLogin : Fragment() {
         }
     }
 
-
     override fun onPrepareOptionsMenu(menu: Menu) {
         var mi = menu.findItem(R.id.id_log_out)
         mi.isVisible = false
@@ -65,9 +64,8 @@ class FragmentLogin : Fragment() {
         (activity as MainActivity?)!!.supportActionBar!!.show()
         (activity as AppCompatActivity).supportActionBar?.title = "Login"
         binding?.signUpLogin?.setOnClickListener {
-
             (activity as AppCompatActivity).getNavigationController()
-                .navigate( FragmentLoginDirections.actionNavSyncToSignUpFragment())
+                .navigate(FragmentLoginDirections.actionNavSyncToSignUpFragment())
         }
         binding?.login?.setOnClickListener {
             if (username.text.isEmpty()) {
@@ -83,22 +81,22 @@ class FragmentLogin : Fragment() {
                         binding!!.username.text.toString(),
                         binding!!.password.text.toString()
                     ).addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                PrefUtils.INSTANCE(requireContext()).let { pref ->
-                                    pref.setString(EMAIL, binding!!.username.text.toString())
-                                    pref.setString(PASSWORD, binding!!.password.text.toString())
-                                    pref.setBoolean(IS_LOGIN, true)
-                                }
-                                loading.visibility = View.GONE
-                                var intent = Intent(activity, FetchDataFromFireStoreService::class.java)
-                                intent.putExtra("username", binding!!.username.text.toString())
-                                (activity as AppCompatActivity).startService(intent)
-                                redirectSync()
-                            } else {
-                                view.showSnack(it.exception?.message!!)
-                                loading.visibility = View.GONE
+                        if (it.isSuccessful) {
+                            PrefUtils.INSTANCE(requireContext()).let { pref ->
+                                pref.setString(EMAIL, binding!!.username.text.toString())
+                                pref.setString(PASSWORD, binding!!.password.text.toString())
+                                pref.setBoolean(IS_LOGIN, true)
                             }
+                            loading.visibility = View.GONE
+                            var intent = Intent(activity, FetchDataFromFireStoreService::class.java)
+                            intent.putExtra("username", binding!!.username.text.toString())
+                            (activity as AppCompatActivity).startService(intent)
+                            redirectSync()
+                        } else {
+                            view.showSnack(it.exception?.message!!)
+                            loading.visibility = View.GONE
                         }
+                    }
                 }
             }
         }
