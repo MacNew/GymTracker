@@ -49,7 +49,12 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        this.workOut()
+        if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
+            this.workOut()
+        } else {
+            Log.e(TAG, "Not called")
+        }
+
         val intent = intent
         val emailLink = intent!!.data.toString()
         Log.e(TAG, emailLink)

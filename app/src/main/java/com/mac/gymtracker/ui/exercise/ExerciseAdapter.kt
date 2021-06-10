@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mac.gymtracker.R
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
+import com.mac.gymtracker.utils.toLocalBitMap
 import kotlinx.android.synthetic.main.exercise_adapter.view.*
 import kotlinx.android.synthetic.main.exercise_list_adapter.view.cv_parent
 
@@ -21,7 +22,7 @@ class ExerciseAdapter(var list: List<TrackExerciseModel>, var function:(exercise
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.iv_exercise_name.setImageResource(list[position].image!!.toInt())
+        holder.itemView.iv_exercise_name.setImageBitmap(list[position].image!!.toLocalBitMap())
         holder.itemView.tv_exercise_name.text = list[position].name
         holder.itemView.cv_parent.setOnClickListener {
             function(list[position].name!!)

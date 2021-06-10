@@ -31,8 +31,8 @@ class ExerciseListAdapter(
             holder.itemView.iv_exercise_list_name.rotation = 180.0F
         }
         if (list[position].imageString == null)
-            holder.itemView.iv_exercise_list_name.setImageResource(
-                list[position].image!!.toInt()
+            holder.itemView.iv_exercise_list_name.setImageBitmap(
+                list[position].image!!.toLocalBitMap()
             ) else
             holder.itemView.iv_exercise_list_name.setImageBitmap(
                 list[position].imageString.toLocalBitMap()
