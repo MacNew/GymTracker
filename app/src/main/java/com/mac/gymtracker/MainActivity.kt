@@ -30,10 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         val emailLink = intent!!.data.toString()
         Log.e(TAG, emailLink)
         if (emailLink == "https://www.example.com/") {
+
             var email = PrefUtils.INSTANCE(this).getString(EMAIL, "")
             var password = PrefUtils.INSTANCE(this).getString(PASSWORD, "")
             Firebase.auth.createUserWithEmailAndPassword(email!!, password!!)

@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.actionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentLoginBinding
 import com.mac.gymtracker.ui.fetch.FetchDataFromFireStoreService
@@ -27,7 +29,6 @@ class FragmentLogin : Fragment() {
     private val binding get() = _binding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         setHasOptionsMenu(true)
         var isLogin = PrefUtils.INSTANCE(requireContext()).getBoolean(IS_LOGIN, false)
         if (isLogin) {
@@ -61,42 +62,12 @@ class FragmentLogin : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = "Login/SignUP"
-        binding?.signUp?.setOnClickListener {
-            if (username.text.isEmpty()) {
-                username.error = "Enter UserName"
-                username.isFocusable = true
-            } else {
-                if (password.text.isEmpty()) {
-                    password.error = "Enter Password"
-                    password.isFocusable = true
-                } else {
-                    loading.visibility = View.VISIBLE
-                    val actionCodeSettings = actionCodeSettings {
-                        url = "https://www.example.com"
-                        handleCodeInApp = true
-                        setAndroidPackageName("com.mac.gymtracker.ui", true, "12")
-                    }
-                    Firebase.auth.sendSignInLinkToEmail(
-                        binding!!.username.text.toString(),
-                        actionCodeSettings
-                    )
-                        .addOnCompleteListener() { task ->
-                            if (task.isSuccessful) {
-                                loading.visibility = View.GONE
-                                view.showSnack("Sign link send in your Email")
-                                PrefUtils.INSTANCE(requireContext()).let {
-                                    it.setString(EMAIL, binding!!.username.text.toString())
-                                    it.setString(PASSWORD, binding!!.password.text.toString())
-                                }
-                            } else {
-                                Log.e(TAG, task.exception!!.message!!)
-                                loading.visibility = View.GONE
-                                view.showSnack("Error on Sending Email Link")
-                            }
-                        }
-                }
-            }
+        (activity as MainActivity?)!!.supportActionBar!!.show()
+        (activity as AppCompatActivity).supportActionBar?.title = "Login"
+        binding?.signUpLogin?.setOnClickListener {
+
+            (activity as AppCompatActivity).getNavigationController()
+                .navigate( FragmentLoginDirections.actionNavSyncToSignUpFragment())
         }
         binding?.login?.setOnClickListener {
             if (username.text.isEmpty()) {
@@ -111,10 +82,9 @@ class FragmentLogin : Fragment() {
                     Firebase.auth.signInWithEmailAndPassword(
                         binding!!.username.text.toString(),
                         binding!!.password.text.toString()
-                    )
-                        .addOnCompleteListener {
+                    ).addOnCompleteListener {
                             if (it.isSuccessful) {
-                                PrefUtils.INSTANCE(requireContext()).let { pref->
+                                PrefUtils.INSTANCE(requireContext()).let { pref ->
                                     pref.setString(EMAIL, binding!!.username.text.toString())
                                     pref.setString(PASSWORD, binding!!.password.text.toString())
                                     pref.setBoolean(IS_LOGIN, true)

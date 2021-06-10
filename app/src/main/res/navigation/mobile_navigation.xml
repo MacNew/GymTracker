@@ -100,9 +100,16 @@
         <action
             android:id="@+id/action_nav_sync_to_fragmentSync"
             app:destination="@id/fragmentSync" />
+        <action
+            android:id="@+id/action_nav_sync_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/fragmentSync"
         android:name="com.mac.gymtracker.ui.sync.FragmentSync"
         android:label="FragmentSync" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.mac.gymtracker.ui.signup.SignUpFragment"
+        android:label="SignUpFragment" />
 </navigation>

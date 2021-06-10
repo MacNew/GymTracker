@@ -30,7 +30,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.json.JSONException
 import java.math.BigDecimal
-
+import java.util.*
 
 class FragmentSync : Fragment() {
     private var _binding: FragmentSyncBinding? = null
@@ -47,7 +47,6 @@ class FragmentSync : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         trackExerciseViewModel = ViewModelProvider(
             this,
             TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext))
@@ -55,6 +54,9 @@ class FragmentSync : Fragment() {
         _binding = FragmentSyncBinding.inflate(inflater, container, false)
         return binding!!.root
     }
+
+
+
 
     private val db = FirebaseFirestore.getInstance()
     val config = PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
@@ -103,6 +105,9 @@ class FragmentSync : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        initView()
+
+
         binding?.syncBtn?.setOnClickListener {
             binding?.syncProgressbar?.visibility = View.VISIBLE
             binding?.syncBtn?.visibility = View.GONE
@@ -111,7 +116,6 @@ class FragmentSync : Fragment() {
         var intent = Intent(context, PayPalService::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
         context?.startService(intent)
-
         binding?.btnPaypal?.setOnClickListener {
 
             val payment = PayPalPayment(
@@ -127,18 +131,23 @@ class FragmentSync : Fragment() {
         }
     }
 
+    private fun initView() {
+        PrefUtils.INSTANCE(requireContext()).let {
+            binding?.firstName?.text =  it.getString(FIRST_NAME, "null")
+            binding?.lastName?.text = it.getString(LAST_NAME, "null")
+            binding?.email?.text = it.getString(EMAIL, "null")
+            binding?.accountType?.text = "Basic"
+            binding?.lastSyncDate?.text = "No data Found"
+        }
+    }
 
 
-
-
-
-
-
-
-
-
-
-    data class User(val name: String, val payment: Boolean)
+    data class User(val firstName: String,
+                    val lastName: String,
+                    val email: String,
+                    val lastPaymentDate: Date,
+                    val lastSyncDate: Date,
+                    val isPremium: Boolean)
 
     @SuppressLint("CheckResult")
     private fun syncExerciseList() {
@@ -151,19 +160,18 @@ class FragmentSync : Fragment() {
                 binding?.syncBtn?.visibility = View.VISIBLE
                 view?.showSnack("Error ${it.message}")
             }.subscribe({ list ->
-                Log.e(TA, "user name $userName")
-                Log.e(TAG, "is Sync Size ${list.size}")
                 var exerciseListModle = ExerciseList(list)
-                var batch = db.batch()
+                /*var batch = db.batch()
                 var mycRef = db.collection(userName!!).document("payment")
+
+
                 batch.set(mycRef, User("Machhindra Neupane", false))
 
                 var mysecondRef = db.collection(userName!!).document(EXERCISE_LIST)
                 batch.set(mysecondRef, exerciseListModle).commit()
-
-                    /*
+*/
                     db.collection(userName!!).
-                    document(EXERCISE_LIST).set(exerciseListModle)*/
+                    document(EXERCISE_LIST).set(exerciseListModle)
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
@@ -201,7 +209,6 @@ class FragmentSync : Fragment() {
                         binding?.syncBtn?.visibility = View.VISIBLE
                         view?.showSnack("Error ${it.message}")
                         Log.e(TA, "Error ${it.message}")
-
                     }
             }) {
                 Log.e(TA, "Error ${it.message}")
