@@ -80,8 +80,7 @@ class FragmentSync : Fragment() {
                         //Getting the payment details
                         val paymentDetails = confirm.toJSONObject().toString(4)
                         Log.i("paymentExample", paymentDetails)
-
-                        Log.e(TA, "Payment Sucessfully")
+                        Log.e(TA, "Payment Successfully")
 
                     } catch (e: JSONException) {
                         Log.e("paymentExample", "an extremely unlikely failure occurred: ", e)

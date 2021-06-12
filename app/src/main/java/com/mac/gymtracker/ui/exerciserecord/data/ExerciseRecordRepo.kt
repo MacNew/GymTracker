@@ -50,18 +50,25 @@ class ExerciseRecordRepo(context: Context) {
                     LocalExerciselistRepo(applicationContext).getImage(record.exerciseName)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ image ->
-                            repo.updateImage(image, record.exerciseName)
+                        .subscribe({
+                            var finalImage:String? = null
+                            if (it.imageString!=null) {
+                                finalImage =  it.imageString
+                                Log.e(TAG, it.imageString!!)
+                            } else {
+                                finalImage =  it.image
+                            }
+                            repo.updateImage(finalImage, record.exerciseName)
                                 .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
+                                .observeOn(Schedulers.io())
                                 .subscribe({
                                     Log.e(TAG, "Data update Successfully")
                                 }) {
                                     Log.e(TAG, it?.message!!)
                                 }
-                            record.image = image
+                          //  record.image = image.image
                         }) {
-                            Log.e(TAG, "Error")
+                            Log.e(TAG, "Error"+ it.message)
                         }
                 }
                 Log.e("Service", "Success on Inserting data")

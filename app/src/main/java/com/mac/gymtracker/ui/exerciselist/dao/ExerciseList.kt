@@ -39,8 +39,8 @@ interface ExerciseList {
     @Delete
     fun deleteExercise(objects: ExerciseListModle) : Completable
 
-    @Query("select image from exercise_list where exercise_name=:exerciseName")
-    fun getImage(exerciseName: String?) : Single<String>
+    @Query("select *from exercise_list where exercise_name=:exerciseName")
+    fun getImage(exerciseName: String?) : Single<ExerciseListModle>
 
 
 }

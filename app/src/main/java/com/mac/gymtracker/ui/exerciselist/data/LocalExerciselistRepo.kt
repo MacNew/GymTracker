@@ -16,6 +16,7 @@ import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
 import com.mac.gymtracker.utils.getResizedBitmap
 import com.mac.gymtracker.utils.showSnack
 import com.mac.gymtracker.utils.subscribeONNewThread
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
@@ -64,7 +65,6 @@ class LocalExerciselistRepo(var context: Context) {
             isSync = false
         )
 
-
         repo.getExercise(exerciseName).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -97,7 +97,7 @@ class LocalExerciselistRepo(var context: Context) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (it.name == exerciseList.name && it.imageString != exerciseList.imageString) {
-                    exerciseList.editContent(previousName, repo, context) { errorMsg, error ->
+                     exerciseList.editContent(previousName, repo, context) { errorMsg, error ->
                         message(errorMsg, error)
                     }
                 } else {
@@ -133,7 +133,9 @@ class LocalExerciselistRepo(var context: Context) {
             }
     }
 
-    fun getImage(exerciseName: String?) = repo.getImage(exerciseName)
+    fun getImage(exerciseName: String?): Single<ExerciseListModle> {
+        return repo.getImage(exerciseName)
+    }
 
 }
 
@@ -143,14 +145,17 @@ private fun ExerciseListModle.editContent(
     context: Context,
     message: (errorMsg: Boolean, error: Throwable) -> Unit
 ) {
+
     ExerciseRecordRepo(context = context).editExerciseRecordContent(previousName, this)
         .subscribeONNewThread { error: Throwable?, isError: Boolean ->
             if (!isError) {
                 repo.editContent(this).subscribeONNewThread { throwableError, isErrors ->
-                    if (isErrors)
+                    if (isErrors) {
                         message(isErrors, throwableError!!)
-                    else
+                    }
+                    else {
                         message(isErrors, throwableError!!)
+                    }
                 }
             } else {
                 message(isError, error!!)
