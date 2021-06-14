@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.databinding.FragmentAddNewBinding
-import com.mac.gymtracker.ui.exerciselist.dao.ExerciseList
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.utils.getResizedBitmap
@@ -27,7 +26,6 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.EasyPermissions.RationaleCallbacks
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, RationaleCallbacks {
     private var _binding: FragmentAddNewBinding? = null
@@ -165,6 +163,7 @@ class FragmentAddNew : Fragment(), EasyPermissions.PermissionCallbacks, Rational
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Log.e("TAG", "Permission code$requestCode")
+
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {

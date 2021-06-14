@@ -6,6 +6,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
+import android.os.Environment
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -15,16 +17,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.google.android.material.snackbar.Snackbar
 import com.mac.gymtracker.R
+import com.mac.gymtracker.splashscreen.TAG
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
 import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
@@ -57,73 +64,168 @@ const val FIRST_NAME = "FIRST_NAME"
 const val LAST_NAME = "LAST_NAME"
 const val IS_DATA_LOADED = "IS_DATA_LOADED"
 
-const val PAY_PAL_CLIENT_ID = "AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu"
+const val PAY_PAL_CLIENT_ID =
+    "AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu"
 
- fun String?.toLocalBitMap(): Bitmap? {
+fun String?.toLocalBitMap(): Bitmap? {
     val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)
     return bitmap
 }
 
-fun Context.workOut() {
-    var list: ArrayList<TrackExerciseModel> = ArrayList()
-    var exercieOne = TrackExerciseModel(CHEST_ID, CHEST, R.drawable.ic_chest.convertBase64(this))
-    var exerciseTwo = TrackExerciseModel(SHOULDER_ID, SHOULDER, R.drawable.ic_shoulder.convertBase64(this))
-    var exerciseThreee = TrackExerciseModel(BACK_ID, BACK, R.drawable.ic_back.convertBase64(this))
-    var exercieFoure = TrackExerciseModel(BICEPS_ID, LEG, R.drawable.ic_leg.convertBase64(this))
-    var exerciseFive = TrackExerciseModel(TRICEPS_ID, BICEPS, R.drawable.ic_biceps.convertBase64(this))
-    var exerciseSix = TrackExerciseModel(LEG_ID, TRICEPS, R.drawable.ic_triceps.convertBase64(this))
-    list.add(exercieOne)
-    list.add(exerciseTwo)
-    list.add(exerciseThreee)
-    list.add(exercieFoure)
-    list.add(exerciseFive)
-    list.add(exerciseSix)
-    TrackExerciseLocalDataSource(this).insertExercise(list!!) {
-        if (!it)
-            loadExercisList(this)
+
+fun Context.workOut(){
+    var ob1 = this.saveMainExercise(R.drawable.ic_chest, CHEST_ID, CHEST, "ic_chest") {
+        var ob2 = this.saveMainExercise(R.drawable.ic_shoulder, SHOULDER_ID, SHOULDER, "ic_shoulder") {
+            var ob3 = this.saveMainExercise(R.drawable.ic_back, BACK_ID, BACK, "ic_back") {
+                var ob4 = this.saveMainExercise(R.drawable.ic_biceps, BICEPS_ID, BICEPS, "ic_biceps") {
+                    var ob5 = this.saveMainExercise(R.drawable.ic_triceps, TRICEPS_ID, TRICEPS, "ic_triceps") {
+                        var ob6 = this.saveMainExercise(R.drawable.ic_leg, LEG_ID, LEG, "ic_leg") {
+                            loadExercisList(this)
+                        }
+                    }
+                }
+            }
+        }
     }
-    PrefUtils.INSTANCE(this).setBoolean(IS_DATA_LOADED, true)
-    Log.e("TAG", "Hello mac")
+
 }
 
+fun Context.saveMainExercise(
+    drawableValue: Int,
+    exerciseId: Int,
+    exerciseName: String,
+    fileName: String,
+    function: (values: Boolean) -> Unit
+){
+    drawableValue.convertBase64(this).saveImage(fileName) {
+        if (it != null) {
+            TrackExerciseLocalDataSource(this).insertExercise(
+                TrackExerciseModel(exerciseId, exerciseName, it)
+            ) {
+                if (it) {
+                    Log.e(TAG, "Data Inserted Successfully")
+                    function(true)
+                } else {
+                    Log.e(TAG, "Error on Saving data")
+                    function(false)
+                }
+            }
+        } else {
+            function(false)
+        }
+    }
+}
+
+@SuppressLint("CheckResult")
+private fun String.saveImage(fileName: String, function: (value: String?) -> Unit) {
+    saveImageAndReturnUri(this, fileName)
+        .subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.io())
+        .subscribe({
+            if (it != null) {
+                function(it)
+                Log.e(TAG, "File Save")
+            } else {
+                function(null)
+                Log.e(TAG, "File Not Save")
+            }
+        }) {
+            function(null)
+            Log.e(TAG, "Error ${it.message}")
+        }
+}
+
+private fun saveImageAndReturnUri(image: String, filename: String): Observable<String?> {
+    val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
+    val finalBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    var bytes = ByteArrayOutputStream()
+    finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+    var dir: File = File(
+        Environment.getExternalStorageDirectory().absolutePath + "//gymtracker"
+    )
+    try {
+        if (!dir.exists()) {
+            if (dir.mkdir()) {
+                Log.e(TAG, "New folder made")
+            } else {
+                Log.e(TAG, "Error on Making new folder")
+            }
+        } else {
+            Log.e(TAG, "Dir alreay exist")
+        }
+
+    } catch (exception: Exception) {
+        Log.e(TAG, exception.message!!)
+
+    }
+    val destination = File(
+        dir,
+        "$filename.jpg"
+    )
+    return try {
+        destination.createNewFile()
+        var fo = FileOutputStream(destination)
+        fo.write(bytes.toByteArray())
+        fo.close()
+        Log.e(TAG, "cool")
+        var uri: String? =
+            Uri.fromFile(File(Environment.getExternalStorageDirectory().absolutePath + "//gymtracker/" + filename))
+                .toString()
+        Observable.just(uri)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error message " + e.message!!)
+        Observable.just(null)
+    }
+}
+
+private fun Context.loadExerciseListURI(drawableImage:Int,fileName: String, exerciseName:String, exerciseId:Int) {
+    drawableImage.convertBase64(this).saveImage(fileName) {
+        if (it!=null) {
+            LocalExerciselistRepo(this).insertExercise(  ExerciseListModle(
+                name = exerciseName,
+                exercise_id = exerciseId,
+                image = it,
+                date = Date().time,
+                isSync = false
+            )) {
+
+            }
+        } else {
+            Log.e(TAG, "error")
+        }
+    }
+
+}
 private fun loadExercisList(context: Context) {
-    var image: String = R.drawable.ic_chest.convertBase64(context)
-    var list: ArrayList<ExerciseListModle> = ArrayList()
-    list.addExercise("Barbell Bench Press", R.drawable.ic_barbell_bench_press.convertBase64(context), CHEST_ID)
-    list.addExercise(
-        "Incline Bench Press",
-        R.drawable.ic_incline_bench_press.convertBase64(context), CHEST_ID
-    )
-    list.addExercise(
-        "Dumbbell Bench Press",
-        R.drawable.ic_dumbbell_bench_press.convertBase64(context),
-        CHEST_ID
-    )
-    list.addExercise("Decline Bench Press", R.drawable.ic_decline_press.convertBase64(context), CHEST_ID)
-    list.addExercise("Machine Chest Press", R.drawable.ic_machine_chest_press.convertBase64(context), CHEST_ID)
-    list.addExercise("Push-Up", R.drawable.ic_push_up.convertBase64(context), CHEST_ID)
-    list.addExercise("Dip", R.drawable.ic_dip.convertBase64(context), CHEST_ID)
-    list.addExercise("Chest Fly", R.drawable.ic_chest_fly.convertBase64(context), CHEST_ID)
-    list.addExercise("Dumbbell Pull-Over", R.drawable.ic_dumbbell_pull_over.convertBase64(context), CHEST_ID)
-    list.addExercise("Machine Fly", R.drawable.ic_machine_fly.convertBase64(context), CHEST_ID)
-    list.addExercise("Push-Press", R.drawable.ic_push_press.convertBase64(context), SHOULDER_ID)
-    list.addExercise("Military Press", R.drawable.ic_military_press.convertBase64(context), SHOULDER_ID)
-    list.addExercise("Rear Delt Row", R.drawable.ic_rear_delt_row.convertBase64(context), SHOULDER_ID)
-    list.addExercise(
-        "Seated Dumbbell Press",
-        R.drawable.ic_seated_dumbbell_press.convertBase64(context),
-        SHOULDER_ID
-    )
-    list.addExercise(
-        "Seated Barbell Press",
-        R.drawable.ic_seated_barbell_press.convertBase64(context),
-        SHOULDER_ID
-    )
+    context.loadExerciseListURI(R.drawable.ic_barbell_bench_press, "ic_barbell_bench_press", "Barbell Bench Press",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_incline_bench_press, "ic_incline_bench_press", "Incline Bench Press",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_dumbbell_bench_press, "ic_dumbbell_bench_press", "Dumbbell Bench Press",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_decline_press, "ic_decline_press", "Decline Bench Press",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_machine_chest_press, "ic_machine_chest_press", "Machine Chest Press",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_push_up, "ic_push_up", "Push-Up",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_dip, "ic_dip", "Dip",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_chest_fly, "ic_chest_fly", "Chest Fly",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_dumbbell_pull_over, "ic_dumbbell_pull_over", "Dumbbell Pull-Over",CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_machine_fly, "ic_machine_fly", "Machine Fly", CHEST_ID)
+    context.loadExerciseListURI(R.drawable.ic_push_press, "ic_push_press", "Push-Press", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_military_press, "ic_military_press", "Military Press", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_rear_delt_row, "ic_rear_delt_row", "Rear Delt Row", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_seated_dumbbell_press, "ic_seated_dumbbell_press", "Seated Dumbbell Press", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_seated_dumbbell_press, "ic_seated_dumbbell_press", "Seated Dumbbell Press", SHOULDER_ID)
+
     list.addExercise("Upright Row", R.drawable.ic_upright_row.convertBase64(context), SHOULDER_ID)
     list.addExercise("Arnold Press", R.drawable.ic_arnold_press.convertBase64(context), SHOULDER_ID)
-    list.addExercise("Rear Delt Fly", R.drawable.ic_rear_delt_fly.convertBase64(context), SHOULDER_ID)
-    list.addExercise("Lateral Raise", R.drawable.ic_lateral_raise.convertBase64(context), SHOULDER_ID)
+    list.addExercise(
+        "Rear Delt Fly",
+        R.drawable.ic_rear_delt_fly.convertBase64(context),
+        SHOULDER_ID
+    )
+    list.addExercise(
+        "Lateral Raise",
+        R.drawable.ic_lateral_raise.convertBase64(context),
+        SHOULDER_ID
+    )
     list.addExercise("Front Raise", R.drawable.ic_front_raise.convertBase64(context), SHOULDER_ID)
     list.addExercise(
         "Machine Pump Shoulder ",
@@ -151,7 +253,11 @@ private fun loadExercisList(context: Context) {
         R.drawable.ic_single_arm_dumbbell_row.convertBase64(context),
         BACK_ID
     )
-    list.addExercise("Chest-Supported Row", R.drawable.ic_chest_supported_row.convertBase64(context), BACK_ID)
+    list.addExercise(
+        "Chest-Supported Row",
+        R.drawable.ic_chest_supported_row.convertBase64(context),
+        BACK_ID
+    )
     list.addExercise(
         "Row-To-Grow Back Workout",
         R.drawable.ic_row_to_grow_back_workout.convertBase64(context),
@@ -162,21 +268,41 @@ private fun loadExercisList(context: Context) {
         R.drawable.ic_machine_pump_back_workout.convertBase64(context),
         BACK_ID
     )
-    list.addExercise("Barbell back Squat", R.drawable.ic_barbell_back_squat.convertBase64(context), LEG_ID)
-    list.addExercise("Barbell Front Squat", R.drawable.ic_barbell_font_squat.convertBase64(context), LEG_ID)
-    list.addExercise("Barbell Stiff-Leg Dead-lift", R.drawable.ic_leg_deadlift.convertBase64(context), LEG_ID)
+    list.addExercise(
+        "Barbell back Squat",
+        R.drawable.ic_barbell_back_squat.convertBase64(context),
+        LEG_ID
+    )
+    list.addExercise(
+        "Barbell Front Squat",
+        R.drawable.ic_barbell_font_squat.convertBase64(context),
+        LEG_ID
+    )
+    list.addExercise(
+        "Barbell Stiff-Leg Dead-lift",
+        R.drawable.ic_leg_deadlift.convertBase64(context),
+        LEG_ID
+    )
     list.addExercise("Split Squat", R.drawable.ic_split_squat.convertBase64(context), LEG_ID)
     list.addExercise("Hack Squat", R.drawable.ic_hack_squat.convertBase64(context), LEG_ID)
     list.addExercise("Lunge", R.drawable.ic_lunge.convertBase64(context), LEG_ID)
     list.addExercise("Leg Press", R.drawable.ic_leg_press.convertBase64(context), LEG_ID)
-    list.addExercise("Romanian Dead-lift", R.drawable.ic_romanian_deadlift.convertBase64(context), LEG_ID)
+    list.addExercise(
+        "Romanian Dead-lift",
+        R.drawable.ic_romanian_deadlift.convertBase64(context),
+        LEG_ID
+    )
     list.addExercise("Leg Curl", R.drawable.ic_leg_curl.convertBase64(context), LEG_ID)
     list.addExercise(
         "Machine Pump Leg Workout",
         R.drawable.ic_machine_pump_leg_workout.convertBase64(context),
         LEG_ID
     )
-    list.addExercise("Beginner Leg Workout", R.drawable.ic_beginner_leg_work_out.convertBase64(context), LEG_ID)
+    list.addExercise(
+        "Beginner Leg Workout",
+        R.drawable.ic_beginner_leg_work_out.convertBase64(context),
+        LEG_ID
+    )
     list.addExercise(
         "Incline Dumbbell Hammer Curl",
         R.drawable.ic_incline_dumbbell_hammer_curl.convertBase64(context),
@@ -201,7 +327,11 @@ private fun loadExercisList(context: Context) {
         BICEPS_ID
     )
     list.addExercise("Hammer Curl", R.drawable.ic_hammer_curl.convertBase64(context), BICEPS_ID)
-    list.addExercise("Overhead Cable Curl", R.drawable.ic_overhead_cable_curl.convertBase64(context), BICEPS_ID)
+    list.addExercise(
+        "Overhead Cable Curl",
+        R.drawable.ic_overhead_cable_curl.convertBase64(context),
+        BICEPS_ID
+    )
     list.addExercise("Skullcrusher", R.drawable.ic_skull_crusher.convertBase64(context), TRICEPS_ID)
     list.addExercise(
         "Close-Grip-Bench-Press",
@@ -230,20 +360,28 @@ private fun loadExercisList(context: Context) {
         R.drawable.ic_single_arm_cable_kick_back.convertBase64(context),
         TRICEPS_ID
     )
-    list.addExercise("Cable Push-Down", R.drawable.ic_cable_push_down.convertBase64(context), TRICEPS_ID)
-    list.addExercise("Close-Grip push-up", R.drawable.ic_close_grip_push_up.convertBase64(context), TRICEPS_ID)
+    list.addExercise(
+        "Cable Push-Down",
+        R.drawable.ic_cable_push_down.convertBase64(context),
+        TRICEPS_ID
+    )
+    list.addExercise(
+        "Close-Grip push-up",
+        R.drawable.ic_close_grip_push_up.convertBase64(context),
+        TRICEPS_ID
+    )
     LocalExerciselistRepo(context).insertExercise(list!!) {
     }
 }
 
-private fun Int.convertBase64(context: Context): String {
+fun Int.convertBase64(context: Context): String {
     val bitmap = BitmapFactory.decodeResource(context.resources, this)
     val byteStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream)
     val byteArray: ByteArray = byteStream.toByteArray()
     val baseString = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
-  return baseString
+    return baseString
 }
 
 private fun <E> java.util.ArrayList<E>.addExercise(name: String, image: String, exerciseId: Int) {
@@ -297,7 +435,7 @@ internal fun Context.getColorCompat(@ColorRes color: Int) = ContextCompat.getCol
 @SuppressLint("CheckResult")
 fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boolean) -> Unit) {
     this.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
+        .observeOn(Schedulers.io())
         .doOnError {
             message(it, true)
             Log.e("Mac", "Yes it is error on Insert " + it.message)

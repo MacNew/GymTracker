@@ -22,7 +22,7 @@ interface ExerciseList {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(list:List<ExerciseListModle>): Completable
+    fun insertAll(list:ExerciseListModle): Completable
 
     @Update
     fun updateAll(list:List<ExerciseListModle>) : Completable

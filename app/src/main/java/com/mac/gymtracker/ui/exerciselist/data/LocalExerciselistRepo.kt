@@ -26,7 +26,7 @@ class LocalExerciselistRepo(var context: Context) {
 
     private var repo: ExerciseList = GymTrackerDatabase.getDatabase(context).exerciseListDao()
 
-    fun insertExercise(list: List<ExerciseListModle>, message: (errorMsg: Boolean) -> Unit) {
+    fun insertExercise(list: ExerciseListModle, message: (errorMsg: Boolean) -> Unit) {
         repo.insertAll(list).subscribeONNewThread { _, isError ->
             if (isError)
                 message(isError)

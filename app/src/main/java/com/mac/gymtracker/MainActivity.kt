@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
-            this.workOut()
+          this.workOut()
         } else {
             Log.e(TAG, "Not called")
         }
@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         val emailLink = intent!!.data.toString()
         Log.e(TAG, emailLink)
         if (emailLink == "https://www.example.com/") {
-
             var email = PrefUtils.INSTANCE(this).getString(EMAIL, "")
             var password = PrefUtils.INSTANCE(this).getString(PASSWORD, "")
             Firebase.auth.createUserWithEmailAndPassword(email!!, password!!)
@@ -107,14 +106,6 @@ class MainActivity : AppCompatActivity() {
             125, Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
-
-
-
-
-
-
-
-
 }
 
 const val TAG = "MainActivity"

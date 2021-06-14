@@ -67,7 +67,7 @@ class FragmentSync : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.e(TA, "OnActivity Called $requestCode")
+
         if (requestCode == 123) {
             //If the result is OK i.e. user has not canceled the payment
             if (resultCode == Activity.RESULT_OK) {
@@ -97,13 +97,10 @@ class FragmentSync : Fragment() {
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         initView()
-
-
         binding?.syncBtn?.setOnClickListener {
             binding?.syncProgressbar?.visibility = View.VISIBLE
             binding?.syncBtn?.visibility = View.GONE
@@ -119,9 +116,7 @@ class FragmentSync : Fragment() {
                 PayPalPayment.PAYMENT_INTENT_SALE
             )
             var intent = Intent(context, PaymentActivity::class.java)
-
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
-
             intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
             startActivityForResult(intent, 123)
         }

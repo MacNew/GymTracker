@@ -3,6 +3,7 @@ package com.mac.gymtracker.ui.exercise.data
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.mac.gymtracker.database.GymTrackerDatabase
 import com.mac.gymtracker.ui.exercise.dao.ExerciseDao
 import com.mac.gymtracker.utils.subscribeONNewThread
@@ -13,8 +14,8 @@ class TrackExerciseLocalDataSource(context: Context) {
 
     private var exerciseDao: ExerciseDao = GymTrackerDatabase.getDatabase(context).exerciseDao()
 
-    fun insertExercise(list:List<TrackExerciseModel>, isErrorMsg:(isError:Boolean)->Unit) {
-        exerciseDao.insertAll(list).subscribeONNewThread {
+    fun insertExercise(objects:TrackExerciseModel, isErrorMsg:(isError:Boolean)->Unit) {
+        exerciseDao.insert(objects).subscribeONNewThread {
                 _, isError ->
             if(isError) {
                 isErrorMsg(true)
