@@ -81,14 +81,13 @@ fun Context.workOut(){
                 var ob4 = this.saveMainExercise(R.drawable.ic_biceps, BICEPS_ID, BICEPS, "ic_biceps") {
                     var ob5 = this.saveMainExercise(R.drawable.ic_triceps, TRICEPS_ID, TRICEPS, "ic_triceps") {
                         var ob6 = this.saveMainExercise(R.drawable.ic_leg, LEG_ID, LEG, "ic_leg") {
-                            loadExercisList(this)
+                            loadExerciseList(this)
                         }
                     }
                 }
             }
         }
     }
-
 }
 
 fun Context.saveMainExercise(
@@ -197,7 +196,7 @@ private fun Context.loadExerciseListURI(drawableImage:Int,fileName: String, exer
     }
 
 }
-private fun loadExercisList(context: Context) {
+private fun loadExerciseList(context: Context) {
     context.loadExerciseListURI(R.drawable.ic_barbell_bench_press, "ic_barbell_bench_press", "Barbell Bench Press",CHEST_ID)
     context.loadExerciseListURI(R.drawable.ic_incline_bench_press, "ic_incline_bench_press", "Incline Bench Press",CHEST_ID)
     context.loadExerciseListURI(R.drawable.ic_dumbbell_bench_press, "ic_dumbbell_bench_press", "Dumbbell Bench Press",CHEST_ID)
@@ -213,165 +212,53 @@ private fun loadExercisList(context: Context) {
     context.loadExerciseListURI(R.drawable.ic_rear_delt_row, "ic_rear_delt_row", "Rear Delt Row", SHOULDER_ID)
     context.loadExerciseListURI(R.drawable.ic_seated_dumbbell_press, "ic_seated_dumbbell_press", "Seated Dumbbell Press", SHOULDER_ID)
     context.loadExerciseListURI(R.drawable.ic_seated_dumbbell_press, "ic_seated_dumbbell_press", "Seated Dumbbell Press", SHOULDER_ID)
-
-    list.addExercise("Upright Row", R.drawable.ic_upright_row.convertBase64(context), SHOULDER_ID)
-    list.addExercise("Arnold Press", R.drawable.ic_arnold_press.convertBase64(context), SHOULDER_ID)
-    list.addExercise(
-        "Rear Delt Fly",
-        R.drawable.ic_rear_delt_fly.convertBase64(context),
-        SHOULDER_ID
-    )
-    list.addExercise(
-        "Lateral Raise",
-        R.drawable.ic_lateral_raise.convertBase64(context),
-        SHOULDER_ID
-    )
-    list.addExercise("Front Raise", R.drawable.ic_front_raise.convertBase64(context), SHOULDER_ID)
-    list.addExercise(
-        "Machine Pump Shoulder ",
-        R.drawable.ic_machine_pump_shoulder.convertBase64(context),
-        SHOULDER_ID
-    )
-    list.addExercise(
-        "Heavy Shoulder workout",
-        R.drawable.ic_heard_and_heavy_shoulder_workout.convertBase64(context),
-        SHOULDER_ID
-    )
-    list.addExercise("Dead lift ", R.drawable.ic_dead_lift.convertBase64(context), BACK_ID)
-    list.addExercise("Bent-over row", R.drawable.ic_bent_over_row.convertBase64(context), BACK_ID)
-    list.addExercise("Pull-up", R.drawable.ic_pull_up.convertBase64(context), BACK_ID)
-    list.addExercise("T-Bar Row", R.drawable.ic_t_bar_row.convertBase64(context), BACK_ID)
-    list.addExercise("Seated Row", R.drawable.ic_seated_row.convertBase64(context), BACK_ID)
-    list.addExercise(
-        "Single-Arm Smith Machine Row",
-        R.drawable.ic_single_arm_smith_machine_row.convertBase64(context),
-        BACK_ID
-    )
-    list.addExercise("lat pull-Down", R.drawable.ic_lat_pull_down.convertBase64(context), BACK_ID)
-    list.addExercise(
-        "Single-Arm Dumbbell Row",
-        R.drawable.ic_single_arm_dumbbell_row.convertBase64(context),
-        BACK_ID
-    )
-    list.addExercise(
-        "Chest-Supported Row",
-        R.drawable.ic_chest_supported_row.convertBase64(context),
-        BACK_ID
-    )
-    list.addExercise(
-        "Row-To-Grow Back Workout",
-        R.drawable.ic_row_to_grow_back_workout.convertBase64(context),
-        BACK_ID
-    )
-    list.addExercise(
-        "Machine pump Back Workout",
-        R.drawable.ic_machine_pump_back_workout.convertBase64(context),
-        BACK_ID
-    )
-    list.addExercise(
-        "Barbell back Squat",
-        R.drawable.ic_barbell_back_squat.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise(
-        "Barbell Front Squat",
-        R.drawable.ic_barbell_font_squat.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise(
-        "Barbell Stiff-Leg Dead-lift",
-        R.drawable.ic_leg_deadlift.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise("Split Squat", R.drawable.ic_split_squat.convertBase64(context), LEG_ID)
-    list.addExercise("Hack Squat", R.drawable.ic_hack_squat.convertBase64(context), LEG_ID)
-    list.addExercise("Lunge", R.drawable.ic_lunge.convertBase64(context), LEG_ID)
-    list.addExercise("Leg Press", R.drawable.ic_leg_press.convertBase64(context), LEG_ID)
-    list.addExercise(
-        "Romanian Dead-lift",
-        R.drawable.ic_romanian_deadlift.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise("Leg Curl", R.drawable.ic_leg_curl.convertBase64(context), LEG_ID)
-    list.addExercise(
-        "Machine Pump Leg Workout",
-        R.drawable.ic_machine_pump_leg_workout.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise(
-        "Beginner Leg Workout",
-        R.drawable.ic_beginner_leg_work_out.convertBase64(context),
-        LEG_ID
-    )
-    list.addExercise(
-        "Incline Dumbbell Hammer Curl",
-        R.drawable.ic_incline_dumbbell_hammer_curl.convertBase64(context),
-        BICEPS_ID
-    )
-    list.addExercise(
-        "Incline Inner-Biceps Curl",
-        R.drawable.ic_incline_inner_biceps_curl.convertBase64(context),
-        BICEPS_ID
-    )
-    list.addExercise("EZ-Bar Curl", R.drawable.ic_ez_bar_curl.convertBase64(context), BICEPS_ID)
-    list.addExercise(
-        "Wide-Grip Standing Barbell Curl",
-        R.drawable.ic_wide_grip_standing_barbell_curl.convertBase64(context),
-        BICEPS_ID
-    )
-    list.addExercise("Zottman Curl", R.drawable.ic_zottman_curl.convertBase64(context), BICEPS_ID)
-    list.addExercise("Barbell Curl", R.drawable.ic_barbell_curl.convertBase64(context), BICEPS_ID)
-    list.addExercise(
-        "Dumbbell Biceps Curl",
-        R.drawable.ic_dumbbell_biceps_curl.convertBase64(context),
-        BICEPS_ID
-    )
-    list.addExercise("Hammer Curl", R.drawable.ic_hammer_curl.convertBase64(context), BICEPS_ID)
-    list.addExercise(
-        "Overhead Cable Curl",
-        R.drawable.ic_overhead_cable_curl.convertBase64(context),
-        BICEPS_ID
-    )
-    list.addExercise("Skullcrusher", R.drawable.ic_skull_crusher.convertBase64(context), TRICEPS_ID)
-    list.addExercise(
-        "Close-Grip-Bench-Press",
-        R.drawable.ic_close_grip_bench_press.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise("Triceps Dip", R.drawable.ic_triceps_dip.convertBase64(context), TRICEPS_ID)
-    list.addExercise("Bench Dip", R.drawable.ic_bench_dip.convertBase64(context), TRICEPS_ID)
-    list.addExercise(
-        "Triceps Machine Dip",
-        R.drawable.ic_triceps_machine_dip.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise(
-        "Dumbbell Overhead Triceps Extension",
-        R.drawable.ic_dumbbell_overhead_triceps_extenstion.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise(
-        "Cable Overhead Extension with Rope",
-        R.drawable.ic_cable_overhead_extension_with_rope.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise(
-        "Single-Arm Cable kick-back",
-        R.drawable.ic_single_arm_cable_kick_back.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise(
-        "Cable Push-Down",
-        R.drawable.ic_cable_push_down.convertBase64(context),
-        TRICEPS_ID
-    )
-    list.addExercise(
-        "Close-Grip push-up",
-        R.drawable.ic_close_grip_push_up.convertBase64(context),
-        TRICEPS_ID
-    )
-    LocalExerciselistRepo(context).insertExercise(list!!) {
-    }
+    context.loadExerciseListURI(R.drawable.ic_upright_row, "ic_upright_row", "Upright Row", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_arnold_press, "ic_arnold_press", "Arnold Press", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_rear_delt_fly, "ic_rear_delt_fly", "Rear Delt Fly", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_lateral_raise, "ic_lateral_raise", "Lateral Raise", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_front_raise, "ic_front_raise", "Front Raise", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_machine_pump_shoulder, "ic_machine_pump_shoulder", "Machine Pump Shoulder", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_heard_and_heavy_shoulder_workout, "ic_heard_and_heavy_shoulder_workout", "Heavy Shoulder workout", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_dead_lift, "ic_dead_lift", "Dead lift", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_bent_over_row, "ic_bent_over_row", "Bent-over row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_pull_up, "ic_pull_up", "Pull-up", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_t_bar_row, "ic_t_bar_row", "T-Bar Row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_seated_row, "ic_seated_row", "Seated Row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_single_arm_smith_machine_row, "ic_single_arm_smith_machine_row", "Single-Arm Smith Machine Row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_lat_pull_down, "ic_lat_pull_down", "lat pull-Down", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_single_arm_dumbbell_row, "ic_single_arm_dumbbell_row", "Single-Arm Dumbbell Row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_chest_supported_row, "ic_chest_supported_row", "Chest-Supported Row", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_row_to_grow_back_workout, "ic_row_to_grow_back_workout", "Row-To-Grow Back Workout", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_machine_pump_back_workout, "ic_machine_pump_back_workout", "Machine pump Back Workout", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_barbell_back_squat, "ic_barbell_back_squat", "Barbell back Squat", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_leg_deadlift, "ic_leg_deadlift", "Barbell Stiff-Leg Dead-lift", BACK_ID)
+    context.loadExerciseListURI(R.drawable.ic_split_squat, "ic_split_squat", "Split Squat", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_hack_squat, "ic_hack_squat", "Hack Squat", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_lunge, "ic_lunge", "Lunge", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_leg_press, "ic_leg_press", "Leg Press", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_romanian_deadlift, "ic_romanian_deadlift", "Romanian Dead-lift", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_leg_curl, "ic_leg_curl", "Leg Curl", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_machine_pump_leg_workout, "ic_machine_pump_leg_workout", "Machine Pump Leg Workout", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_beginner_leg_work_out, "ic_beginner_leg_work_out", "Beginner Leg Workout", LEG_ID)
+    context.loadExerciseListURI(R.drawable.ic_incline_dumbbell_hammer_curl, "ic_incline_dumbbell_hammer_curl", "Incline Dumbbell Hammer Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_incline_inner_biceps_curl, "ic_incline_inner_biceps_curl", "Incline Inner-Biceps Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_ez_bar_curl, "ic_ez_bar_curl", "EZ-Bar Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_wide_grip_standing_barbell_curl, "ic_wide_grip_standing_barbell_curl", "Wide-Grip Standing Barbell Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_zottman_curl, "ic_zottman_curl", "Zottman Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_barbell_curl, "ic_barbell_curl", "Barbell Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_dumbbell_biceps_curl, "ic_dumbbell_biceps_curl", "Dumbbell Biceps Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_hammer_curl, "ic_hammer_curl", "Hammer Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_overhead_cable_curl, "ic_overhead_cable_curl", "Overhead Cable Curl", BICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_skull_crusher, "ic_skull_crusher", "Skullcrusher", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_close_grip_bench_press, "Close-Grip-Bench-Press", "Close-Grip-Bench-Press", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_triceps_dip, "ic_triceps_dip", "Triceps Dip", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_bench_dip, "ic_bench_dip", "Bench Dip", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_triceps_machine_dip, "ic_triceps_machine_dip", "Triceps Machine Dip", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_dumbbell_overhead_triceps_extenstion, "ic_dumbbell_overhead_triceps_extenstion", "Dumbbell Overhead Triceps Extension", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_cable_overhead_extension_with_rope, "ic_cable_overhead_extension_with_rope", "Cable Overhead Extension with Rope", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_single_arm_cable_kick_back, "ic_single_arm_cable_kick_back", "Single-Arm Cable kick-back", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_cable_push_down, "ic_cable_push_down", "Cable Push-Down", TRICEPS_ID)
+    context.loadExerciseListURI(R.drawable.ic_close_grip_push_up, "ic_close_grip_push_up", "Close-Grip push-up", TRICEPS_ID)
 }
 
 fun Int.convertBase64(context: Context): String {

@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mac.gymtracker.R
+import com.mac.gymtracker.utils.IS_DATA_LOADED
+import com.mac.gymtracker.utils.PrefUtils
 import com.mac.gymtracker.utils.workOut
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-
 
 class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +61,12 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
 
    @SuppressLint("CheckResult")
    fun  saveAllImageOnFolder() {
-       this.workOut()
+       if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
+           this.workOut()
+           PrefUtils.INSTANCE(this).setBoolean(IS_DATA_LOADED, true)
+       } else {
+           Log.e(com.mac.gymtracker.TAG, "Not called")
+       }
     }
 
 
