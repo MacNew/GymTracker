@@ -7,6 +7,9 @@
         <item name="colorAccent">@color/red_200</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@drawable/my_drawable</item>
+    </style>
     <style name="Theme.GymTracker.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

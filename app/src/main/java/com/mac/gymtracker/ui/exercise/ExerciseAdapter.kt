@@ -1,5 +1,6 @@
 package com.mac.gymtracker.ui.exercise
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,7 @@ class ExerciseAdapter(var list: List<TrackExerciseModel>, var function:(exercise
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.iv_exercise_name.setImageBitmap(list[position].image!!.toLocalBitMap())
+        holder.itemView.iv_exercise_name.setImageURI(Uri.parse(list[position].image+".jpg"))
         holder.itemView.tv_exercise_name.text = list[position].name
         holder.itemView.cv_parent.setOnClickListener {
             function(list[position].name!!)

@@ -145,11 +145,10 @@ private fun ExerciseListModle.editContent(
     context: Context,
     message: (errorMsg: Boolean, error: Throwable) -> Unit
 ) {
-
     ExerciseRecordRepo(context = context).editExerciseRecordContent(previousName, this)
         .subscribeONNewThread { error: Throwable?, isError: Boolean ->
             if (!isError) {
-                repo.editContent(this).subscribeONNewThread { throwableError, isErrors ->
+                repo.editContent(this.name, this.imageString!!,previousName).subscribeONNewThread { throwableError, isErrors ->
                     if (isErrors) {
                         message(isErrors, throwableError!!)
                     }

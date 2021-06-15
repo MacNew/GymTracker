@@ -33,11 +33,14 @@ interface ExerciseList {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun  insert(data: List<ExerciseListModle>) : Completable
 
-    @Update
-    fun editContent(exerciseList: ExerciseListModle): Completable
+    @Query("Update exercise_list set exercise_name=:newName, stringImage=:newImage where exercise_name=:priviousName")
+    fun editContent(newName:String, newImage:String , priviousName:String): Completable
 
     @Delete
     fun deleteExercise(objects: ExerciseListModle) : Completable
+
+    @Query("delete from exercise_list where exercise_name=:exerciseName")
+    fun delete(exerciseName: String?): Completable
 
     @Query("select *from exercise_list where exercise_name=:exerciseName")
     fun getImage(exerciseName: String?) : Single<ExerciseListModle>

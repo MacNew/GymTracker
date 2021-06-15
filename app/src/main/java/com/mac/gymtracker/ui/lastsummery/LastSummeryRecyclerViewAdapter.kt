@@ -1,5 +1,6 @@
 package com.mac.gymtracker.ui.lastsummery
 
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,9 +35,12 @@ class LastSummeryRecyclerViewAdapter(var list: List<LastSummeryModel>) :
         holder.itemView.tv_date_last_summery_row.text =
             myObject.date.toLong().convertGymTrackerTime()
         try {
-            holder.itemView.iv_exercise_image_last_summery.setImageResource(myObject.image.toInt())
+            if (myObject.image.length> 100) {
+                holder.itemView.iv_exercise_image_last_summery.setImageBitmap(myObject.image.toLocalBitMap())
+            } else {
+                holder.itemView.iv_exercise_image_last_summery.setImageURI(Uri.parse(myObject.image!!+".jpg"))
+            }
         }catch (exception:Exception) {
-            holder.itemView.iv_exercise_image_last_summery.setImageBitmap(myObject.image.toLocalBitMap())
         }
         holder.itemView.rv_exercise_list_row.layoutManager =
             LinearLayoutManager(holder.itemView.context)

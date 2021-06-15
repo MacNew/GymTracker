@@ -1,5 +1,6 @@
 package com.mac.gymtracker.ui.exerciserecord
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -72,10 +73,10 @@ class FragmentExerciseRecord : Fragment() {
         val id: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId
         val image: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image
         (activity as AppCompatActivity).supportActionBar!!.hide()
-        try {
-            binding!!.ivExerciseRecord.setImageResource(image!!.toInt())
-        } catch (exception: Exception) {
+        if (image!!.length >= 100) {
             binding!!.ivExerciseRecord.setImageBitmap(image!!.toLocalBitMap())
+        } else {
+            binding!!.ivExerciseRecord.setImageURI(Uri.parse(image!! + ".jpg"))
         }
         binding!!.tbExerciseRecord.title = id
         if (flage) {

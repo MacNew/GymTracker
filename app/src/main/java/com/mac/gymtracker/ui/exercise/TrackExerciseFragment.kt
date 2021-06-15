@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mac.gymtracker.R
+import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.utils.*
@@ -47,7 +48,12 @@ class TrackExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        try {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        }catch (exception:Exception) {
+            Log.e(TAG, "Exception")
+        }
+
         binding.rvTrackExercise.layoutManager = GridLayoutManager(
             activity?.applicationContext,
             2

@@ -2,9 +2,11 @@ package com.mac.gymtracker.splashscreen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
 import com.mac.gymtracker.utils.IS_DATA_LOADED
 import com.mac.gymtracker.utils.PrefUtils
@@ -15,7 +17,9 @@ import pub.devrel.easypermissions.EasyPermissions
 class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_GymTracker)
         setContentView(R.layout.activity_splash_screen)
+        supportActionBar?.hide()
     }
 
     @AfterPermissionGranted(123)
@@ -59,17 +63,24 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         saveAllImageOnFolder()
     }
 
-   @SuppressLint("CheckResult")
-   fun  saveAllImageOnFolder() {
-       if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
-           this.workOut()
-           PrefUtils.INSTANCE(this).setBoolean(IS_DATA_LOADED, true)
-       } else {
-           Log.e(com.mac.gymtracker.TAG, "Not called")
-       }
+    @SuppressLint("CheckResult")
+    fun saveAllImageOnFolder() {
+        if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
+            this.workOut()
+            Thread.sleep(10000)
+            PrefUtils.INSTANCE(this).setBoolean(IS_DATA_LOADED, true)
+            startMainActivity()
+        } else {
+            Log.e(com.mac.gymtracker.TAG, "Not called")
+            startMainActivity()
+        }
     }
 
-
+    private fun startMainActivity() {
+        var intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         Log.e(TAG, "Sorry permission not granted")

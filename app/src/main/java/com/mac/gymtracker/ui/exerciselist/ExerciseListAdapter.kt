@@ -1,5 +1,6 @@
 package com.mac.gymtracker.ui.exerciselist
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -31,8 +32,8 @@ class ExerciseListAdapter(
             holder.itemView.iv_exercise_list_name.rotation = 180.0F
         }
         if (list[position].imageString == null)
-            holder.itemView.iv_exercise_list_name.setImageBitmap(
-                list[position].image!!.toLocalBitMap()
+            holder.itemView.iv_exercise_list_name.setImageURI(
+                Uri.parse(list[position].image+".jpg")
             ) else
             holder.itemView.iv_exercise_list_name.setImageBitmap(
                 list[position].imageString.toLocalBitMap()

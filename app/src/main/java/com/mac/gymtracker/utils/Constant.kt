@@ -219,7 +219,7 @@ private fun loadExerciseList(context: Context) {
     context.loadExerciseListURI(R.drawable.ic_front_raise, "ic_front_raise", "Front Raise", SHOULDER_ID)
     context.loadExerciseListURI(R.drawable.ic_machine_pump_shoulder, "ic_machine_pump_shoulder", "Machine Pump Shoulder", SHOULDER_ID)
     context.loadExerciseListURI(R.drawable.ic_heard_and_heavy_shoulder_workout, "ic_heard_and_heavy_shoulder_workout", "Heavy Shoulder workout", SHOULDER_ID)
-    context.loadExerciseListURI(R.drawable.ic_dead_lift, "ic_dead_lift", "Dead lift", SHOULDER_ID)
+    context.loadExerciseListURI(R.drawable.ic_dead_lift, "ic_dead_lift", "Dead lift", BACK_ID)
     context.loadExerciseListURI(R.drawable.ic_bent_over_row, "ic_bent_over_row", "Bent-over row", BACK_ID)
     context.loadExerciseListURI(R.drawable.ic_pull_up, "ic_pull_up", "Pull-up", BACK_ID)
     context.loadExerciseListURI(R.drawable.ic_t_bar_row, "ic_t_bar_row", "T-Bar Row", BACK_ID)
@@ -322,7 +322,7 @@ internal fun Context.getColorCompat(@ColorRes color: Int) = ContextCompat.getCol
 @SuppressLint("CheckResult")
 fun Completable.subscribeONNewThread(message: (error: Throwable?, isError: Boolean) -> Unit) {
     this.subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
         .doOnError {
             message(it, true)
             Log.e("Mac", "Yes it is error on Insert " + it.message)
