@@ -14,7 +14,7 @@ interface ExerciseList {
     @Query("select *from exercise_list where exercise_name=:name")
     fun getExercise(name:String): Single<ExerciseListModle>
 
-    @Query("select exercise_name, exercise_id, stringImage, mydate, isSync from exercise_list")
+    @Query("select *from exercise_list")
     fun getAlExercise(): Single<List<ExerciseListModle>>
 
     @Query("select *from exercise_list where isSync=:isSync")
