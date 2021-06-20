@@ -93,16 +93,42 @@
                 android:weightSum="2"
                 >
                 <TextView
-                    android:id="@+id/last_sync_date_lable"
+                    android:id="@+id/last_payment_date_label"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/last_sync_date"
+                    android:text="@string/last_payment_date"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/black"
                     />
                 <TextView
-                    android:id="@+id/last_sync_date"
+                    android:id="@+id/last_payment_date"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="2021-04-11"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="4dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                >
+                <TextView
+                    android:id="@+id/due_date_lable"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/due_date"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:id="@+id/due_date"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -113,11 +139,10 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
     <Button
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:text="$ Payment with pay pal 10 Six month"
+        android:text="$ 10$ /month"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="32dp"
@@ -127,13 +152,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
-
-
-
-
-
     <ImageButton
-
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:background="@color/red_200"

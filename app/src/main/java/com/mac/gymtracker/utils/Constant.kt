@@ -57,12 +57,16 @@ const val LEG_ID: Int = 6
 const val IS_LOGIN = "IS_LOGIN"
 const val IS_FROM_SYNC = "IS_FROM_SYNC"
 const val EMAIL = "EMAIL"
+const val IS_PRIMIUM = "IS_PRIMIUM"
+const val LAST_PAYMENT_DATE = "LAST_PAYMENT_DATE"
+const val DUE_DATE = "DUE_DATE"
 const val PASSWORD = "PASSWORD"
 const val EXERCISE_RECORD = "exerciseRecord"
 const val EXERCISE_LIST = "exerciseList"
 const val FIRST_NAME = "FIRST_NAME"
 const val LAST_NAME = "LAST_NAME"
 const val IS_DATA_LOADED = "IS_DATA_LOADED"
+const val USER_DETAILS = "UserDetails"
 
 const val PAY_PAL_CLIENT_ID =
     "AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu"

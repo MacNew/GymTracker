@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_track_exercise, R.id.nav_last_summery, R.id.nav_report, R.id.nav_sync
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        val intent = intent
+       /* val intent = intent
         val emailLink = intent!!.data.toString()
         Log.e(TAG, emailLink)
         if (emailLink == "https://www.example.com/") {
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                         drawerLayout.showSnack("Error on Creating User" + it.exception?.message!!)
                     }
                 }
-        }
+        }*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

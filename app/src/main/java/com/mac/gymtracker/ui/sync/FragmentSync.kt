@@ -12,8 +12,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mac.gymtracker.R
+import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentSyncBinding
 import com.mac.gymtracker.ui.exercise.TrackExerciseViewModel
 import com.mac.gymtracker.ui.exercise.TrackingExerciseViewModelFactory
@@ -22,11 +24,13 @@ import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.ui.signup.User
 import com.mac.gymtracker.utils.*
 import com.paypal.android.sdk.payments.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_sync.*
 import org.json.JSONException
 import java.math.BigDecimal
 import java.util.*
@@ -110,7 +114,6 @@ class FragmentSync : Fragment() {
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
         context?.startService(intent)
         binding?.btnPaypal?.setOnClickListener {
-
             val payment = PayPalPayment(
                 BigDecimal(java.lang.String.valueOf("10")), "USD", "Simplified Coding Fee",
                 PayPalPayment.PAYMENT_INTENT_SALE
@@ -127,20 +130,44 @@ class FragmentSync : Fragment() {
             binding?.firstName?.text = it.getString(FIRST_NAME, "null")
             binding?.lastName?.text = it.getString(LAST_NAME, "null")
             binding?.email?.text = it.getString(EMAIL, "null")
-            binding?.accountType?.text = "Basic"
-            binding?.lastSyncDate?.text = "No data Found"
+            binding?.accountType?.text = it.getBoolean(IS_PRIMIUM, false).isPrimium()
+            binding?.lastPaymentDate?.text = it.getString(LAST_PAYMENT_DATE, "null")
+            binding?.dueDate?.text = it.getString(DUE_DATE, "null")
+        }
+
+        var email = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "null")
+        var drf = FirebaseFirestore.getInstance().collection(email!!)
+            .document(USER_DETAILS)
+        drf.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                var documentSnapShot = task.result
+                if (documentSnapShot.exists()) {
+                    PrefUtils.INSTANCE(requireContext()).let {
+                        var firstName = documentSnapShot.get("name").toString()
+                        var lastName = documentSnapShot.get("lastName").toString()
+                        var isPrimum = documentSnapShot.getBoolean("premium")
+                        var lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString()
+                        var dueDate = documentSnapShot.getString("dueDate").toString()
+                        it.setString(FIRST_NAME, firstName)
+                        it.setString(LAST_NAME, lastName)
+                        it.setString(EMAIL, email)
+                        it.setBoolean(IS_PRIMIUM,isPrimum!!)
+                        it.setString(LAST_PAYMENT_DATE, lastPaymentDate)
+                        it.setString(DUE_DATE,dueDate)
+                    }
+                    binding?.firstName?.text = documentSnapShot.get("name").toString()
+                    binding?.lastName?.text = documentSnapShot.get("lastName").toString()
+                    binding?.email?.text = documentSnapShot.get("email").toString()
+                    binding?.accountType?.text =
+                        documentSnapShot.get("premium").toString().toBoolean().isPrimium()
+                    binding?.lastPaymentDate?.text =
+                        documentSnapShot.get("lastPaymentDate").toString()
+                    binding?.dueDate?.text = documentSnapShot.getString("dueDate").toString()
+                }
+            }
         }
     }
 
-
-    data class User(
-        val firstName: String,
-        val lastName: String,
-        val email: String,
-        val lastPaymentDate: Date,
-        val lastSyncDate: Date,
-        val isPremium: Boolean
-    )
 
     @SuppressLint("CheckResult")
     private fun syncExerciseList() {
@@ -163,7 +190,8 @@ class FragmentSync : Fragment() {
                 var mysecondRef = db.collection(userName!!).document(EXERCISE_LIST)
                 batch.set(mysecondRef, exerciseListModle).commit()
 */
-                db.collection(userName!!).document(EXERCISE_LIST).set(exerciseListModle)
+                db.collection(userName!!)
+                    .document(EXERCISE_LIST).set(exerciseListModle)
                     .addOnSuccessListener {
                         syncExerciseRecord()
                     }.addOnFailureListener {
@@ -215,6 +243,14 @@ class FragmentSync : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         var mi = menu.findItem(R.id.id_log_out)
         mi.isVisible = false
+    }
+}
+
+private fun Boolean.isPrimium(): CharSequence? {
+    if (this) {
+        return "Primum"
+    } else {
+        return "Basic"
     }
 }
 
