@@ -67,7 +67,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
     fun saveAllImageOnFolder() {
         if (!PrefUtils.INSTANCE(this).getBoolean(IS_DATA_LOADED, false)) {
             this.workOut()
-            Thread.sleep(10000)
+            Thread.sleep(20000)
             PrefUtils.INSTANCE(this).setBoolean(IS_DATA_LOADED, true)
             startMainActivity()
         } else {

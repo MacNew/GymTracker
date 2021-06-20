@@ -17,7 +17,7 @@
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_fitness"
+        app:srcCompat="@drawable/gym_logo"
         android:contentDescription="@string/nav_header_desc"
         android:id="@+id/imageView" />
 
