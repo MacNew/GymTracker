@@ -364,7 +364,7 @@ fun Context.showAlertDialog(
 
 
 fun Long.convertGymTrackerTime(): String {
-    var formatter = SimpleDateFormat("yyyy-MM-dd")
+    var formatter = SimpleDateFormat("EEE, d MMM yyyy")
     return formatter.format(this)
 }
 

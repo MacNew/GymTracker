@@ -1,6 +1,5 @@
 package com.mac.gymtracker.ui.exercise
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,19 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mac.gymtracker.R
 import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentTrackExerciseBinding
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.utils.*
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 class TrackExerciseFragment : Fragment() {
 
@@ -39,7 +32,10 @@ class TrackExerciseFragment : Fragment() {
     ): View? {
         trackExerciseViewModel = ViewModelProvider(
             this,
-            TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext))
+            TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext),
+                null,
+                null
+            )
         ).get(TrackExerciseViewModel::class.java);
         _binding = FragmentTrackExerciseBinding.inflate(inflater, container, false)
         val root: View = binding.root

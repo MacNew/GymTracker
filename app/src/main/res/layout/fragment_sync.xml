@@ -3,6 +3,7 @@
     android:layout_marginTop="?attr/actionBarSize"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/parent_recyclerView"
     android:layout_height="match_parent">
     <androidx.cardview.widget.CardView
         android:layout_margin="4dp"
@@ -165,6 +166,7 @@
         android:gravity="center"
         />
    <TextView
+       android:layout_marginTop="8dp"
        android:textColor="@color/black"
        android:layout_centerHorizontal="true"
        android:layout_below="@id/sync_btn"

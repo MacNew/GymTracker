@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mac.gymtracker.R
 import com.mac.gymtracker.TAG
@@ -24,17 +23,14 @@ import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
-import com.mac.gymtracker.ui.signup.User
 import com.mac.gymtracker.utils.*
 import com.paypal.android.sdk.payments.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_sync.*
 import org.json.JSONException
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FragmentSync : Fragment() {
     private var _binding: FragmentSyncBinding? = null
@@ -53,12 +49,15 @@ class FragmentSync : Fragment() {
     ): View? {
         trackExerciseViewModel = ViewModelProvider(
             this,
-            TrackingExerciseViewModelFactory(TrackExerciseLocalDataSource(requireActivity().applicationContext))
+            TrackingExerciseViewModelFactory(
+                TrackExerciseLocalDataSource(requireActivity().applicationContext),
+                FirebaseFirestore.getInstance(),
+                PrefUtils.INSTANCE(requireContext())
+            )
         ).get(TrackExerciseViewModel::class.java);
         _binding = FragmentSyncBinding.inflate(inflater, container, false)
         return binding!!.root
     }
-
 
     private val db = FirebaseFirestore.getInstance()
     val config = PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
@@ -71,7 +70,6 @@ class FragmentSync : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == 123) {
             //If the result is OK i.e. user has not canceled the payment
             if (resultCode == Activity.RESULT_OK) {
@@ -85,7 +83,9 @@ class FragmentSync : Fragment() {
                         val paymentDetails = confirm.toJSONObject().toString(4)
                         Log.i("paymentExample", paymentDetails)
                         Log.e(TA, "Payment Successfully")
-
+                        trackExerciseViewModel.doPayment() {
+                            binding!!.parentRecyclerView.showSnack("Payment Done Thank you ")
+                        }
                     } catch (e: JSONException) {
                         Log.e("paymentExample", "an extremely unlikely failure occurred: ", e)
                     }
@@ -103,12 +103,18 @@ class FragmentSync : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        try {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        } catch (exception: Exception) {
+            Log.e(TAG, "Exception " + exception.message)
+        }
+
         initView()
         binding?.syncBtn?.setOnClickListener {
             binding?.syncProgressbar?.visibility = View.VISIBLE
             binding?.syncBtn?.visibility = View.GONE
-            syncExerciseList()
+            binding?.parentRecyclerView?.showSnack("Click sync Exercise list")
+            //syncExerciseList()
         }
         var intent = Intent(context, PayPalService::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
@@ -125,49 +131,31 @@ class FragmentSync : Fragment() {
         }
     }
 
+
     private fun initView() {
-        PrefUtils.INSTANCE(requireContext()).let {
-            binding?.firstName?.text = it.getString(FIRST_NAME, "null")
-            binding?.lastName?.text = it.getString(LAST_NAME, "null")
-            binding?.email?.text = it.getString(EMAIL, "null")
-            binding?.accountType?.text = it.getBoolean(IS_PRIMIUM, false).isPrimium()
-            binding?.lastPaymentDate?.text = it.getString(LAST_PAYMENT_DATE, "null")
-            binding?.dueDate?.text = it.getString(DUE_DATE, "null")
-        }
-
-        var email = PrefUtils.INSTANCE(requireContext()).getString(EMAIL, "null")
-        var drf = FirebaseFirestore.getInstance().collection(email!!)
-            .document(USER_DETAILS)
-        drf.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                var documentSnapShot = task.result
-                if (documentSnapShot.exists()) {
-                    PrefUtils.INSTANCE(requireContext()).let {
-                        var firstName = documentSnapShot.get("name").toString()
-                        var lastName = documentSnapShot.get("lastName").toString()
-                        var isPrimum = documentSnapShot.getBoolean("premium")
-                        var lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString()
-                        var dueDate = documentSnapShot.getString("dueDate").toString()
-                        it.setString(FIRST_NAME, firstName)
-                        it.setString(LAST_NAME, lastName)
-                        it.setString(EMAIL, email)
-                        it.setBoolean(IS_PRIMIUM,isPrimum!!)
-                        it.setString(LAST_PAYMENT_DATE, lastPaymentDate)
-                        it.setString(DUE_DATE,dueDate)
-                    }
-                    binding?.firstName?.text = documentSnapShot.get("name").toString()
-                    binding?.lastName?.text = documentSnapShot.get("lastName").toString()
-                    binding?.email?.text = documentSnapShot.get("email").toString()
-                    binding?.accountType?.text =
-                        documentSnapShot.get("premium").toString().toBoolean().isPrimium()
-                    binding?.lastPaymentDate?.text =
-                        documentSnapShot.get("lastPaymentDate").toString()
-                    binding?.dueDate?.text = documentSnapShot.getString("dueDate").toString()
-                }
+        trackExerciseViewModel.userDetails.observe(viewLifecycleOwner, {
+            binding?.firstName?.text = it.name
+            binding?.lastName?.text = it.lastName
+            binding?.email?.text = it.email
+            binding?.accountType?.text = it.isPremium.toString().toBoolean().isPrimium()
+            binding?.lastPaymentDate?.text = it.lastPaymentDate.toString().appDateFormater()
+            binding?.dueDate?.text = it.dueDate.toString().appDateFormater()
+            PrefUtils.INSTANCE(requireContext()).let { data ->
+                var firstName = it.name
+                var lastName = it.lastName
+                var isPrimum = it.isPremium
+                var lastPaymentDate = it.lastPaymentDate.toString()
+                var email = it.email.toString()
+                var dueDate = it.dueDate.toString()
+                data.setString(FIRST_NAME, firstName)
+                data.setString(LAST_NAME, lastName)
+                data.setString(EMAIL, email)
+                data.setBoolean(IS_PRIMIUM, isPrimum!!)
+                data.setString(LAST_PAYMENT_DATE, lastPaymentDate)
+                data.setString(DUE_DATE, dueDate)
             }
-        }
+        })
     }
-
 
     @SuppressLint("CheckResult")
     private fun syncExerciseList() {
@@ -243,6 +231,18 @@ class FragmentSync : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         var mi = menu.findItem(R.id.id_log_out)
         mi.isVisible = false
+    }
+}
+
+private fun String.appDateFormater(): CharSequence? {
+    return try {
+        var date = Date(this.toLong())
+        var pattern = "EEE, d MMM yyyy";
+        var simpleDateFormater = SimpleDateFormat(pattern)
+        var stringDate = simpleDateFormater.format(date)
+        stringDate
+    }catch (exception:Exception) {
+        "null"
     }
 }
 

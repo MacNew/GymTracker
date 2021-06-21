@@ -10,8 +10,7 @@ import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
-import com.mac.gymtracker.utils.EXERCISE_LIST
-import com.mac.gymtracker.utils.EXERCISE_RECORD
+import com.mac.gymtracker.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,13 +27,43 @@ class FetchDataFromFireStoreService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         dataFetchExerciseList(intent?.getStringExtra("username"))
         dataFetchExerciseResult(intent?.getStringExtra("username"))
+        userDetailsFetch(intent?.getStringExtra("username"))
         return Service.START_NOT_STICKY
+    }
+
+    private fun userDetailsFetch(userName: String?) {
+        FirebaseFirestore.getInstance().collection(userName!!)
+            .document(USER_DETAILS).get().addOnCompleteListener { task->
+            if (task.isSuccessful) {
+                var documentSnapShot = task.result
+                if (documentSnapShot.exists()) {
+                    PrefUtils.INSTANCE(this).let {
+                        var firstName = documentSnapShot.get("name").toString()
+                        var lastName = documentSnapShot.get("lastName").toString()
+                        var isPrimum = documentSnapShot.getBoolean("premium")
+                        var lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString()
+                        var dueDate = documentSnapShot.getString("dueDate").toString()
+                        var email = documentSnapShot.getString("email").toString()
+                        it.setString(FIRST_NAME, firstName)
+                        it.setString(LAST_NAME, lastName)
+                        it.setString(EMAIL, email)
+                        it.setBoolean(IS_PRIMIUM,isPrimum!!)
+                        it.setString(LAST_PAYMENT_DATE, lastPaymentDate)
+                        it.setString(DUE_DATE,dueDate)
+                    }
+                }
+            }
+            }.addOnFailureListener {
+                Log.e(TAG, "User details Fetching Error")
+            }
+
     }
 
     private fun dataFetchExerciseResult(userName: String?) {
         var drf = FirebaseFirestore.getInstance().collection(userName!!)
             .document(EXERCISE_RECORD)
-        drf.get().addOnCompleteListener { task ->
+        drf.get().
+        addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 var documentSnapshot = task.result
                 if (documentSnapshot.exists()) {
