@@ -24,7 +24,11 @@ class ExerciseRecordViewModle(
     var trackExericsRepo: TrackExerciseLocalDataSource?
 ) : ViewModel() {
 
-    private val _lastSummery = MutableLiveData<List<LastSummeryModel>>();
+    private val _lastSummery = MutableLiveData<List<LastSummeryModel>>()
+
+    private val _timeInSecond = MutableLiveData<String>()
+
+    public val timeInSecond: LiveData<String> = _timeInSecond
 
     val lastSummery: LiveData<List<LastSummeryModel>> = _lastSummery
 
@@ -33,7 +37,11 @@ class ExerciseRecordViewModle(
     val stringDate: LiveData<String> = _stringDate
 
 
-    fun updateList(lastSummery: ArrayList<LastSummeryModel>, binding: FragmentReportBinding, date:String) {
+    fun updateList(
+        lastSummery: ArrayList<LastSummeryModel>,
+        binding: FragmentReportBinding,
+        date: String
+    ) {
         Collections.sort(lastSummery,
             Comparator<LastSummeryModel?> { o1, o2 ->
                 o2!!.date.toLong().compareTo(o1!!.date.toLong())
@@ -47,49 +55,71 @@ class ExerciseRecordViewModle(
         _lastSummery.postValue(lastSummery)
     }
 
-    fun updateList(item:MenuItem?, supportActionBar: ActionBar, resources: Resources?,function:()->Unit ) {
-        val currentDate:Long = Date().time
+    lateinit var timer: Timer
+    fun start(startCount: Int) {
+        timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask(){
+            var count = startCount
+            override fun run() {
+                count+= 1;
+                _timeInSecond.postValue(count.toString())
+            }
+
+        }, 1000, 1000)
+    }
+
+    fun stopThread() {
+        timer.cancel()
+    }
+
+    fun updateList(
+        item: MenuItem?,
+        supportActionBar: ActionBar,
+        resources: Resources?,
+        function: () -> Unit
+    ) {
+        val currentDate: Long = Date().time
         var oneweekbefore: Long = (604800 * 1000)
         when (item?.itemId) {
             R.id.id_one_day -> {
                 supportActionBar.title = resources?.getString(R.string.last_one_day)
-                oneweekbefore =  currentDate - (86400 * 1000)
+                oneweekbefore = currentDate - (86400 * 1000)
             }
             R.id.id_seven_day -> {
                 supportActionBar.title = resources?.getString(R.string.last_seven_day)
-                oneweekbefore = currentDate - (86400*7 * 1000)
+                oneweekbefore = currentDate - (86400 * 7 * 1000)
 
             }
             R.id.id_one_month -> {
                 supportActionBar.title = resources?.getString(R.string.last_one_month_data)
-                var data:Long = 86400*30
-                var newdata:Long = data * 1000
+                var data: Long = 86400 * 30
+                var newdata: Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_three_month -> {
                 supportActionBar.title = resources?.getString(R.string.last_three_month_data)
-                var data:Long = 86400*30*3
-                var newdata:Long = data * 1000
+                var data: Long = 86400 * 30 * 3
+                var newdata: Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_six_month -> {
                 supportActionBar.title = resources?.getString(R.string.last_six_month_data)
-                var data:Long = 86400*30*6
-                var newdata:Long = data * 1000
+                var data: Long = 86400 * 30 * 6
+                var newdata: Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
             R.id.id_one_year -> {
                 supportActionBar.title = resources?.getString(R.string.last_one_year_data)
-                var data:Long = 86400*30*12
-                var newdata:Long = data * 1000
+                var data: Long = 86400 * 30 * 12
+                var newdata: Long = data * 1000
                 oneweekbefore = currentDate - newdata
             }
         }
 
         Log.e("TAG", (oneweekbefore).toString())
-        Log.e("TAG", (currentDate).toString() )
+        Log.e("TAG", (currentDate).toString())
 
-        repository.getAll(oneweekbefore, Date().time) { list->
+        repository.getAll(oneweekbefore, Date().time) { list ->
             val hsMap: HashMap<String, ArrayList<ExerciseRecordModel>> = HashMap()
             val key: HashSet<String> = HashSet()
             list.forEach { exerciseRecord ->
@@ -117,7 +147,7 @@ class ExerciseRecordViewModle(
                     o2!!.date.toLong().compareTo(o1!!.date.toLong())
                 })
             function()
-           _lastSummery.postValue(lastSummeryModel)
+            _lastSummery.postValue(lastSummeryModel)
         }
     }
 
@@ -141,7 +171,6 @@ class ExerciseRecordViewModle(
     fun sendDate(stringDate: String) {
         _stringDate.postValue(stringDate)
     }
-
 
 
 }

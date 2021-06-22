@@ -33,9 +33,11 @@ class ExerciseRecordModel(
     @field:TypeConverters(DateConverter::class)
     var roomDate: Date,
     @ColumnInfo(name = "string_format_date")
-    var stringFormatDate: String
+    var stringFormatDate: String,
+    @ColumnInfo(name = "time_in_second")
+    var timeInSecond: String
 ) : Serializable {
     override fun toString(): String {
-        return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise')"
+        return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise', image=$image, roomDate=$roomDate, stringFormatDate='$stringFormatDate', timeInSecond='$timeInSecond')"
     }
 }

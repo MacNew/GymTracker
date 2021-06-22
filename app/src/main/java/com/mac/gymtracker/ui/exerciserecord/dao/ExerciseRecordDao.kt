@@ -15,7 +15,7 @@ interface ExerciseRecordDao {
     @Query("select *from exercise_record where roomDate between :currentDate and :oneWeekAfterDate")
     fun getAll(currentDate: Long, oneWeekAfterDate: Long): Single<List<ExerciseRecordModel>>
 
-    @Query("select  date, exercise_name, weight, reps, `Set`, save_time, main_exercise, roomDate, string_format_date from exercise_record")
+    @Query("select  date, exercise_name, weight, reps, `Set`, save_time, main_exercise, roomDate, string_format_date, time_in_second from exercise_record")
     fun getAllCheck(): Single<List<ExerciseRecordModel>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

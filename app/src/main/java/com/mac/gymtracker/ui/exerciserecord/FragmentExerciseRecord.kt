@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
+import com.mac.gymtracker.TAG
 import com.mac.gymtracker.databinding.FragmentExerciseRecordBinding
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
@@ -53,26 +54,32 @@ class FragmentExerciseRecord : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable("list", recordList)
         outState.putInt("count", setCount)
+        outState.putString("timer", binding!!.tvTime.text.toString())
         super.onSaveInstanceState(outState)
-
     }
 
     var flage: Boolean = true
+    var timerValue: String = "1"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding!!.tvExerciseName.text = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId
         if (savedInstanceState != null) {
             recordList = savedInstanceState["list"] as ArrayList<ExerciseRecordModel>
             setCount = savedInstanceState["count"] as Int
+            timerValue = savedInstanceState["timer"] as String
             binding!!.rvRecordFragment.layoutManager = LinearLayoutManager(context)
             binding!!.rvRecordFragment.adapter = ExerciseRecordAdapter(recordList) {}
             flage = false
         }
-
-
         val id: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId
         val image: String? = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image
-        (activity as AppCompatActivity).supportActionBar!!.hide()
+        try {
+            (activity as AppCompatActivity).supportActionBar!!.hide()
+        }catch (exception: Exception) {
+            Log.e(TAG, "Exception")
+        }
+
         if (image!!.length >= 100) {
             binding!!.ivExerciseRecord.setImageBitmap(image!!.toLocalBitMap())
         } else {
@@ -89,6 +96,10 @@ class FragmentExerciseRecord : Fragment() {
             showButtonSheet()
         }
 
+        if (recordList.size>0) {
+            binding!!.cardViewMsg.visibility = View.GONE
+        }
+
         binding!!.btnSave.setOnClickListener {
             if (recordList.size != 0) {
                 viewmodle.addToLocalDatabase(recordList) {
@@ -99,7 +110,6 @@ class FragmentExerciseRecord : Fragment() {
                         view.showSnack("Data Added Successfully ")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
                         // (activity as MainActivity).onBackPressed()
-
                     } else {
                         Log.e("msg", "cannot find record list")
                     }
@@ -109,11 +119,32 @@ class FragmentExerciseRecord : Fragment() {
                 view.showSnack("Please Add set ")
             }
         }
+        viewmodle.start(timerValue.toString().toInt())
+        viewmodle.timeInSecond.observe(viewLifecycleOwner, {
+            binding!!.tvTime.text = it
+        })
+
+        binding!!.btnPauseOrStart.setOnClickListener {
+             if (binding!!.btnPauseOrStart.text == "Pause") {
+                 viewmodle.stopThread()
+                 binding!!.btnPauseOrStart.text = "Start"
+             } else {
+                 viewmodle.start(binding!!.tvTime.text.toString().toInt())
+                 binding!!.btnPauseOrStart.text = "Pause"
+             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewmodle.stopThread()
     }
 
 
     var setCount: Int = 1
     private fun showButtonSheet() {
+        viewmodle.stopThread()
+        binding!!.btnPauseOrStart.text = "Start"
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
         val imageButton = bottomSheetDialog.findViewById<ImageButton>(R.id.ib_add_set)
@@ -130,9 +161,12 @@ class FragmentExerciseRecord : Fragment() {
             bottomSheetDialog.hide()
             weight = weightEditText?.text.toString()
             if (weight.isNotBlank() || weight != "") {
-                addDataOnRecyclerView(repData, weight, setCount)
+                addDataOnRecyclerView(repData, weight, setCount, binding!!.tvTime.text.toString())
+                binding!!.tvTime.text = "1"
                 setCount += 1
             } else {
+                viewmodle.start(binding!!.tvTime.text.toString().toInt())
+                binding!!.btnPauseOrStart.text = "Pause"
                 requireView().showSnack("Add Weight")
             }
         }
@@ -151,7 +185,7 @@ class FragmentExerciseRecord : Fragment() {
     }
 
     var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
-    private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int) {
+    private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int, timeInSecond: String) {
         var modle = ExerciseRecordModel(
             date = Date().time.toString(),
             exerciseName = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId,
@@ -162,8 +196,8 @@ class FragmentExerciseRecord : Fragment() {
             mainExercise = FragmentExerciseRecordArgs.fromBundle(requireArguments()).mainExerciseName!!,
             image = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image!!,
             roomDate = Date(),
-            stringFormatDate = ""
-
+            stringFormatDate = "",
+            timeInSecond = timeInSecond
         )
         recordList.add(modle)
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)
