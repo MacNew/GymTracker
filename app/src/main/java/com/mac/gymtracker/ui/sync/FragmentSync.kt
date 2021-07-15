@@ -108,13 +108,18 @@ class FragmentSync : Fragment() {
         } catch (exception: Exception) {
             Log.e(TAG, "Exception " + exception.message)
         }
-
         initView()
         binding?.syncBtn?.setOnClickListener {
             binding?.syncProgressbar?.visibility = View.VISIBLE
             binding?.syncBtn?.visibility = View.GONE
             binding?.parentRecyclerView?.showSnack("Click sync Exercise list")
-            //syncExerciseList()
+            if (isSyncEnable) {
+                syncExerciseList()
+            } else {
+                binding?.syncProgressbar?.visibility = View.GONE
+                binding?.syncBtn?.visibility = View.VISIBLE
+                binding?.parentRecyclerView?.showSnack("Please upgrade Gym tracker")
+            }
         }
         var intent = Intent(context, PayPalService::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
@@ -131,7 +136,7 @@ class FragmentSync : Fragment() {
         }
     }
 
-
+    var isSyncEnable = false
     private fun initView() {
         trackExerciseViewModel.userDetails.observe(viewLifecycleOwner, {
             binding?.firstName?.text = it.name
@@ -140,6 +145,7 @@ class FragmentSync : Fragment() {
             binding?.accountType?.text = it.isPremium.toString().toBoolean().isPrimium()
             binding?.lastPaymentDate?.text = it.lastPaymentDate.toString().appDateFormater()
             binding?.dueDate?.text = it.dueDate.toString().appDateFormater()
+            isSyncEnable = it.isPremium
             PrefUtils.INSTANCE(requireContext()).let { data ->
                 var firstName = it.name
                 var lastName = it.lastName
@@ -171,7 +177,6 @@ class FragmentSync : Fragment() {
                 var exerciseListModle = ExerciseList(list)
                 /*var batch = db.batch()
                 var mycRef = db.collection(userName!!).document("payment")
-
 
                 batch.set(mycRef, User("Machhindra Neupane", false))
 
@@ -241,7 +246,7 @@ private fun String.appDateFormater(): CharSequence? {
         var simpleDateFormater = SimpleDateFormat(pattern)
         var stringDate = simpleDateFormater.format(date)
         stringDate
-    }catch (exception:Exception) {
+    } catch (exception: Exception) {
         "null"
     }
 }
