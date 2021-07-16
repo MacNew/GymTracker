@@ -5,12 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseModel
+import com.mac.gymtracker.ui.signup.PaymentDates
 import com.mac.gymtracker.ui.signup.User
 import com.mac.gymtracker.utils.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class TrackExerciseViewModel(
     repository: TrackExerciseLocalDataSource,
@@ -35,7 +38,7 @@ class TrackExerciseViewModel(
                                 var currentDate: Long
                                 try {
                                     expiredDate = documentSnapShot.getString("dueDate").toString().toLong()
-                                    currentDate =  Date().time
+                                    currentDate = Date().time
                                     if(currentDate > expiredDate ) {
                                         value =  User(
                                             name = documentSnapShot.get("name").toString(),
@@ -44,7 +47,8 @@ class TrackExerciseViewModel(
                                             lastSyncDate = null,
                                             lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString(),
                                             isPremium = false,
-                                            dueDate = documentSnapShot.getString("dueDate").toString()
+                                            dueDate = documentSnapShot.getString("dueDate").toString(),
+                                            dates = documentSnapShot.get("dates") as ArrayList<PaymentDates>
                                         )
                                     } else {
                                        Log.e(TAG, "Else part done ")
@@ -55,7 +59,8 @@ class TrackExerciseViewModel(
                                             lastSyncDate = null,
                                             lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString(),
                                             isPremium = documentSnapShot.getBoolean("premium")!!,
-                                            dueDate = documentSnapShot.getString("dueDate").toString()
+                                            dueDate = documentSnapShot.getString("dueDate").toString(),
+                                            dates = documentSnapShot.get("dates") as ArrayList<PaymentDates>
                                         )
                                     }
 
@@ -67,7 +72,8 @@ class TrackExerciseViewModel(
                                         lastSyncDate = null,
                                         lastPaymentDate = documentSnapShot.getString("lastPaymentDate").toString(),
                                         isPremium = documentSnapShot.getBoolean("premium")!!,
-                                        dueDate = documentSnapShot.getString("dueDate").toString()
+                                        dueDate = documentSnapShot.getString("dueDate").toString(),
+                                        dates = documentSnapShot.get("dates") as ArrayList<PaymentDates>
                                     )
                                 }
                             }
@@ -85,13 +91,10 @@ class TrackExerciseViewModel(
     val exerciseList: LiveData<LiveData<List<TrackExerciseModel>>> = _exerciseList
 
 
-
-    fun doPayment(function:()->Unit) {
+    fun doPayment(isPrimimum: Boolean, lastPaymentDate: String?, dueDate: String?,dates:ArrayList<PaymentDates>, function:()->Unit) {
         if (instance!= null) {
             instance.let {
-                var dueDate : Long = Date().time
-                var valueAdded: Long = 2592000000
-                var totalDueDate: Long = dueDate+valueAdded
+                dates.add(PaymentDates(Date().time.toString()))
                 db?.collection(it?.getString(EMAIL, "").toString())?.document(USER_DETAILS)
                     ?.set(
                         User(
@@ -99,10 +102,11 @@ class TrackExerciseViewModel(
                             lastName = it?.getString(LAST_NAME, "").toString(),
                             email = it?.getString(EMAIL, "").toString(),
                             lastSyncDate = null,
-                            lastPaymentDate = Date().time.toString(),
-                            isPremium = true,
-                            dueDate = totalDueDate.toString()
-                        )
+                            lastPaymentDate = lastPaymentDate,
+                            isPremium = isPrimimum,
+                            dueDate = dueDate,
+                            dates = dates
+                        ), SetOptions.merge()
                     )?.addOnSuccessListener {
                         function()
                     }

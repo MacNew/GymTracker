@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.R
 import com.mac.gymtracker.databinding.FragmentSignupBinding
@@ -18,6 +19,7 @@ import com.mac.gymtracker.ui.login.FragmentLoginDirections
 import com.mac.gymtracker.utils.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SignUpFragment : Fragment() {
     private var _bindin: FragmentSignupBinding? = null
@@ -87,6 +89,9 @@ class SignUpFragment : Fragment() {
             binding!!.edPassword.text.toString()
         ).addOnCompleteListener() {
                 if (it.isSuccessful) {
+                    var dates:ArrayList<PaymentDates> = ArrayList()
+                    dates.add(PaymentDates(null))
+
                     db.collection(binding!!.edEmail.text.toString())
                         .document(USER_DETAILS)
                         .set(
@@ -97,8 +102,9 @@ class SignUpFragment : Fragment() {
                                 null,
                                 null,
                                 false,
-                                null
-                            )
+                                null,
+                                dates
+                            ), SetOptions.merge()
                         )
                         .addOnSuccessListener {
                             PrefUtils.INSTANCE(requireActivity()).setBoolean(IS_LOGIN, true)
@@ -166,7 +172,9 @@ class User(
     var lastSyncDate: String?,
     var lastPaymentDate: String?,
     var isPremium: Boolean,
-    var dueDate: String?
+    var dueDate: String?,
+    var dates:ArrayList<PaymentDates>
 )
+class PaymentDates(var dates: String?)
 
 private const val TAG = "Signup"

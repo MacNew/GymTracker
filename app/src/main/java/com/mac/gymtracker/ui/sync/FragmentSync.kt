@@ -23,6 +23,7 @@ import com.mac.gymtracker.ui.exerciselist.data.ExerciseListModle
 import com.mac.gymtracker.ui.exerciselist.data.LocalExerciselistRepo
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordModel
 import com.mac.gymtracker.ui.exerciserecord.data.ExerciseRecordRepo
+import com.mac.gymtracker.ui.signup.PaymentDates
 import com.mac.gymtracker.utils.*
 import com.paypal.android.sdk.payments.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -68,6 +69,9 @@ class FragmentSync : Fragment() {
         super.onDestroy()
     }
 
+    var dates:ArrayList<PaymentDates> = ArrayList()
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 123) {
@@ -83,7 +87,10 @@ class FragmentSync : Fragment() {
                         val paymentDetails = confirm.toJSONObject().toString(4)
                         Log.i("paymentExample", paymentDetails)
                         Log.e(TA, "Payment Successfully")
-                        trackExerciseViewModel.doPayment() {
+                        var dueDate : Long = Date().time
+                        var valueAdded: Long = 2592000000
+                        var totalDueDate: Long = dueDate+valueAdded
+                         trackExerciseViewModel.doPayment(true, Date().time.toString(), totalDueDate.toString(), dates) {
                             binding!!.parentRecyclerView.showSnack("Payment Done Thank you ")
                         }
                     } catch (e: JSONException) {
@@ -119,6 +126,10 @@ class FragmentSync : Fragment() {
                 binding?.syncProgressbar?.visibility = View.GONE
                 binding?.syncBtn?.visibility = View.VISIBLE
                 binding?.parentRecyclerView?.showSnack("Please upgrade Gym tracker")
+                // remove current payment date
+                trackExerciseViewModel.doPayment(false, null, null,dates) {
+                    Log.e(TAG, "updated payment is not done")
+                }
             }
         }
         var intent = Intent(context, PayPalService::class.java)
@@ -138,6 +149,7 @@ class FragmentSync : Fragment() {
 
     var isSyncEnable = false
     private fun initView() {
+
         trackExerciseViewModel.userDetails.observe(viewLifecycleOwner, {
             binding?.firstName?.text = it.name
             binding?.lastName?.text = it.lastName
@@ -146,6 +158,7 @@ class FragmentSync : Fragment() {
             binding?.lastPaymentDate?.text = it.lastPaymentDate.toString().appDateFormater()
             binding?.dueDate?.text = it.dueDate.toString().appDateFormater()
             isSyncEnable = it.isPremium
+            dates = it.dates
             PrefUtils.INSTANCE(requireContext()).let { data ->
                 var firstName = it.name
                 var lastName = it.lastName
