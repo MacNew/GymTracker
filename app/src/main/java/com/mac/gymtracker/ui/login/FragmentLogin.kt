@@ -2,20 +2,18 @@ package com.mac.gymtracker.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.ktx.actionCodeSettings
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.MainActivity
 import com.mac.gymtracker.R
@@ -67,6 +65,22 @@ class FragmentLogin : Fragment() {
             (activity as AppCompatActivity).getNavigationController()
                 .navigate(FragmentLoginDirections.actionNavSyncToSignUpFragment())
         }
+        binding?.tvForgotPassword?.setOnClickListener {
+            val dialog = BottomSheetDialog(requireContext())
+            dialog.setContentView(R.layout.forgot_password_dialog)
+            var ed_email = dialog.findViewById<EditText>(R.id.ed_fp_email)
+            var btn_send_link = dialog.findViewById<Button>(R.id.btn_send_link)
+            btn_send_link?.setOnClickListener {
+                if (ed_email?.text!!.isNotEmpty()) {
+                    sendFirebaseForgotEmailLink(ed_email?.text.toString())
+                } else {
+                    view.showSnack("Enter your email ")
+                }
+                dialog.hide()
+            }
+            dialog.show()
+        }
+
         binding?.login?.setOnClickListener {
             if (username.text.isEmpty()) {
                 username.error = "Enter UserName"
@@ -99,6 +113,17 @@ class FragmentLogin : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun sendFirebaseForgotEmailLink(emailAddress: String) {
+        binding?.loading?.visibility = View.VISIBLE
+        Firebase.auth.sendPasswordResetEmail(emailAddress).addOnSuccessListener {
+             binding?.loading?.visibility = View.GONE
+             binding?.tvForgotPassword?.showSnack("Reset link sent to your email. ")
+        }.addOnFailureListener {
+            binding?.loading?.visibility = View.GONE
+            binding?.tvForgotPassword?.showSnack(it.message!!)
         }
     }
 }
