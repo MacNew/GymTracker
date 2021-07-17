@@ -23,7 +23,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "PAY_PAL_CLIENT_ID", "\"AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu\""
+            debuggable true
+        }
+
+
         release {
+            buildConfigField "String", "PAY_PAL_CLIENT_ID", "\"AfEqr3703fAhnpJ3yYatoK5x9mTT5d_ta2G7RAsaDmvjny8NLjvsY9uZ0L3TL2Y_tFudqGxBECrNd8vw\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -112,7 +119,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
-    implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+    //implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+
+        implementation('com.paypal.checkout:android-sdk:0.2.0')
 
 
 }

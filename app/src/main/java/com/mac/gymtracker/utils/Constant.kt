@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.google.android.material.snackbar.Snackbar
+import com.mac.gymtracker.BuildConfig
 import com.mac.gymtracker.R
 import com.mac.gymtracker.splashscreen.TAG
 import com.mac.gymtracker.ui.exercise.data.TrackExerciseLocalDataSource
@@ -69,8 +70,8 @@ const val IS_DATA_LOADED = "IS_DATA_LOADED"
 const val USER_DETAILS = "UserDetails"
 
 const val PAY_PAL_CLIENT_ID =
-    "AessWbzwfvxe3kw3L9XDSHIrT-ag657j2b7ARQbdfrkwipksfflEV__UsyKNMvlipKZC8C28o55vuICu"
 
+    BuildConfig.PAY_PAL_CLIENT_ID
 fun String?.toLocalBitMap(): Bitmap? {
     val imageAsBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     var bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size)

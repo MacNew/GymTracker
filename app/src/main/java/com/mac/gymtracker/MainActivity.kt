@@ -16,13 +16,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.mac.gymtracker.databinding.ActivityMainBinding
 import com.mac.gymtracker.utils.*
-import com.paypal.android.sdk.payments.PaymentActivity
-import com.paypal.android.sdk.payments.PaymentConfirmation
-import org.json.JSONException
 import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity() {
