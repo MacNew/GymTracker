@@ -146,7 +146,7 @@ private fun saveImageAndReturnUri(image: String, filename: String): Observable<S
     var bytes = ByteArrayOutputStream()
     finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
     var dir: File = File(
-        Environment.getExternalStorageDirectory().absolutePath + "//gymtracker"
+        Environment.getExternalStorageDirectory().absolutePath + "/.gymtracker"
     )
     try {
         if (!dir.exists()) {
