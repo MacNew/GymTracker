@@ -30,6 +30,7 @@ class ExerciseRecordAdapter(
         holder.itemView.tv_rip.text = objects.reps!!
         holder.itemView.tv_weight.text = objects.weight!!
         holder.itemView.tv_time_row.text = objects.timeInSecond!!
+        holder.itemView.tv_time_row_rest.text = objects.restTimeSecond
     }
 
     override fun getItemCount(): Int {

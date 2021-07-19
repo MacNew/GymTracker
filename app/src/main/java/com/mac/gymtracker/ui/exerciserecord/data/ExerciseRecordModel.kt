@@ -35,7 +35,9 @@ class ExerciseRecordModel(
     @ColumnInfo(name = "string_format_date")
     var stringFormatDate: String,
     @ColumnInfo(name = "time_in_second")
-    var timeInSecond: String
+    var timeInSecond: String,
+    @ColumnInfo(name = "rest_time_in_second")
+    var restTimeSecond: String
 ) : Serializable {
     override fun toString(): String {
         return "ExerciseRecordModel(date='$date', exerciseName=$exerciseName, weight=$weight, reps=$reps, set=$set, saveTime='$saveTime', mainExercise='$mainExercise', image=$image, roomDate=$roomDate, stringFormatDate='$stringFormatDate', timeInSecond='$timeInSecond')"

@@ -84,7 +84,8 @@ class FetchDataFromFireStoreService : Service() {
                                 set = it["set"].toString(),
                                 stringFormatDate = it["stringFormatDate"].toString(),
                                 weight = it["weight"].toString(),
-                                timeInSecond = it["timeInSecond"].toString()
+                                timeInSecond = it["timeInSecond"].toString(),
+                                restTimeSecond = it["restTimeSecond"].toString()
                             )
                         )
                     }

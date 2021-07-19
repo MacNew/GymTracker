@@ -1,5 +1,6 @@
 package com.mac.gymtracker.ui.exerciserecord
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,7 @@ import kotlin.collections.ArrayList
 
 class FragmentExerciseRecord : Fragment() {
     private lateinit var viewmodle: ExerciseRecordViewModle
+    var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
     private var _binding: FragmentExerciseRecordBinding? = null
     private val binding get() = _binding
     override fun onCreateView(
@@ -60,7 +62,9 @@ class FragmentExerciseRecord : Fragment() {
 
     var flage: Boolean = true
     var timerValue: String = "1"
+    var restTimerValue: String = "1"
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.tvExerciseName.text = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId
@@ -93,7 +97,11 @@ class FragmentExerciseRecord : Fragment() {
         }
 
         view.fab_action.setOnClickListener {
-            showButtonSheet()
+            if (binding!!.btnPauseOrStart.text.toString() == "Rest")
+             showButtonSheet()
+            else
+
+                binding!!.btnPauseOrStart.showSnack("Please Start Exercise, this is your rest time ")
         }
 
         if (recordList.size>0) {
@@ -116,21 +124,34 @@ class FragmentExerciseRecord : Fragment() {
                 }
 
             } else {
-                view.showSnack("Please Add set ")
+                view.showSnack("Hurry up time is running do your exercise ")
             }
         }
-        viewmodle.start(timerValue.toString().toInt())
+        viewmodle.start(timerValue.toInt())
         viewmodle.timeInSecond.observe(viewLifecycleOwner, {
             binding!!.tvTime.text = it
         })
 
+        viewmodle.timeInSecondRest.observe(viewLifecycleOwner, {
+            binding!!.tvTimeRest.text = it
+        })
+
         binding!!.btnPauseOrStart.setOnClickListener {
-             if (binding!!.btnPauseOrStart.text == "Pause") {
-                 viewmodle.stopThread()
-                 binding!!.btnPauseOrStart.text = "Start"
+             if (recordList.size>0 && binding!!.btnPauseOrStart.text != "Rest") {
+                 if (binding!!.btnPauseOrStart.text == "Rest") {
+                     viewmodle.stopThread()
+                     binding!!.btnPauseOrStart.text = "Exercise"
+                     viewmodle.startRestTime(restTimerValue.toInt())
+                 } else {
+                     binding!!.lastExerciseTime.text = binding!!.tvTimeRest.text.toString()
+                     binding!!.tvTimeRest.text = "1"
+                     viewmodle.start(binding!!.tvTime.text.toString().toInt())
+                     binding!!.btnPauseOrStart.text = "Rest"
+                     viewmodle.stopThreadResttime()
+
+                 }
              } else {
-                 viewmodle.start(binding!!.tvTime.text.toString().toInt())
-                 binding!!.btnPauseOrStart.text = "Pause"
+                 binding!!.btnPauseOrStart.showSnack("Hurry up this is your exercise time")
              }
         }
     }
@@ -138,13 +159,14 @@ class FragmentExerciseRecord : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewmodle.stopThread()
+        viewmodle.stopThreadResttime()
     }
 
 
     var setCount: Int = 1
+    var setRestCount: Int = 1
     private fun showButtonSheet() {
         viewmodle.stopThread()
-        binding!!.btnPauseOrStart.text = "Start"
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
         val imageButton = bottomSheetDialog.findViewById<ImageButton>(R.id.ib_add_set)
@@ -161,12 +183,14 @@ class FragmentExerciseRecord : Fragment() {
             bottomSheetDialog.hide()
             weight = weightEditText?.text.toString()
             if (weight.isNotBlank() || weight != "") {
-                addDataOnRecyclerView(repData, weight, setCount, binding!!.tvTime.text.toString())
+                addDataOnRecyclerView(repData, weight, setCount, binding!!.tvTime.text.toString(),
+                    binding!!.lastExerciseTime.text.toString()
+                )
                 binding!!.tvTime.text = "1"
                 setCount += 1
             } else {
                 viewmodle.start(binding!!.tvTime.text.toString().toInt())
-                binding!!.btnPauseOrStart.text = "Pause"
+                binding!!.btnPauseOrStart.text = "Rest"
                 requireView().showSnack("Add Weight")
             }
         }
@@ -184,8 +208,7 @@ class FragmentExerciseRecord : Fragment() {
         bottomSheetDialog.show()
     }
 
-    var recordList: ArrayList<ExerciseRecordModel> = ArrayList()
-    private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int, timeInSecond: String) {
+    private fun addDataOnRecyclerView(reps: String, weight: String, setCount: Int, timeInSecond: String, lastExercise: String) {
         var modle = ExerciseRecordModel(
             date = Date().time.toString(),
             exerciseName = FragmentExerciseRecordArgs.fromBundle(requireArguments()).exerciseId,
@@ -197,9 +220,16 @@ class FragmentExerciseRecord : Fragment() {
             image = FragmentExerciseRecordArgs.fromBundle(requireArguments()).image!!,
             roomDate = Date(),
             stringFormatDate = "",
-            timeInSecond = timeInSecond
+            timeInSecond = timeInSecond,
+            restTimeSecond = lastExercise
+
         )
+        binding!!.lastExerciseTime.text = "0"
         recordList.add(modle)
+
+        viewmodle.startRestTime(restTimerValue.toInt())
+        binding!!.btnPauseOrStart.text = "Exercise"
+
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)
         if (recordList.size > 0) {
             binding!!.cardViewMsg.visibility = View.GONE
@@ -220,6 +250,8 @@ class FragmentExerciseRecord : Fragment() {
             "8",
             "9",
             "10",
+            "11",
+            "12",
             "13",
             "14",
             "15",

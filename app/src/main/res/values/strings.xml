@@ -38,6 +38,7 @@
     <string name="loading">Loading.....</string>
     <string name="last_payment_date">Last Payment Date</string>
     <string name="due_date">Due date</string>
-    <string name="pause_time">Pause</string>
+    <string name="pause_time">Rest</string>
     <string name="forgot_password_label">Enter your email address</string>
+    <string name="rest_time">Rest time</string>
 </resources>

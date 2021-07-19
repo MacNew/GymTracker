@@ -28,7 +28,13 @@ class ExerciseRecordViewModle(
 
     private val _timeInSecond = MutableLiveData<String>()
 
-    public val timeInSecond: LiveData<String> = _timeInSecond
+    val timeInSecond: LiveData<String> = _timeInSecond
+
+    private val _timeInSecondRest = MutableLiveData<String>()
+
+    val timeInSecondRest: LiveData<String> = _timeInSecondRest
+
+
 
     val lastSummery: LiveData<List<LastSummeryModel>> = _lastSummery
 
@@ -56,6 +62,7 @@ class ExerciseRecordViewModle(
     }
 
     lateinit var timer: Timer
+    lateinit var restTime: Timer
     fun start(startCount: Int) {
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask(){
@@ -68,8 +75,25 @@ class ExerciseRecordViewModle(
         }, 1000, 1000)
     }
 
+    fun startRestTime(startCount: Int) {
+        restTime = Timer()
+        restTime.scheduleAtFixedRate(object : TimerTask(){
+            var count = startCount
+            override fun run() {
+                count+= 1;
+                _timeInSecondRest.postValue(count.toString())
+            }
+
+        }, 1000, 1000)
+    }
+
+
     fun stopThread() {
         timer.cancel()
+    }
+
+    fun stopThreadResttime() {
+        restTime.cancel()
     }
 
     fun updateList(
