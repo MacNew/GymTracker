@@ -68,7 +68,7 @@
                 android:layout_margin="16dp"
                 android:id="@+id/card_time"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
                 card_view:cardBackgroundColor="@android:color/white"
                 card_view:cardElevation="2dp"
                 card_view:cardUseCompatPadding="true"
@@ -153,7 +153,7 @@
                                android:layout_gravity="center"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="sec"
+                               android:text="1"
                                />
                            <androidx.appcompat.widget.AppCompatButton
                                android:layout_marginTop="4dp"

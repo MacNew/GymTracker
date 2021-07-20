@@ -116,8 +116,10 @@ class FragmentExerciseRecord : Fragment() {
                         setCount = 1
                         binding!!.rvRecordFragment.adapter!!.notifyDataSetChanged()
                         view.showSnack("Data Added Successfully ")
+                        viewmodle.stopThreadResttime()
+                        binding!!.tvTimeRest.setText("1")
                         binding!!.cardViewMsg.visibility = View.VISIBLE
-                        // (activity as MainActivity).onBackPressed()
+                         (activity as MainActivity).onBackPressed()
                     } else {
                         Log.e("msg", "cannot find record list")
                     }
@@ -127,7 +129,7 @@ class FragmentExerciseRecord : Fragment() {
                 view.showSnack("Hurry up time is running do your exercise ")
             }
         }
-        viewmodle.start(timerValue.toInt())
+        viewmodle.start(timerValue.toInt(),context, R.raw.exercise_time)
         viewmodle.timeInSecond.observe(viewLifecycleOwner, {
             binding!!.tvTime.text = it
         })
@@ -141,11 +143,15 @@ class FragmentExerciseRecord : Fragment() {
                  if (binding!!.btnPauseOrStart.text == "Rest") {
                      viewmodle.stopThread()
                      binding!!.btnPauseOrStart.text = "Exercise"
-                     viewmodle.startRestTime(restTimerValue.toInt())
+                     viewmodle.startRestTime(restTimerValue.toInt(), context, R.raw.rest_time)
                  } else {
                      binding!!.lastExerciseTime.text = binding!!.tvTimeRest.text.toString()
                      binding!!.tvTimeRest.text = "1"
-                     viewmodle.start(binding!!.tvTime.text.toString().toInt())
+                     viewmodle.start(
+                         binding!!.tvTime.text.toString().toInt(),
+                         context,
+                         R.raw.exercise_time
+                     )
                      binding!!.btnPauseOrStart.text = "Rest"
                      viewmodle.stopThreadResttime()
 
@@ -159,7 +165,11 @@ class FragmentExerciseRecord : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewmodle.stopThread()
-        viewmodle.stopThreadResttime()
+        try {
+            viewmodle.stopThreadResttime()
+        }catch (exception: Exception) {
+            Log.e(TAG, exception.message.toString())
+        }
     }
 
 
@@ -189,7 +199,11 @@ class FragmentExerciseRecord : Fragment() {
                 binding!!.tvTime.text = "1"
                 setCount += 1
             } else {
-                viewmodle.start(binding!!.tvTime.text.toString().toInt())
+                viewmodle.start(
+                    binding!!.tvTime.text.toString().toInt(),
+                    context,
+                    R.raw.exercise_time
+                )
                 binding!!.btnPauseOrStart.text = "Rest"
                 requireView().showSnack("Add Weight")
             }
@@ -227,7 +241,7 @@ class FragmentExerciseRecord : Fragment() {
         binding!!.lastExerciseTime.text = "0"
         recordList.add(modle)
 
-        viewmodle.startRestTime(restTimerValue.toInt())
+        viewmodle.startRestTime(restTimerValue.toInt(), context, R.raw.rest_time)
         binding!!.btnPauseOrStart.text = "Exercise"
 
         binding!!.rvRecordFragment.adapter!!.notifyItemInserted(setCount)

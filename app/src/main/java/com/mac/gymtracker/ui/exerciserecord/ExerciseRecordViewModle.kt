@@ -1,6 +1,8 @@
 package com.mac.gymtracker.ui.exerciserecord
 
+import android.content.Context
 import android.content.res.Resources
+import android.media.MediaPlayer
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -34,8 +36,6 @@ class ExerciseRecordViewModle(
 
     val timeInSecondRest: LiveData<String> = _timeInSecondRest
 
-
-
     val lastSummery: LiveData<List<LastSummeryModel>> = _lastSummery
 
     private val _stringDate = MutableLiveData<String>()
@@ -63,7 +63,7 @@ class ExerciseRecordViewModle(
 
     lateinit var timer: Timer
     lateinit var restTime: Timer
-    fun start(startCount: Int) {
+    fun start(startCount: Int, context: Context?, exerciseTime: Int) {
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask(){
             var count = startCount
@@ -71,20 +71,21 @@ class ExerciseRecordViewModle(
                 count+= 1;
                 _timeInSecond.postValue(count.toString())
             }
-
         }, 1000, 1000)
+       MediaPlayer.create(context, exerciseTime).start()
     }
 
-    fun startRestTime(startCount: Int) {
-        restTime = Timer()
-        restTime.scheduleAtFixedRate(object : TimerTask(){
+    fun startRestTime(startCount: Int, context: Context?, restTime: Int) {
+        this.restTime = Timer()
+        this.restTime.scheduleAtFixedRate(object : TimerTask(){
             var count = startCount
             override fun run() {
                 count+= 1;
                 _timeInSecondRest.postValue(count.toString())
             }
-
         }, 1000, 1000)
+        MediaPlayer.create(context, restTime).start()
+
     }
 
 
