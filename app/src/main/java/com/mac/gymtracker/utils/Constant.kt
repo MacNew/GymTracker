@@ -53,8 +53,6 @@ const val BACK_ID: Int = 3
 const val BICEPS_ID: Int = 4
 const val TRICEPS_ID: Int = 5
 const val LEG_ID: Int = 6
-
-const val NEw_MAC = "1425252"
 const val IS_LOGIN = "IS_LOGIN"
 const val IS_FROM_SYNC = "IS_FROM_SYNC"
 const val EMAIL = "EMAIL"
