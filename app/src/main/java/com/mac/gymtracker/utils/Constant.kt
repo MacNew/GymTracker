@@ -66,7 +66,7 @@ const val FIRST_NAME = "FIRST_NAME"
 const val LAST_NAME = "LAST_NAME"
 const val IS_DATA_LOADED = "IS_DATA_LOADED"
 const val USER_DETAILS = "UserDetails"
-
+const val TWO = "chenages"
 const val PAY_PAL_CLIENT_ID =
 
     BuildConfig.PAY_PAL_CLIENT_ID
